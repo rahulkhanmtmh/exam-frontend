@@ -125,10 +125,22 @@
       <p>Student system coming...</p>
     </div>
 
-    <div id="question" style="display:none;">
-      <h2>Question Bank</h2>
-      <p>Question system coming...</p>
-    </div>
+<div id="question" style="display:none;">
+  <h2>Question Bank</h2>
+
+  <input type="text" id="class" placeholder="Class" />
+  <input type="text" id="subject" placeholder="Subject" />
+  <input type="text" id="chapter" placeholder="Chapter" />
+
+  <textarea id="questionText" placeholder="Enter Question"></textarea>
+
+  <input type="number" id="marks" placeholder="Marks" />
+
+  <button onclick="addQuestion()">Add Question</button>
+
+  <h3>Saved Questions</h3>
+  <div id="questionList"></div>
+</div>
 
     <div id="paper" style="display:none;">
       <h2>Paper Generator</h2>
