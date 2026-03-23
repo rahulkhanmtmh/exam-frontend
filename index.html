@@ -1,45 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>OCR App</title>
+  <title>Login - Exam App</title>
 </head>
 <body>
 
-<h2>Handwriting to Text</h2>
+<h2>School Login</h2>
 
-<input type="file" id="fileInput" />
+<input type="email" id="email" placeholder="Enter Email" />
 <br><br>
 
-<button onclick="uploadFile()">Convert</button>
-
+<input type="password" id="password" placeholder="Enter Password" />
 <br><br>
 
-<textarea id="output" rows="10" cols="40"></textarea>
+<button onclick="login()">Login</button>
+
+<p id="msg"></p>
+
+<hr>
+
+<h3>New User?</h3>
+<button onclick="signup()">Create Account</button>
 
 <script>
-async function uploadFile() {
-  const file = document.getElementById("fileInput").files[0];
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  if (!file) {
-    alert("Please select a file");
+  if (email === "" || password === "") {
+    document.getElementById("msg").innerText = "Please fill all fields";
     return;
   }
 
-  const formData = new FormData();
-  formData.append("file", file);
-
-  try {
-    const res = await fetch("https://https://exam-backend-cu62.onrender.com/upload", {
-      method: "POST",
-      body: formData
-    });
-
-    const data = await res.json();
-    document.getElementById("output").value = data.text;
-  } catch (error) {
-    alert("Error connecting to server");
-    console.log(error);
+  // Demo login (temporary)
+  if (email === "admin@test.com" && password === "1234") {
+    document.getElementById("msg").innerText = "Login Successful ✅";
+  } else {
+    document.getElementById("msg").innerText = "Invalid login ❌";
   }
+}
+
+function signup() {
+  alert("Signup system coming next!");
 }
 </script>
 
