@@ -84,11 +84,11 @@
       border-radius: 10px;
     }
     textarea {
-  width: 90%;
-  height: 80px;
-  margin: 5px;
-  padding: 10px;
-}
+      width: 90%;
+      height: 80px;
+      margin: 5px;
+      padding: 10px;
+    }
   </style>
 </head>
 
@@ -131,22 +131,22 @@
       <p>Student system coming...</p>
     </div>
 
-<div id="question" style="display:none;">
-  <h2>Question Bank</h2>
+    <div id="question" style="display:none;">
+      <h2>Question Bank</h2>
 
-  <input type="text" id="class" placeholder="Class" />
-  <input type="text" id="subject" placeholder="Subject" />
-  <input type="text" id="chapter" placeholder="Chapter" />
+      <input type="text" id="class" placeholder="Class" />
+      <input type="text" id="subject" placeholder="Subject" />
+      <input type="text" id="chapter" placeholder="Chapter" />
 
-  <textarea id="questionText" placeholder="Enter Question"></textarea>
+      <textarea id="questionText" placeholder="Enter Question"></textarea>
 
-  <input type="number" id="marks" placeholder="Marks" />
+      <input type="number" id="marks" placeholder="Marks" />
 
-  <button onclick="addQuestion()">Add Question</button>
+      <button onclick="addQuestion()">Add Question</button>
 
-  <h3>Saved Questions</h3>
-  <div id="questionList"></div>
-</div>
+      <h3>Saved Questions</h3>
+      <div id="questionList"></div>
+    </div>
 
     <div id="paper" style="display:none;">
       <h2>Paper Generator</h2>
@@ -158,6 +158,8 @@
 </div>
 
 <script>
+// Global variable for editing
+let editId = null;
 
 function login() {
   const email = document.getElementById("email").value;
@@ -189,7 +191,6 @@ function showPage(page) {
   }
 }
 
-async function addQuestion() {
 async function addQuestion() {
   const cls = document.getElementById("class").value;
   const subject = document.getElementById("subject").value;
@@ -271,9 +272,6 @@ async function deleteQuestion(id) {
   loadQuestions();
 }
 
-
-let editId = null; // change variable name from editIndex
-
 function editQuestion(id) {
   fetch("https://exam-backend-cu62.onrender.com/questions")
     .then(res => res.json())
@@ -289,7 +287,6 @@ function editQuestion(id) {
       editId = id; // store the _id
     });
 }
-  
 </script>
 
 </body>
