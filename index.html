@@ -1,47 +1,91 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login - Exam App</title>
+  <title>Exam App</title>
+  <style>
+    body { font-family: Arial; }
+    #dashboard { display: none; }
+    .menu { width: 200px; float: left; }
+    .menu button { display: block; width: 100%; margin: 5px 0; }
+    .content { margin-left: 210px; }
+  </style>
 </head>
 <body>
 
-<h2>School Login</h2>
+<!-- LOGIN -->
+<div id="login">
+  <h2>School Login</h2>
 
-<input type="email" id="email" placeholder="Enter Email" />
-<br><br>
+  <input type="email" id="email" placeholder="Enter Email" />
+  <br><br>
 
-<input type="password" id="password" placeholder="Enter Password" />
-<br><br>
+  <input type="password" id="password" placeholder="Enter Password" />
+  <br><br>
 
-<button onclick="login()">Login</button>
+  <button onclick="login()">Login</button>
 
-<p id="msg"></p>
+  <p id="msg"></p>
+</div>
 
-<hr>
+<!-- DASHBOARD -->
+<div id="dashboard">
 
-<h3>New User?</h3>
-<button onclick="signup()">Create Account</button>
+  <h2>Dashboard</h2>
+
+  <div class="menu">
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('students')">Students</button>
+    <button onclick="showPage('question')">Question Bank</button>
+    <button onclick="showPage('paper')">Paper Generator</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="content">
+    <div id="home">Welcome to Dashboard 🎉</div>
+
+    <div id="students" style="display:none;">
+      <h3>Students</h3>
+      <p>Add student system coming...</p>
+    </div>
+
+    <div id="question" style="display:none;">
+      <h3>Question Bank</h3>
+      <p>Question system coming...</p>
+    </div>
+
+    <div id="paper" style="display:none;">
+      <h3>Paper Generator</h3>
+      <p>Paper generator coming...</p>
+    </div>
+  </div>
+
+</div>
 
 <script>
 function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  if (email === "" || password === "") {
-    document.getElementById("msg").innerText = "Please fill all fields";
-    return;
-  }
-
-  // Demo login (temporary)
   if (email === "admin@test.com" && password === "1234") {
-    document.getElementById("msg").innerText = "Login Successful ✅";
+    document.getElementById("login").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
   } else {
     document.getElementById("msg").innerText = "Invalid login ❌";
   }
 }
 
-function signup() {
-  alert("Signup system coming next!");
+function logout() {
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("login").style.display = "block";
+}
+
+function showPage(page) {
+  document.getElementById("home").style.display = "none";
+  document.getElementById("students").style.display = "none";
+  document.getElementById("question").style.display = "none";
+  document.getElementById("paper").style.display = "none";
+
+  document.getElementById(page).style.display = "block";
 }
 </script>
 
