@@ -2,14 +2,90 @@
 <html>
 <head>
   <title>Exam App</title>
+
   <style>
-    body { font-family: Arial; }
-    #dashboard { display: none; }
-    .menu { width: 200px; float: left; }
-    .menu button { display: block; width: 100%; margin: 5px 0; }
-    .content { margin-left: 210px; }
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #87CEEB; /* sky blue */
+    }
+
+    #login, #dashboard {
+      padding: 20px;
+    }
+
+    /* Login Box */
+    #login {
+      max-width: 300px;
+      margin: 100px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px;
+      width: 95%;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    /* Dashboard */
+    #dashboard {
+      display: none;
+    }
+
+    .sidebar {
+      width: 220px;
+      height: 100vh;
+      background: #ffffff;
+      position: fixed;
+      padding: 10px;
+    }
+
+    .sidebar h3 {
+      text-align: center;
+      color: #007BFF;
+    }
+
+    .sidebar button {
+      margin: 10px 0;
+      width: 100%;
+      background: #f0f0f0;
+      color: black;
+    }
+
+    .sidebar button:hover {
+      background: #007BFF;
+      color: white;
+    }
+
+    .content {
+      margin-left: 240px;
+      padding: 20px;
+      background: white;
+      min-height: 100vh;
+      border-radius: 10px;
+    }
   </style>
 </head>
+
 <body>
 
 <!-- LOGIN -->
@@ -17,10 +93,7 @@
   <h2>School Login</h2>
 
   <input type="email" id="email" placeholder="Enter Email" />
-  <br><br>
-
   <input type="password" id="password" placeholder="Enter Password" />
-  <br><br>
 
   <button onclick="login()">Login</button>
 
@@ -30,9 +103,9 @@
 <!-- DASHBOARD -->
 <div id="dashboard">
 
-  <h2>Dashboard</h2>
+  <div class="sidebar">
+    <h3>Exam App</h3>
 
-  <div class="menu">
     <button onclick="showPage('home')">Home</button>
     <button onclick="showPage('students')">Students</button>
     <button onclick="showPage('question')">Question Bank</button>
@@ -41,22 +114,27 @@
   </div>
 
   <div class="content">
-    <div id="home">Welcome to Dashboard 🎉</div>
+
+    <div id="home">
+      <h2>Welcome 🎉</h2>
+      <p>This is your dashboard</p>
+    </div>
 
     <div id="students" style="display:none;">
-      <h3>Students</h3>
-      <p>Add student system coming...</p>
+      <h2>Students</h2>
+      <p>Student system coming...</p>
     </div>
 
     <div id="question" style="display:none;">
-      <h3>Question Bank</h3>
+      <h2>Question Bank</h2>
       <p>Question system coming...</p>
     </div>
 
     <div id="paper" style="display:none;">
-      <h3>Paper Generator</h3>
+      <h2>Paper Generator</h2>
       <p>Paper generator coming...</p>
     </div>
+
   </div>
 
 </div>
