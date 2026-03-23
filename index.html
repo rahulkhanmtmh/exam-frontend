@@ -190,6 +190,7 @@ function showPage(page) {
 }
 
 async function addQuestion() {
+async function addQuestion() {
   const cls = document.getElementById("class").value;
   const subject = document.getElementById("subject").value;
   const chapter = document.getElementById("chapter").value;
@@ -203,8 +204,8 @@ async function addQuestion() {
 
   const q = { cls, subject, chapter, text, marks };
 
-  if (editIndex !== -1) {
-    await fetch(`https://exam-backend-cu62.onrender.com/update-question/${editIndex}`, {
+  if (editId !== null) {
+    await fetch(`https://exam-backend-cu62.onrender.com/update-question/${editId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -213,7 +214,7 @@ async function addQuestion() {
     });
 
     alert("Updated ✅");
-    editIndex = -1;
+    editId = null; // reset after update
   } else {
     await fetch("https://exam-backend-cu62.onrender.com/add-question", {
       method: "POST",
@@ -243,7 +244,7 @@ async function loadQuestions() {
   const list = document.getElementById("questionList");
   list.innerHTML = "";
 
-  data.forEach((q, i) => {
+  data.forEach((q) => {
     list.innerHTML += `
       <div style="border:1px solid #ccc; padding:10px; margin:5px;">
         <b>Class:</b> ${q.cls} |
@@ -252,31 +253,32 @@ async function loadQuestions() {
         <br>
         <b>Q:</b> ${q.text}
         <br><br>
-        <button onclick="editQuestion(${i})">Edit ✏️</button>
-        <button onclick="deleteQuestion(${i})">Delete ❌</button>
+        <button onclick="editQuestion('${q._id}')">Edit ✏️</button>
+        <button onclick="deleteQuestion('${q._id}')">Delete ❌</button>
       </div>
     `;
   });
 }
-
-async function deleteQuestion(index) {
+  
+async function deleteQuestion(id) {
   const confirmDelete = confirm("Delete this question?");
   if (!confirmDelete) return;
 
-  await fetch(`https://exam-backend-cu62.onrender.com/delete-question/${index}`, {
+  await fetch(`https://exam-backend-cu62.onrender.com/delete-question/${id}`, {
     method: "DELETE"
   });
 
   loadQuestions();
 }
 
-let editIndex = -1;
 
-function editQuestion(index) {
+let editId = null; // change variable name from editIndex
+
+function editQuestion(id) {
   fetch("https://exam-backend-cu62.onrender.com/questions")
     .then(res => res.json())
     .then(data => {
-      const q = data[index];
+      const q = data.find(question => question._id === id); // find by _id
 
       document.getElementById("class").value = q.cls;
       document.getElementById("subject").value = q.subject;
@@ -284,7 +286,7 @@ function editQuestion(index) {
       document.getElementById("questionText").value = q.text;
       document.getElementById("marks").value = q.marks;
 
-      editIndex = index;
+      editId = id; // store the _id
     });
 }
   
