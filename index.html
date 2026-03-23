@@ -177,6 +177,55 @@ function showPage(page) {
 
   document.getElementById(page).style.display = "block";
 }
+  let questions = [];
+
+function addQuestion() {
+  const cls = document.getElementById("class").value;
+  const subject = document.getElementById("subject").value;
+  const chapter = document.getElementById("chapter").value;
+  const text = document.getElementById("questionText").value;
+  const marks = document.getElementById("marks").value;
+
+  if (!cls || !subject || !chapter || !text || !marks) {
+    alert("Fill all fields");
+    return;
+  }
+
+  const q = {
+    cls,
+    subject,
+    chapter,
+    text,
+    marks
+  };
+
+  questions.push(q);
+  displayQuestions();
+
+  // clear fields
+  document.getElementById("class").value = "";
+  document.getElementById("subject").value = "";
+  document.getElementById("chapter").value = "";
+  document.getElementById("questionText").value = "";
+  document.getElementById("marks").value = "";
+}
+
+function displayQuestions() {
+  const list = document.getElementById("questionList");
+  list.innerHTML = "";
+
+  questions.forEach((q, i) => {
+    list.innerHTML += `
+      <div style="border:1px solid #ccc; padding:10px; margin:5px;">
+        <b>Class:</b> ${q.cls} |
+        <b>Subject:</b> ${q.subject} |
+        <b>Marks:</b> ${q.marks}
+        <br>
+        <b>Q:</b> ${q.text}
+      </div>
+    `;
+  });
+}
 </script>
 
 </body>
