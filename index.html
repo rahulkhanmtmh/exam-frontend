@@ -190,8 +190,6 @@ function showPage(page) {
 }
 
 async function addQuestion() {
-  alert("Button clicked"); // TEST
-
   const cls = document.getElementById("class").value;
   const subject = document.getElementById("subject").value;
   const chapter = document.getElementById("chapter").value;
@@ -205,31 +203,19 @@ async function addQuestion() {
 
   const q = { cls, subject, chapter, text, marks };
 
-if (editIndex !== -1) {
-  await fetch(`https://exam-backend-cu62.onrender.com/update-question/${editIndex}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(q)
-  });
+  if (editIndex !== -1) {
+    await fetch(`https://exam-backend-cu62.onrender.com/update-question/${editIndex}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(q)
+    });
 
-  alert("Updated ✅");
-  editIndex = -1;
-} else {
-  await fetch("https://exam-backend-cu62.onrender.com/add-question", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(q)
-  });
-
-  alert("Added ✅");
-}
-
-  try {
-    const res = await fetch("https://exam-backend-cu62.onrender.com/add-question", {
+    alert("Updated ✅");
+    editIndex = -1;
+  } else {
+    await fetch("https://exam-backend-cu62.onrender.com/add-question", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -237,16 +223,17 @@ if (editIndex !== -1) {
       body: JSON.stringify(q)
     });
 
-    const data = await res.json();
-
-    alert("Question Added ✅");
-
-    loadQuestions();
-
-  } catch (err) {
-    alert("Error: " + err);
-    console.log(err);
+    alert("Added ✅");
   }
+
+  loadQuestions();
+
+  // clear fields
+  document.getElementById("class").value = "";
+  document.getElementById("subject").value = "";
+  document.getElementById("chapter").value = "";
+  document.getElementById("questionText").value = "";
+  document.getElementById("marks").value = "";
 }
 
 async function loadQuestions() {
