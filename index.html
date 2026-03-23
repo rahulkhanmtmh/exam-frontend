@@ -158,11 +158,12 @@
 </div>
 
 <script>
+
 function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  if (email === "admin" && password === "1234") {
+  if (email === "admin@test.com" && password === "1234") {
     document.getElementById("login").style.display = "none";
     document.getElementById("dashboard").style.display = "block";
   } else {
@@ -187,8 +188,6 @@ function showPage(page) {
     loadQuestions();
   }
 }
-  
-  let questions = [];
 
 async function addQuestion() {
   const cls = document.getElementById("class").value;
@@ -234,42 +233,7 @@ async function loadQuestions() {
     `;
   });
 }
-
-  const q = {
-    cls,
-    subject,
-    chapter,
-    text,
-    marks
-  };
-
-  questions.push(q);
-  displayQuestions();
-
-  // clear fields
-  document.getElementById("class").value = "";
-  document.getElementById("subject").value = "";
-  document.getElementById("chapter").value = "";
-  document.getElementById("questionText").value = "";
-  document.getElementById("marks").value = "";
-}
-
-function displayQuestions() {
-  const list = document.getElementById("questionList");
-  list.innerHTML = "";
-
-  questions.forEach((q, i) => {
-    list.innerHTML += `
-      <div style="border:1px solid #ccc; padding:10px; margin:5px;">
-        <b>Class:</b> ${q.cls} |
-        <b>Subject:</b> ${q.subject} |
-        <b>Marks:</b> ${q.marks}
-        <br>
-        <b>Q:</b> ${q.text}
-      </div>
-    `;
-  });
-}
+  
 </script>
 
 </body>
