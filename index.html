@@ -182,10 +182,15 @@ function showPage(page) {
   document.getElementById("paper").style.display = "none";
 
   document.getElementById(page).style.display = "block";
+
+  if (page === "question") {
+    loadQuestions();
+  }
 }
+  
   let questions = [];
 
-function addQuestion() {
+async function addQuestion() {
   const cls = document.getElementById("class").value;
   const subject = document.getElementById("subject").value;
   const chapter = document.getElementById("chapter").value;
@@ -196,6 +201,39 @@ function addQuestion() {
     alert("Fill all fields");
     return;
   }
+
+  const q = { cls, subject, chapter, text, marks };
+
+  await fetch("https://exam-backend-cu62.onrender.com/add-question", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(q)
+  });
+
+  loadQuestions();
+}
+
+async function loadQuestions() {
+  const res = await fetch("https://exam-backend-cu62.onrender.com/questions");
+  const data = await res.json();
+
+  const list = document.getElementById("questionList");
+  list.innerHTML = "";
+
+  data.forEach(q => {
+    list.innerHTML += `
+      <div style="border:1px solid #ccc; padding:10px; margin:5px;">
+        <b>Class:</b> ${q.cls} |
+        <b>Subject:</b> ${q.subject} |
+        <b>Marks:</b> ${q.marks}
+        <br>
+        <b>Q:</b> ${q.text}
+      </div>
+    `;
+  });
+}
 
   const q = {
     cls,
