@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>OCR App</title>
+</head>
 <body>
 
 <h2>Handwriting to Text</h2>
@@ -15,17 +18,28 @@
 
 <script>
 async function uploadFile() {
-  const fileInput = document.getElementById("fileInput");
+  const file = document.getElementById("fileInput").files[0];
+
+  if (!file) {
+    alert("Please select a file");
+    return;
+  }
+
   const formData = new FormData();
-  formData.append("file", fileInput.files[0]);
+  formData.append("file", file);
 
-  const res = await fetch("https://https://exam-backend-cu62.onrender.com/upload", {
-    method: "POST",
-    body: formData
-  });
+  try {
+    const res = await fetch("https://https://exam-backend-cu62.onrender.com/upload", {
+      method: "POST",
+      body: formData
+    });
 
-  const data = await res.json();
-  document.getElementById("output").value = data.text;
+    const data = await res.json();
+    document.getElementById("output").value = data.text;
+  } catch (error) {
+    alert("Error connecting to server");
+    console.log(error);
+  }
 }
 </script>
 
