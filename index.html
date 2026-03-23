@@ -233,7 +233,7 @@ async function loadQuestions() {
   const list = document.getElementById("questionList");
   list.innerHTML = "";
 
-  data.forEach(q => {
+  data.forEach((q, i) => {
     list.innerHTML += `
       <div style="border:1px solid #ccc; padding:10px; margin:5px;">
         <b>Class:</b> ${q.cls} |
@@ -241,9 +241,19 @@ async function loadQuestions() {
         <b>Marks:</b> ${q.marks}
         <br>
         <b>Q:</b> ${q.text}
+        <br><br>
+        <button onclick="deleteQuestion(${i})">Delete ❌</button>
       </div>
     `;
   });
+}
+
+async function deleteQuestion(index) {
+  await fetch(`https://exam-backend-cu62.onrender.com/delete-question/${index}`, {
+    method: "DELETE"
+  });
+
+  loadQuestions();
 }
   
 </script>
