@@ -4,10 +4,30 @@
 
 <h2>Handwriting to Text</h2>
 
-<input type="file" />
+<input type="file" id="fileInput" />
 <br><br>
 
-<textarea rows="10" cols="40"></textarea>
+<button onclick="uploadFile()">Convert</button>
+
+<br><br>
+
+<textarea id="output" rows="10" cols="40"></textarea>
+
+<script>
+async function uploadFile() {
+  const fileInput = document.getElementById("fileInput");
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
+
+  const res = await fetch("https://YOUR-BACKEND-URL/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+  document.getElementById("output").value = data.text;
+}
+</script>
 
 </body>
 </html>
