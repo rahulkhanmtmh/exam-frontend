@@ -249,6 +249,9 @@ async function loadQuestions() {
 }
 
 async function deleteQuestion(index) {
+  const confirmDelete = confirm("Delete this question?");
+  if (!confirmDelete) return;
+
   await fetch(`https://exam-backend-cu62.onrender.com/delete-question/${index}`, {
     method: "DELETE"
   });
