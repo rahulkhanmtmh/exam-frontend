@@ -19,7 +19,7 @@ async function uploadFile() {
   const formData = new FormData();
   formData.append("file", fileInput.files[0]);
 
-  const res = await fetch("https://YOUR-BACKEND-URL/upload", {
+  const res = await fetch("https://https://exam-backend-cu62.onrender.com/upload", {
     method: "POST",
     body: formData
   });
