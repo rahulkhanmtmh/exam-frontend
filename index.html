@@ -205,6 +205,29 @@ async function addQuestion() {
 
   const q = { cls, subject, chapter, text, marks };
 
+if (editIndex !== -1) {
+  await fetch(`https://exam-backend-cu62.onrender.com/update-question/${editIndex}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(q)
+  });
+
+  alert("Updated ✅");
+  editIndex = -1;
+} else {
+  await fetch("https://exam-backend-cu62.onrender.com/add-question", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(q)
+  });
+
+  alert("Added ✅");
+}
+
   try {
     const res = await fetch("https://exam-backend-cu62.onrender.com/add-question", {
       method: "POST",
@@ -242,6 +265,7 @@ async function loadQuestions() {
         <br>
         <b>Q:</b> ${q.text}
         <br><br>
+        <button onclick="editQuestion(${i})">Edit ✏️</button>
         <button onclick="deleteQuestion(${i})">Delete ❌</button>
       </div>
     `;
@@ -257,6 +281,24 @@ async function deleteQuestion(index) {
   });
 
   loadQuestions();
+}
+
+let editIndex = -1;
+
+function editQuestion(index) {
+  fetch("https://exam-backend-cu62.onrender.com/questions")
+    .then(res => res.json())
+    .then(data => {
+      const q = data[index];
+
+      document.getElementById("class").value = q.cls;
+      document.getElementById("subject").value = q.subject;
+      document.getElementById("chapter").value = q.chapter;
+      document.getElementById("questionText").value = q.text;
+      document.getElementById("marks").value = q.marks;
+
+      editIndex = index;
+    });
 }
   
 </script>
