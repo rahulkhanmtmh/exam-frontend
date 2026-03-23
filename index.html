@@ -190,6 +190,8 @@ function showPage(page) {
 }
 
 async function addQuestion() {
+  alert("Button clicked"); // TEST
+
   const cls = document.getElementById("class").value;
   const subject = document.getElementById("subject").value;
   const chapter = document.getElementById("chapter").value;
@@ -203,15 +205,25 @@ async function addQuestion() {
 
   const q = { cls, subject, chapter, text, marks };
 
-  await fetch("https://exam-backend-cu62.onrender.com/add-question", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(q)
-  });
+  try {
+    const res = await fetch("https://exam-backend-cu62.onrender.com/add-question", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(q)
+    });
 
-  loadQuestions();
+    const data = await res.json();
+
+    alert("Question Added ✅");
+
+    loadQuestions();
+
+  } catch (err) {
+    alert("Error: " + err);
+    console.log(err);
+  }
 }
 
 async function loadQuestions() {
