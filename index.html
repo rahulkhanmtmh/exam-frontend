@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Exam App - Paper Generator</title>
-  <script src="https://unpkg.com/tesseract.js@5.1.0/dist/tesseract.min.js"></script>
+  <title>Exam App</title>
+
   <style>
-    /* Your existing CSS unchanged */
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: Arial;
       background: #87CEEB;
     }
+
     #login, #dashboard {
       padding: 20px;
     }
+
     #login {
       max-width: 300px;
       margin: 100px auto;
@@ -21,13 +22,15 @@
       border-radius: 10px;
       text-align: center;
     }
-    input {
+
+    input, textarea {
       width: 90%;
       padding: 10px;
       margin: 5px;
       border-radius: 5px;
       border: 1px solid #ccc;
     }
+
     button {
       padding: 10px;
       width: 95%;
@@ -37,33 +40,23 @@
       border-radius: 5px;
       cursor: pointer;
     }
+
     button:hover {
       background: #0056b3;
     }
+
     #dashboard {
       display: none;
     }
+
     .sidebar {
       width: 220px;
       height: 100vh;
-      background: #ffffff;
+      background: white;
       position: fixed;
       padding: 10px;
     }
-    .sidebar h3 {
-      text-align: center;
-      color: #007BFF;
-    }
-    .sidebar button {
-      margin: 10px 0;
-      width: 100%;
-      background: #f0f0f0;
-      color: black;
-    }
-    .sidebar button:hover {
-      background: #007BFF;
-      color: white;
-    }
+
     .content {
       margin-left: 240px;
       padding: 20px;
@@ -71,70 +64,16 @@
       min-height: 100vh;
       border-radius: 10px;
     }
-    textarea {
-      width: 90%;
-      height: 80px;
+
+    .card {
+      border: 1px solid #ccc;
+      padding: 10px;
       margin: 5px;
-      padding: 10px;
-    }
-    .paper-controls {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-    .paper-controls select, .paper-controls input {
-      width: auto;
-      padding: 8px;
-      margin: 0 10px 0 0;
-    }
-    .paper-controls button {
-      width: auto;
-      padding: 8px 20px;
-    }
-    .paper {
-      border: 1px solid #ddd;
-      padding: 20px;
-      background: white;
-      border-radius: 8px;
-      margin-top: 20px;
-    }
-    .paper h3 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .question-item {
-      margin: 15px 0;
-      padding: 10px;
-      border-bottom: 1px dashed #ccc;
-    }
-    .question-text {
-      font-size: 16px;
-      margin-bottom: 5px;
-    }
-    .question-marks {
-      font-size: 14px;
-      color: #666;
-      font-style: italic;
-    }
-    .total-marks {
-      margin-top: 20px;
-      font-weight: bold;
-      text-align: right;
-    }
-    @media print {
-      .sidebar, .paper-controls, button {
-        display: none;
-      }
-      .content {
-        margin-left: 0;
-      }
-      .paper {
-        border: none;
-      }
+      border-radius: 5px;
     }
   </style>
 </head>
+
 <body>
 
 <!-- LOGIN -->
@@ -148,99 +87,51 @@
 
 <!-- DASHBOARD -->
 <div id="dashboard">
+
   <div class="sidebar">
     <h3>Exam App</h3>
     <button onclick="showPage('home')">Home</button>
-    <button onclick="showPage('students')">Students</button>
     <button onclick="showPage('question')">Question Bank</button>
-    <button onclick="showPage('paper')">Paper Generator</button>
     <button onclick="logout()">Logout</button>
-    <button onclick="showPage('bulk')">Bulk Upload (OCR)</button>
   </div>
 
   <div class="content">
+
     <div id="home">
       <h2>Welcome 🎉</h2>
-      <p>This is your dashboard</p>
-    </div>
-
-    <div id="students" style="display:none;">
-      <h2>Students</h2>
-      <p>Student system coming...</p>
     </div>
 
     <div id="question" style="display:none;">
       <h2>Question Bank</h2>
+
       <input type="text" id="class" placeholder="Class" />
       <input type="text" id="subject" placeholder="Subject" />
       <input type="text" id="chapter" placeholder="Chapter" />
+
       <textarea id="questionText" placeholder="Enter Question"></textarea>
       <input type="number" id="marks" placeholder="Marks" />
-      <button onclick="addQuestion()">Add Question</button>
+
+      <button onclick="addQuestion()">Save Question</button>
+
       <h3>Saved Questions</h3>
       <div id="questionList"></div>
     </div>
 
-    <div id="paper" style="display:none;">
-      <h2>Paper Generator</h2>
-      <div class="paper-controls">
-        <label>Class:</label>
-        <select id="paperClass">
-          <option value="">All Classes</option>
-        </select>
-        <label>Subject:</label>
-        <select id="paperSubject">
-          <option value="">All Subjects</option>
-        </select>
-        <label>Number of Questions:</label>
-        <input type="number" id="numQuestions" value="5" min="1" style="width: 80px;">
-        <button onclick="generatePaper()">Generate Paper</button>
-        <button onclick="printPaper()" style="background: #28a745;">Print Paper</button>
-      </div>
-      <div id="paperOutput" class="paper">
-        <!-- Generated paper will appear here -->
-      </div>
-    </div>
-
-    <div id="bulk" style="display:none;">
-      <h2>Bulk Upload via OCR</h2>
-      <div style="background:#f0f0f0; padding:15px; border-radius:8px; margin-bottom:20px;">
-        <label>Class: <input type="text" id="bulkClass" placeholder="e.g., 10" required></label><br>
-        <label>Subject: <input type="text" id="bulkSubject" placeholder="e.g., Math" required></label><br>
-        <label>Chapter: <input type="text" id="bulkChapter" placeholder="e.g., Algebra"></label><br>
-        <label>Question Type: 
-          <select id="bulkType">
-            <option value="">Auto-detect from OCR</option>
-            <option value="MCQ">MCQ</option>
-            <option value="Descriptive">Descriptive</option>
-            <option value="Numerical">Numerical</option>
-          </select>
-        </label><br>
-        <label>Default Marks: <input type="number" id="bulkDefaultMarks" value="5"></label><br>
-      </div>
-      <p>Upload one or more images of question papers (max 50 questions).</p>
-      <input type="file" id="imageInput" accept="image/*" multiple />
-      <button onclick="processOCR()">Process Images</button>
-      <div id="ocrProgress" style="margin:10px; font-style:italic;"></div>
-      <div id="parsedQuestions" style="margin-top:20px; display:none;">
-        <h3>Extracted Questions</h3>
-        <div id="questionPreview"></div>
-        <button onclick="saveBulkQuestions()">Save All to Database</button>
-      </div>
-    </div>
   </div>
+
 </div>
 
 <script>
-// ==================== Global variables ====================
-let editId = null;
-let allQuestions = [];
-let bulkQuestions = [];
 
-// ==================== Login / Logout ====================
+const BASE_URL = "https://exam-backend-cu62.onrender.com";
+
+let editId = null;
+
+// LOGIN
 function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
+
   if (email === "admin@test.com" && password === "1234") {
     document.getElementById("login").style.display = "none";
     document.getElementById("dashboard").style.display = "block";
@@ -250,23 +141,20 @@ function login() {
 }
 
 function logout() {
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("login").style.display = "block";
+  location.reload();
 }
 
-// ==================== Page Navigation ====================
+// PAGE SWITCH
 function showPage(page) {
-  const pages = ["home", "students", "question", "paper", "bulk"];
-  pages.forEach(p => {
-    const el = document.getElementById(p);
-    if (el) el.style.display = "none";
-  });
+  document.getElementById("home").style.display = "none";
+  document.getElementById("question").style.display = "none";
+
   document.getElementById(page).style.display = "block";
+
   if (page === "question") loadQuestions();
-  if (page === "paper") loadPaperData();
 }
 
-// ==================== Question Bank Functions ====================
+// ADD / UPDATE
 async function addQuestion() {
   const cls = document.getElementById("class").value;
   const subject = document.getElementById("subject").value;
@@ -279,10 +167,10 @@ async function addQuestion() {
     return;
   }
 
-  const q = { cls, subject, chapter, text, marks: parseInt(marks) };
+  const q = { cls, subject, chapter, text, marks };
 
-  if (editId !== null) {
-    await fetch(`https://exam-backend-cu62.onrender.com/update-question/${editId}`, {
+  if (editId) {
+    await fetch(`${BASE_URL}/update-question/${editId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(q)
@@ -290,7 +178,7 @@ async function addQuestion() {
     alert("Updated ✅");
     editId = null;
   } else {
-    await fetch("https://exam-backend-cu62.onrender.com/add-question", {
+    await fetch(`${BASE_URL}/add-question`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(q)
@@ -298,27 +186,23 @@ async function addQuestion() {
     alert("Added ✅");
   }
 
+  clearForm();
   loadQuestions();
-  document.getElementById("class").value = "";
-  document.getElementById("subject").value = "";
-  document.getElementById("chapter").value = "";
-  document.getElementById("questionText").value = "";
-  document.getElementById("marks").value = "";
 }
 
+// LOAD
 async function loadQuestions() {
-  const res = await fetch("https://exam-backend-cu62.onrender.com/questions");
+  const res = await fetch(`${BASE_URL}/questions`);
   const data = await res.json();
+
   const list = document.getElementById("questionList");
   list.innerHTML = "";
+
   data.forEach((q) => {
     list.innerHTML += `
-      <div style="border:1px solid #ccc; padding:10px; margin:5px;">
-        <b>Class:</b> ${q.cls} |
-        <b>Subject:</b> ${q.subject} |
-        <b>Marks:</b> ${q.marks}
-        <br>
-        <b>Q:</b> ${q.text}
+      <div class="card">
+        <b>${q.cls} | ${q.subject} | ${q.marks} marks</b>
+        <br>${q.text}
         <br><br>
         <button onclick="editQuestion('${q._id}')">Edit ✏️</button>
         <button onclick="deleteQuestion('${q._id}')">Delete ❌</button>
@@ -327,291 +211,43 @@ async function loadQuestions() {
   });
 }
 
+// DELETE
 async function deleteQuestion(id) {
-  const confirmDelete = confirm("Delete this question?");
-  if (!confirmDelete) return;
-  await fetch(`https://exam-backend-cu62.onrender.com/delete-question/${id}`, { method: "DELETE" });
+  if (!confirm("Delete this question?")) return;
+
+  await fetch(`${BASE_URL}/delete-question/${id}`, {
+    method: "DELETE"
+  });
+
   loadQuestions();
 }
 
-function editQuestion(id) {
-  fetch("https://exam-backend-cu62.onrender.com/questions")
-    .then(res => res.json())
-    .then(data => {
-      const q = data.find(question => question._id === id);
-      document.getElementById("class").value = q.cls;
-      document.getElementById("subject").value = q.subject;
-      document.getElementById("chapter").value = q.chapter;
-      document.getElementById("questionText").value = q.text;
-      document.getElementById("marks").value = q.marks;
-      editId = id;
-    });
+// EDIT
+async function editQuestion(id) {
+  const res = await fetch(`${BASE_URL}/questions`);
+  const data = await res.json();
+
+  const q = data.find(item => item._id === id);
+
+  document.getElementById("class").value = q.cls;
+  document.getElementById("subject").value = q.subject;
+  document.getElementById("chapter").value = q.chapter;
+  document.getElementById("questionText").value = q.text;
+  document.getElementById("marks").value = q.marks;
+
+  editId = id;
 }
 
-// ==================== Paper Generator Functions ====================
-async function loadPaperData() {
-  const res = await fetch("https://exam-backend-cu62.onrender.com/questions");
-  allQuestions = await res.json();
-
-  const classSet = new Set();
-  const subjectSet = new Set();
-  allQuestions.forEach(q => {
-    classSet.add(q.cls);
-    subjectSet.add(q.subject);
-  });
-
-  const classSelect = document.getElementById("paperClass");
-  classSelect.innerHTML = '<option value="">All Classes</option>';
-  Array.from(classSet).sort().forEach(cls => {
-    classSelect.innerHTML += `<option value="${cls}">${cls}</option>`;
-  });
-
-  const subjectSelect = document.getElementById("paperSubject");
-  subjectSelect.innerHTML = '<option value="">All Subjects</option>';
-  Array.from(subjectSet).sort().forEach(sub => {
-    subjectSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
-  });
+// CLEAR FORM
+function clearForm() {
+  document.getElementById("class").value = "";
+  document.getElementById("subject").value = "";
+  document.getElementById("chapter").value = "";
+  document.getElementById("questionText").value = "";
+  document.getElementById("marks").value = "";
 }
 
-function generatePaper() {
-  const selectedClass = document.getElementById("paperClass").value;
-  const selectedSubject = document.getElementById("paperSubject").value;
-  let numQuestions = parseInt(document.getElementById("numQuestions").value) || 5;
-
-  let filtered = allQuestions;
-  if (selectedClass) filtered = filtered.filter(q => q.cls === selectedClass);
-  if (selectedSubject) filtered = filtered.filter(q => q.subject === selectedSubject);
-
-  if (filtered.length === 0) {
-    document.getElementById("paperOutput").innerHTML = "<p style='color:red;'>No questions found for the selected criteria.</p>";
-    return;
-  }
-
-  if (numQuestions > filtered.length) {
-    numQuestions = filtered.length;
-    alert(`Only ${filtered.length} questions available. Using all.`);
-  }
-
-  const shuffled = [...filtered];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  const selected = shuffled.slice(0, numQuestions);
-
-  let html = `<h3>Exam Paper</h3>`;
-  if (selectedClass) html += `<p><strong>Class:</strong> ${selectedClass}</p>`;
-  if (selectedSubject) html += `<p><strong>Subject:</strong> ${selectedSubject}</p>`;
-  html += `<hr>`;
-  let totalMarks = 0;
-  selected.forEach((q, idx) => {
-    totalMarks += q.marks;
-    html += `
-      <div class="question-item">
-        <div class="question-text"><strong>${idx+1}.</strong> ${q.text}</div>
-        <div class="question-marks">[${q.marks} marks]</div>
-        <div style="margin-top: 20px;">&nbsp;</div>
-      </div>
-    `;
-  });
-  html += `<div class="total-marks">Total Marks: ${totalMarks}</div>`;
-  document.getElementById("paperOutput").innerHTML = html;
-}
-
-function printPaper() {
-  const printContents = document.getElementById("paperOutput").innerHTML;
-  const originalTitle = document.title;
-  document.title = "Exam Paper";
-  const printWindow = window.open('', '_blank');
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>Exam Paper</title>
-        <style>
-          body { font-family: Arial, sans-serif; padding: 20px; }
-          .question-item { margin: 20px 0; }
-          .question-text { font-size: 16px; }
-          .question-marks { font-size: 14px; color: #666; }
-          .total-marks { margin-top: 30px; font-weight: bold; text-align: right; }
-          @media print { body { margin: 0; } }
-        </style>
-      </head>
-      <body>${printContents}</body>
-    </html>
-  `);
-  printWindow.document.close();
-  printWindow.print();
-  document.title = originalTitle;
-}
-
-// ==================== OCR Bulk Upload Functions ====================
-async function processOCR() {
-  const files = document.getElementById("imageInput").files;
-  if (!files.length) {
-    alert("Please select at least one image.");
-    return;
-  }
-  if (files.length > 10) {
-    alert("Please upload at most 10 images per batch.");
-    return;
-  }
-
-  const classVal = document.getElementById("bulkClass").value.trim();
-  const subjectVal = document.getElementById("bulkSubject").value.trim();
-  const chapterVal = document.getElementById("bulkChapter").value.trim();
-  const typeVal = document.getElementById("bulkType").value;
-  const defaultMarks = parseInt(document.getElementById("bulkDefaultMarks").value) || 0;
-
-  if (!classVal || !subjectVal) {
-    alert("Class and Subject are required.");
-    return;
-  }
-
-  const progressDiv = document.getElementById("ocrProgress");
-  bulkQuestions = [];
-  let processed = 0;
-  const totalFiles = files.length;
-
-  for (let i = 0; i < files.length; i++) {
-    progressDiv.innerHTML = `Processing image ${i+1} of ${totalFiles}...`;
-    const file = files[i];
-    try {
-      const { data: { text } } = await Tesseract.recognize(file, 'eng');
-      const questionsFromImage = parseQuestionsFromText(text, classVal, subjectVal, chapterVal, typeVal, defaultMarks);
-      bulkQuestions.push(...questionsFromImage);
-    } catch (err) {
-      console.error(err);
-      progressDiv.innerHTML = `Error on image ${i+1}: ${err.message}`;
-      return;
-    }
-  }
-
-  if (bulkQuestions.length > 50) {
-    alert(`Extracted ${bulkQuestions.length} questions. Only first 50 will be saved.`);
-    bulkQuestions = bulkQuestions.slice(0, 50);
-  }
-
-  progressDiv.innerHTML = `OCR complete. Extracted ${bulkQuestions.length} questions.`;
-  showQuestionPreview(bulkQuestions);
-  document.getElementById("parsedQuestions").style.display = "block";
-}
-
-function parseQuestionsFromText(text, defaultClass, defaultSubject, defaultChapter, defaultType, defaultMarks) {
-  const lines = text.split(/\r?\n/);
-  const questions = [];
-  let currentQuestion = null;
-
-  const questionStartRegex = /^\s*(\d+)[\.\)]\s*(.*)/i;
-
-  for (let line of lines) {
-    line = line.trim();
-    if (line.length === 0) {
-      if (currentQuestion) {
-        questions.push(currentQuestion);
-        currentQuestion = null;
-      }
-      continue;
-    }
-
-    const match = line.match(questionStartRegex);
-    if (match) {
-      if (currentQuestion) {
-        questions.push(currentQuestion);
-      }
-      const qText = match[2];
-      currentQuestion = {
-        cls: defaultClass,
-        subject: defaultSubject,
-        chapter: defaultChapter,
-        text: qText,
-        marks: defaultMarks,
-        type: defaultType || ''
-      };
-    } else {
-      if (currentQuestion) {
-        currentQuestion.text += ' ' + line;
-      } else {
-        currentQuestion = {
-          cls: defaultClass,
-          subject: defaultSubject,
-          chapter: defaultChapter,
-          text: line,
-          marks: defaultMarks,
-          type: defaultType || ''
-        };
-      }
-    }
-  }
-  if (currentQuestion) {
-    questions.push(currentQuestion);
-  }
-  return questions;
-}
-
-function showQuestionPreview(questions) {
-  const previewDiv = document.getElementById("questionPreview");
-  previewDiv.innerHTML = "";
-  if (!questions.length) {
-    previewDiv.innerHTML = "<p>No questions parsed. Try a clearer image or adjust formatting.</p>";
-    return;
-  }
-
-  questions.forEach((q, idx) => {
-    const card = document.createElement("div");
-    card.style.border = "1px solid #ccc";
-    card.style.margin = "10px";
-    card.style.padding = "10px";
-    card.innerHTML = `
-      <b>Question ${idx+1}</b><br>
-      <label>Class: <input type="text" data-field="cls" value="${q.cls}"></label><br>
-      <label>Subject: <input type="text" data-field="subject" value="${q.subject}"></label><br>
-      <label>Chapter: <input type="text" data-field="chapter" value="${q.chapter}"></label><br>
-      <label>Marks: <input type="number" data-field="marks" value="${q.marks}"></label><br>
-      <label>Type: <input type="text" data-field="type" value="${q.type}"></label><br>
-      <label>Question Text: <textarea data-field="text" rows="3">${q.text}</textarea></label><br>
-    `;
-    card.querySelectorAll("input, textarea").forEach(input => {
-      const field = input.getAttribute("data-field");
-      input.addEventListener("change", (e) => {
-        bulkQuestions[idx][field] = input.value;
-        if (field === "marks") bulkQuestions[idx][field] = parseInt(input.value);
-      });
-    });
-    previewDiv.appendChild(card);
-  });
-}
-
-async function saveBulkQuestions() {
-  if (!bulkQuestions.length) {
-    alert("No questions to save.");
-    return;
-  }
-
-  const questionsToSave = bulkQuestions.map(q => ({
-    cls: q.cls,
-    subject: q.subject,
-    chapter: q.chapter,
-    text: q.text,
-    marks: q.marks
-  }));
-
-  try {
-    const res = await fetch("https://exam-backend-cu62.onrender.com/bulk-questions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(questionsToSave)
-    });
-    const data = await res.json();
-    alert(`${data.message} (${data.count} added)`);
-    document.getElementById("parsedQuestions").style.display = "none";
-    document.getElementById("imageInput").value = "";
-    bulkQuestions = [];
-    if (typeof loadQuestions === 'function') loadQuestions();
-  } catch (err) {
-    console.error(err);
-    alert("Failed to save: " + err.message);
-  }
-}
 </script>
+
 </body>
 </html>
