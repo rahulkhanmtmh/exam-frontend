@@ -79,9 +79,14 @@
 <!-- LOGIN -->
 <div id="login">
   <h2>School Login</h2>
-  <input type="email" id="email" placeholder="Enter Email" />
-  <input type="password" id="password" placeholder="Enter Password" />
+
+  <input type="text" id="school" placeholder="School Name (Register only)" />
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="password" placeholder="Password" />
+
+  <button onclick="register()">Register</button>
   <button onclick="login()">Login</button>
+
   <p id="msg"></p>
 </div>
 
@@ -124,27 +129,62 @@
 <script>
 
 const BASE_URL = "https://exam-backend-cu62.onrender.com";
-
 let editId = null;
 
-// LOGIN
-function login() {
+// ======================
+// REGISTER
+// ======================
+async function register() {
+  const schoolName = document.getElementById("school").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  if (email === "admin@test.com" && password === "1234") {
+  const res = await fetch(`${BASE_URL}/register`, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ schoolName, email, password })
+  });
+
+  const data = await res.json();
+  document.getElementById("msg").innerText = data.message;
+}
+
+// ======================
+// LOGIN (REAL)
+// ======================
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch(`${BASE_URL}/login`, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+
+  if (data.token) {
+    localStorage.setItem("token", data.token);
+
     document.getElementById("login").style.display = "none";
     document.getElementById("dashboard").style.display = "block";
   } else {
-    document.getElementById("msg").innerText = "Invalid login ❌";
+    document.getElementById("msg").innerText = data.message;
   }
 }
 
+// ======================
+// LOGOUT
+// ======================
 function logout() {
+  localStorage.removeItem("token");
   location.reload();
 }
 
+// ======================
 // PAGE SWITCH
+// ======================
 function showPage(page) {
   document.getElementById("home").style.display = "none";
   document.getElementById("question").style.display = "none";
@@ -154,25 +194,32 @@ function showPage(page) {
   if (page === "question") loadQuestions();
 }
 
-// ADD / UPDATE
+// ======================
+// ADD / UPDATE (TOKEN)
+// ======================
 async function addQuestion() {
-  const cls = document.getElementById("class").value;
-  const subject = document.getElementById("subject").value;
-  const chapter = document.getElementById("chapter").value;
-  const text = document.getElementById("questionText").value;
-  const marks = document.getElementById("marks").value;
+  const token = localStorage.getItem("token");
 
-  if (!cls || !subject || !chapter || !text || !marks) {
+  const q = {
+    cls: document.getElementById("class").value,
+    subject: document.getElementById("subject").value,
+    chapter: document.getElementById("chapter").value,
+    text: document.getElementById("questionText").value,
+    marks: document.getElementById("marks").value
+  };
+
+  if (!q.cls || !q.subject || !q.chapter || !q.text || !q.marks) {
     alert("Fill all fields");
     return;
   }
 
-  const q = { cls, subject, chapter, text, marks };
-
   if (editId) {
     await fetch(`${BASE_URL}/update-question/${editId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
       body: JSON.stringify(q)
     });
     alert("Updated ✅");
@@ -180,7 +227,10 @@ async function addQuestion() {
   } else {
     await fetch(`${BASE_URL}/add-question`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
       body: JSON.stringify(q)
     });
     alert("Added ✅");
@@ -190,9 +240,16 @@ async function addQuestion() {
   loadQuestions();
 }
 
-// LOAD
+// ======================
+// LOAD QUESTIONS (TOKEN)
+// ======================
 async function loadQuestions() {
-  const res = await fetch(`${BASE_URL}/questions`);
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${BASE_URL}/questions`, {
+    headers: { "Authorization": token }
+  });
+
   const data = await res.json();
 
   const list = document.getElementById("questionList");
@@ -211,22 +268,33 @@ async function loadQuestions() {
   });
 }
 
-// DELETE
+// ======================
+// DELETE (TOKEN)
+// ======================
 async function deleteQuestion(id) {
+  const token = localStorage.getItem("token");
+
   if (!confirm("Delete this question?")) return;
 
   await fetch(`${BASE_URL}/delete-question/${id}`, {
-    method: "DELETE"
+    method: "DELETE",
+    headers: { "Authorization": token }
   });
 
   loadQuestions();
 }
 
+// ======================
 // EDIT
+// ======================
 async function editQuestion(id) {
-  const res = await fetch(`${BASE_URL}/questions`);
-  const data = await res.json();
+  const token = localStorage.getItem("token");
 
+  const res = await fetch(`${BASE_URL}/questions`, {
+    headers: { "Authorization": token }
+  });
+
+  const data = await res.json();
   const q = data.find(item => item._id === id);
 
   document.getElementById("class").value = q.cls;
@@ -238,7 +306,9 @@ async function editQuestion(id) {
   editId = id;
 }
 
-// CLEAR FORM
+// ======================
+// CLEAR
+// ======================
 function clearForm() {
   document.getElementById("class").value = "";
   document.getElementById("subject").value = "";
