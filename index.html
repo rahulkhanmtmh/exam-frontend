@@ -132,6 +132,17 @@ const BASE_URL = "https://exam-backend-cu62.onrender.com";
 let editId = null;
 
 // ======================
+// AUTO LOGIN
+// ======================
+window.onload = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+  }
+};
+
+// ======================
 // REGISTER
 // ======================
 async function register() {
@@ -150,7 +161,7 @@ async function register() {
 }
 
 // ======================
-// LOGIN (REAL)
+// LOGIN
 // ======================
 async function login() {
   const email = document.getElementById("email").value;
@@ -195,10 +206,15 @@ function showPage(page) {
 }
 
 // ======================
-// ADD / UPDATE (TOKEN)
+// ADD / UPDATE
 // ======================
 async function addQuestion() {
   const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Login required");
+    return;
+  }
 
   const q = {
     cls: document.getElementById("class").value,
@@ -218,7 +234,7 @@ async function addQuestion() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token
+        "Authorization": "Bearer " + token
       },
       body: JSON.stringify(q)
     });
@@ -229,7 +245,7 @@ async function addQuestion() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token
+        "Authorization": "Bearer " + token
       },
       body: JSON.stringify(q)
     });
@@ -241,14 +257,13 @@ async function addQuestion() {
 }
 
 // ======================
-// LOAD QUESTIONS (TOKEN)
+// LOAD QUESTIONS
 // ======================
 async function loadQuestions() {
   const token = localStorage.getItem("token");
 
   if (!token) {
-    alert("Please login again");
-    logout();
+    alert("Login required");
     return;
   }
 
@@ -286,8 +301,9 @@ async function loadQuestions() {
     console.log(err);
   }
 }
+
 // ======================
-// DELETE (TOKEN)
+// DELETE
 // ======================
 async function deleteQuestion(id) {
   const token = localStorage.getItem("token");
@@ -296,7 +312,9 @@ async function deleteQuestion(id) {
 
   await fetch(`${BASE_URL}/delete-question/${id}`, {
     method: "DELETE",
-    headers: { "Authorization": token }
+    headers: {
+      "Authorization": "Bearer " + token
+    }
   });
 
   loadQuestions();
@@ -309,7 +327,9 @@ async function editQuestion(id) {
   const token = localStorage.getItem("token");
 
   const res = await fetch(`${BASE_URL}/questions`, {
-    headers: { "Authorization": token }
+    headers: {
+      "Authorization": "Bearer " + token
+    }
   });
 
   const data = await res.json();
