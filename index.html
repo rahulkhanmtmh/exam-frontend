@@ -2,7 +2,8 @@
 <html>
 <head>
   <title>Exam App - Paper Generator</title>
-
+  
+<script src="https://unpkg.com/tesseract.js@5.1.0/dist/tesseract.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -180,12 +181,39 @@
     <button onclick="showPage('question')">Question Bank</button>
     <button onclick="showPage('paper')">Paper Generator</button>
     <button onclick="logout()">Logout</button>
+    <button onclick="showPage('bulk')">Bulk Upload (OCR)</button>
   </div>
 
   <div class="content">
     <div id="home">
       <h2>Welcome 🎉</h2>
       <p>This is your dashboard</p>
+      <div id="bulk" style="display:none;">
+  <h2>Bulk Upload via OCR</h2>
+  <div style="background:#f0f0f0; padding:15px; border-radius:8px; margin-bottom:20px;">
+    <label>Class: <input type="text" id="bulkClass" placeholder="e.g., 10" required></label><br>
+    <label>Subject: <input type="text" id="bulkSubject" placeholder="e.g., Math" required></label><br>
+    <label>Chapter: <input type="text" id="bulkChapter" placeholder="e.g., Algebra"></label><br>
+    <label>Question Type: 
+      <select id="bulkType">
+        <option value="">Auto-detect from OCR</option>
+        <option value="MCQ">MCQ</option>
+        <option value="Descriptive">Descriptive</option>
+        <option value="Numerical">Numerical</option>
+      </select>
+    </label><br>
+    <label>Default Marks: <input type="number" id="bulkDefaultMarks" value="5"></label><br>
+  </div>
+  <p>Upload one or more images of question papers (max 50 questions).</p>
+  <input type="file" id="imageInput" accept="image/*" multiple />
+  <button onclick="processOCR()">Process Images</button>
+  <div id="ocrProgress" style="margin:10px; font-style:italic;"></div>
+  <div id="parsedQuestions" style="margin-top:20px; display:none;">
+    <h3>Extracted Questions</h3>
+    <div id="questionPreview"></div>
+    <button onclick="saveBulkQuestions()">Save All to Database</button>
+  </div>
+</div>
     </div>
 
     <div id="students" style="display:none;">
