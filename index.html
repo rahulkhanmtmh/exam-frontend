@@ -246,28 +246,46 @@ async function addQuestion() {
 async function loadQuestions() {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${BASE_URL}/questions`, {
-    headers: { "Authorization": token }
-  });
+  if (!token) {
+    alert("Please login again");
+    logout();
+    return;
+  }
 
-  const data = await res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/questions`, {
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    });
 
-  const list = document.getElementById("questionList");
-  list.innerHTML = "";
+    const data = await res.json();
 
-  data.forEach((q) => {
-    list.innerHTML += `
-      <div class="card">
-        <b>${q.cls} | ${q.subject} | ${q.marks} marks</b>
-        <br>${q.text}
-        <br><br>
-        <button onclick="editQuestion('${q._id}')">Edit ✏️</button>
-        <button onclick="deleteQuestion('${q._id}')">Delete ❌</button>
-      </div>
-    `;
-  });
+    const list = document.getElementById("questionList");
+    list.innerHTML = "";
+
+    if (!data.length) {
+      list.innerHTML = "<p>No questions found</p>";
+      return;
+    }
+
+    data.forEach((q) => {
+      list.innerHTML += `
+        <div class="card">
+          <b>${q.cls} | ${q.subject} | ${q.marks} marks</b>
+          <br>${q.text}
+          <br><br>
+          <button onclick="editQuestion('${q._id}')">Edit ✏️</button>
+          <button onclick="deleteQuestion('${q._id}')">Delete ❌</button>
+        </div>
+      `;
+    });
+
+  } catch (err) {
+    alert("Error loading questions");
+    console.log(err);
+  }
 }
-
 // ======================
 // DELETE (TOKEN)
 // ======================
