@@ -27,7 +27,8 @@
     }
     body.dark .sidebar,
     body.dark .card,
-    body.dark .auth-card {
+    body.dark .auth-card,
+    body.dark .top-bar {
       background: #1e293b;
       border-color: #334155;
       color: #e2e8f0;
@@ -45,6 +46,10 @@
     }
     body.dark .tab-bar {
       background: #0f172a;
+    }
+    body.dark .top-bar a,
+    body.dark .top-bar button {
+      color: #e2e8f0;
     }
 
     /* Auth Card Styles */
@@ -172,20 +177,68 @@
       display: none;
     }
 
-    /* Sidebar - desktop default */
+    /* Top Bar */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      padding: 0.8rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      z-index: 100;
+      transition: background 0.3s;
+    }
+
+    .logo h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a, .nav-links button {
+      background: transparent;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.8rem;
+      border-radius: 40px;
+      transition: background 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links button:hover {
+      background: #eef2ff;
+    }
+
+    body.dark .nav-links a:hover, body.dark .nav-links button:hover {
+      background: #334155;
+    }
+
+    /* Sidebar */
     .sidebar {
       width: 260px;
       height: 100vh;
       background: white;
       position: fixed;
-      top: 0;
+      top: 60px; /* below top bar */
       left: 0;
       padding: 24px 16px;
       box-shadow: 2px 0 12px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
       transition: transform 0.3s ease, width 0.3s ease;
-      z-index: 1000;
+      z-index: 99;
     }
 
     /* Desktop collapsed state */
@@ -219,7 +272,6 @@
       text-align: center;
     }
 
-    /* Sidebar header with toggle button */
     .sidebar-header {
       display: flex;
       align-items: center;
@@ -239,27 +291,6 @@
       background: #eef2ff;
     }
 
-    /* Mobile floating toggle button (visible only on mobile) */
-    .mobile-menu-toggle {
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
-      background: white;
-      border: none;
-      border-radius: 50%;
-      padding: 8px 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      cursor: pointer;
-      z-index: 1100;
-      display: none;
-      font-size: 1.2rem;
-    }
-    body.dark .mobile-menu-toggle {
-      background: #1e293b;
-      color: white;
-    }
-
-    /* Nav buttons */
     .sidebar .nav-buttons {
       flex: 1;
     }
@@ -283,7 +314,6 @@
       color: #4f46e5;
     }
 
-    /* Logout button */
     .sidebar button.logout-btn {
       background: #ef4444;
       border-color: #dc2626;
@@ -293,7 +323,6 @@
       background: #dc2626;
     }
 
-    /* Three-dot dropdown */
     .dropdown-container {
       position: relative;
       margin-top: 1rem;
@@ -351,6 +380,7 @@
       padding: 2rem;
       min-height: 100vh;
       transition: margin-left 0.3s ease;
+      margin-top: 60px; /* push below top bar */
     }
 
     /* When sidebar is collapsed on desktop */
@@ -358,12 +388,26 @@
       margin-left: 80px;
     }
 
-    /* Responsive styles for mobile */
+    /* Mobile styles */
     @media (max-width: 768px) {
+      .top-bar {
+        padding: 0.5rem 1rem;
+      }
+      .nav-links {
+        gap: 0.5rem;
+      }
+      .nav-links a span, .nav-links button span {
+        display: none;
+      }
+      .nav-links a i, .nav-links button i {
+        font-size: 1.2rem;
+      }
       .sidebar {
+        top: 0; /* full height on mobile */
         transform: translateX(-100%);
         width: 260px;
         box-shadow: none;
+        z-index: 1000;
       }
       .sidebar.show-mobile {
         transform: translateX(0);
@@ -371,18 +415,32 @@
       }
       .content {
         margin-left: 0 !important;
-        padding: 1.5rem;
+        padding: 1rem;
+        margin-top: 60px;
       }
       .mobile-menu-toggle {
         display: block;
+        position: fixed;
+        top: 0.8rem;
+        left: 1rem;
+        background: white;
+        border: none;
+        border-radius: 50%;
+        padding: 8px 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        cursor: pointer;
+        z-index: 1100;
+        display: block;
       }
-      /* On mobile, the sidebar header toggle button is still visible inside sidebar for closing */
+      body.dark .mobile-menu-toggle {
+        background: #1e293b;
+        color: white;
+      }
       .sidebar .toggle-sidebar-btn {
         display: block;
       }
-      /* Hide the desktop collapse behavior on mobile */
       .sidebar.collapsed {
-        width: 260px; /* not used, but keep for consistency */
+        width: 260px;
       }
       .sidebar.collapsed .nav-buttons button span,
       .sidebar.collapsed .dropdown-container .three-dot-btn span,
@@ -400,19 +458,8 @@
       .sidebar.collapsed .sidebar h3 {
         text-align: left;
       }
-      /* Adjust cards and inputs for mobile */
-      .card {
-        padding: 0.8rem;
-      }
-      input, textarea, select {
-        padding: 8px;
-      }
-      button {
-        padding: 8px 12px;
-      }
     }
 
-    /* Card styling */
     .card {
       background: white;
       border: 1px solid #e2e8f0;
@@ -509,7 +556,21 @@
 
 <!-- DASHBOARD -->
 <div id="dashboard">
-  <!-- Mobile floating menu toggle button -->
+  <!-- Top Menu Bar -->
+  <div class="top-bar">
+    <div class="logo">
+      <h2><i class="fas fa-graduation-cap"></i> Exam App</h2>
+    </div>
+    <div class="nav-links">
+      <a href="#" onclick="showPage('home'); return false;"><i class="fas fa-home"></i><span> Home</span></a>
+      <a href="#" onclick="showPage('add'); return false;"><i class="fas fa-plus-circle"></i><span> Add</span></a>
+      <a href="#" onclick="showPage('list'); return false;"><i class="fas fa-list-ul"></i><span> My Qs</span></a>
+      <button onclick="toggleTheme()"><i class="fas fa-moon"></i><span> Theme</span></button>
+      <button onclick="logout()"><i class="fas fa-sign-out-alt"></i><span> Logout</span></button>
+    </div>
+  </div>
+
+  <!-- Mobile floating toggle (only visible on mobile) -->
   <button class="mobile-menu-toggle" id="mobileMenuToggle">
     <i class="fas fa-bars"></i>
   </button>
@@ -637,17 +698,14 @@
     }
   }
 
-  // Event listeners
   toggleSidebarBtn.addEventListener('click', toggleSidebar);
   if (mobileMenuToggle) {
     mobileMenuToggle.addEventListener('click', toggleSidebar);
   }
 
-  // Close sidebar when clicking outside on mobile? Optional: we can close when clicking content.
-  // But we'll add a click handler on content to close only if sidebar is open and we click outside.
+  // Close sidebar when clicking outside on mobile
   content.addEventListener('click', (e) => {
     if (isMobile() && sidebar.classList.contains('show-mobile')) {
-      // Only close if the click target is not inside the sidebar
       if (!sidebar.contains(e.target)) {
         sidebar.classList.remove('show-mobile');
       }
@@ -657,22 +715,13 @@
   // Handle window resize: reset styles
   window.addEventListener('resize', () => {
     if (isMobile()) {
-      // On mobile, ensure content margin is 0 and sidebar is not collapsed (desktop mode)
       content.style.marginLeft = '0';
       sidebar.classList.remove('collapsed');
-      // Ensure sidebar is hidden by default (unless it was shown)
-      // But we don't auto-hide; we keep the current state, but if it's shown and we resize to desktop, it's okay.
       if (!sidebar.classList.contains('show-mobile')) {
-        // If hidden, we might want to keep hidden? Actually on desktop, sidebar should always be visible.
-        // So we need to show it on desktop if it was hidden on mobile.
-        if (window.innerWidth >= 768 && sidebar.classList.contains('show-mobile')) {
-          sidebar.classList.remove('show-mobile');
-        }
+        // keep hidden
       }
     } else {
-      // On desktop, ensure sidebar is visible (no transform) and collapsed state is applied
       sidebar.classList.remove('show-mobile');
-      // Set content margin based on collapsed state
       if (sidebar.classList.contains('collapsed')) {
         content.style.marginLeft = '80px';
       } else {
@@ -789,7 +838,6 @@
         showPage('home');
         loadQuestions();
         clearForm();
-        // On login, if mobile, ensure sidebar is hidden initially
         if (isMobile()) {
           sidebar.classList.remove('show-mobile');
         }
@@ -819,7 +867,6 @@
     document.getElementById('myQuestionsSection').style.display = page === 'list' ? 'block' : 'none';
     if (page === 'list') loadQuestions();
     if (page === 'add') clearForm();
-    // On mobile, close sidebar after navigation
     if (isMobile()) {
       sidebar.classList.remove('show-mobile');
     }
@@ -1086,11 +1133,9 @@
           document.getElementById('dashboard').style.display = 'block';
           showPage('home');
           loadQuestions();
-          // Set sidebar initial state based on screen size
           if (isMobile()) {
             sidebar.classList.remove('show-mobile');
           } else {
-            // Desktop: ensure sidebar is visible and not collapsed by default
             sidebar.classList.remove('collapsed');
             content.style.marginLeft = '260px';
           }
