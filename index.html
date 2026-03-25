@@ -10,7 +10,7 @@
       max-width:300px; margin:100px auto; background:white;
       padding:20px; border-radius:10px; text-align:center;
     }
-    input,textarea {
+    input,textarea,select {
       width:90%; padding:10px; margin:5px;
       border-radius:5px; border:1px solid #ccc;
     }
@@ -72,14 +72,39 @@
       <input type="text" id="subject" placeholder="Subject" />
       <input type="text" id="chapter" placeholder="Chapter" />
 
+      <!-- TYPE -->
+      <select id="type">
+        <option value="MCQ">MCQ</option>
+        <option value="SHORT">Short Answer</option>
+        <option value="LONG">Long Answer</option>
+        <option value="TRUE_FALSE">True / False</option>
+        <option value="MATCH">Match the Column</option>
+      </select>
+
       <textarea id="questionText" placeholder="Enter Question"></textarea>
 
       <!-- MCQ -->
-      <input type="text" id="optA" placeholder="Option A" />
-      <input type="text" id="optB" placeholder="Option B" />
-      <input type="text" id="optC" placeholder="Option C" />
-      <input type="text" id="optD" placeholder="Option D" />
+      <div id="mcqBox">
+        <input type="text" id="optA" placeholder="Option A" />
+        <input type="text" id="optB" placeholder="Option B" />
+        <input type="text" id="optC" placeholder="Option C" />
+        <input type="text" id="optD" placeholder="Option D" />
+      </div>
 
+      <!-- MATCH COLUMN -->
+      <div id="matchBox" style="display:none;">
+        <h4>Column A</h4>
+        <input type="text" id="colA1" placeholder="A1" />
+        <input type="text" id="colA2" placeholder="A2" />
+        <input type="text" id="colA3" placeholder="A3" />
+
+        <h4>Column B</h4>
+        <input type="text" id="colB1" placeholder="B1" />
+        <input type="text" id="colB2" placeholder="B2" />
+        <input type="text" id="colB3" placeholder="B3" />
+      </div>
+
+      <input type="text" id="correctAnswer" placeholder="Correct Answer" />
       <input type="number" id="marks" placeholder="Marks" />
 
       <!-- OCR -->
@@ -100,7 +125,6 @@
 const BASE_URL = "https://exam-backend-cu62.onrender.com";
 let editId = null;
 
-// AUTO LOGIN
 window.onload = () => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -109,14 +133,21 @@ window.onload = () => {
   }
 };
 
-function loginUI() {
-  document.getElementById("login").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
+// TYPE SWITCH UI
+type.addEventListener("change", ()=>{
+  mcqBox.style.display = type.value==="MCQ" ? "block":"none";
+  matchBox.style.display = type.value==="MATCH" ? "block":"none";
+});
+
+// LOGIN UI
+function loginUI(){
+  login.style.display="none";
+  dashboard.style.display="block";
 }
 
 // REGISTER
-async function register() {
-  const res = await fetch(`${BASE_URL}/register`, {
+async function register(){
+  const res=await fetch(`${BASE_URL}/register`,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({
@@ -125,13 +156,13 @@ async function register() {
       password:password.value
     })
   });
-  const data = await res.json();
-  msg.innerText = data.message;
+  const data=await res.json();
+  msg.innerText=data.message;
 }
 
 // LOGIN
-async function login() {
-  const res = await fetch(`${BASE_URL}/login`, {
+async function login(){
+  const res=await fetch(`${BASE_URL}/login`,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({
@@ -139,108 +170,99 @@ async function login() {
       password:password.value
     })
   });
-  const data = await res.json();
-
-  if (data.token) {
-    localStorage.setItem("token", data.token);
+  const data=await res.json();
+  if(data.token){
+    localStorage.setItem("token",data.token);
     loginUI();
     loadQuestions();
-  } else {
-    msg.innerText = data.message;
-  }
+  } else msg.innerText=data.message;
 }
 
 // LOGOUT
-function logout() {
+function logout(){
   localStorage.removeItem("token");
   location.reload();
 }
 
-// PAGE
-function showPage(p) {
-  home.style.display="none";
-  question.style.display="none";
-  document.getElementById(p).style.display="block";
-  if(p==="question") loadQuestions();
-}
+// ADD
+async function addQuestion(){
+  const token=localStorage.getItem("token");
 
-// ADD / UPDATE
-async function addQuestion() {
-  const token = localStorage.getItem("token");
+  let options={};
 
-  const q = {
+  if(type.value==="MCQ"){
+    options={
+      A:optA.value,
+      B:optB.value,
+      C:optC.value,
+      D:optD.value
+    };
+  }
+
+  if(type.value==="MATCH"){
+    options={
+      colA:[colA1.value,colA2.value,colA3.value],
+      colB:[colB1.value,colB2.value,colB3.value]
+    };
+  }
+
+  const q={
     cls:class.value,
     subject:subject.value,
     chapter:chapter.value,
     text:questionText.value,
     marks:marks.value,
-    options:{
-      A:optA.value,
-      B:optB.value,
-      C:optC.value,
-      D:optD.value
-    }
+    type:type.value,
+    options,
+    correctAnswer:correctAnswer.value
   };
 
-  if(editId){
-    await fetch(`${BASE_URL}/update-question/${editId}`,{
-      method:"PUT",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":"Bearer "+token
-      },
-      body:JSON.stringify(q)
-    });
-    alert("Updated ✅");
-    editId=null;
-  } else {
-    await fetch(`${BASE_URL}/add-question`,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":"Bearer "+token
-      },
-      body:JSON.stringify(q)
-    });
-    alert("Saved ✅");
-  }
+  const url=editId?`/update-question/${editId}`:"/add-question";
+  const method=editId?"PUT":"POST";
 
+  await fetch(BASE_URL+url,{
+    method,
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":"Bearer "+token
+    },
+    body:JSON.stringify(q)
+  });
+
+  alert(editId?"Updated":"Saved");
+  editId=null;
   clearForm();
   loadQuestions();
 }
 
 // LOAD
-async function loadQuestions() {
-  const token = localStorage.getItem("token");
+async function loadQuestions(){
+  const token=localStorage.getItem("token");
 
-  const res = await fetch(`${BASE_URL}/questions`,{
+  const res=await fetch(`${BASE_URL}/questions`,{
     headers:{ "Authorization":"Bearer "+token }
   });
 
-  if(res.status===401){
-    alert("Session expired");
-    logout();
-    return;
-  }
-
-  const data = await res.json();
+  const data=await res.json();
   questionList.innerHTML="";
-
-  if(!data.length){
-    questionList.innerHTML="<p>No questions</p>";
-    return;
-  }
 
   data.forEach(q=>{
     questionList.innerHTML+=`
     <div class="card">
-      <b>${q.cls} | ${q.subject} | ${q.marks} marks</b><br>
+      <b>${q.cls} | ${q.subject} | ${q.type}</b><br>
       ${q.text}<br>
-      A. ${q.options?.A||""}<br>
-      B. ${q.options?.B||""}<br>
-      C. ${q.options?.C||""}<br>
-      D. ${q.options?.D||""}<br><br>
-      <button onclick="editQuestion('${q._id}')">Edit</button>
+      ${q.type==="MCQ" ? `
+        A.${q.options?.A||""}<br>
+        B.${q.options?.B||""}<br>
+        C.${q.options?.C||""}<br>
+        D.${q.options?.D||""}<br>` : ""}
+
+      ${q.type==="MATCH" ? `
+        Column A: ${q.options?.colA?.join(", ")}<br>
+        Column B: ${q.options?.colB?.join(", ")}<br>` : ""}
+
+      ✅ Answer: ${q.correctAnswer||""}<br><br>
+
       <button onclick="deleteQuestion('${q._id}')">Delete</button>
     </div>`;
   });
@@ -248,48 +270,18 @@ async function loadQuestions() {
 
 // DELETE
 async function deleteQuestion(id){
-  const token = localStorage.getItem("token");
-  if(!confirm("Delete?")) return;
-
+  const token=localStorage.getItem("token");
   await fetch(`${BASE_URL}/delete-question/${id}`,{
     method:"DELETE",
     headers:{ "Authorization":"Bearer "+token }
   });
-
   loadQuestions();
 }
 
-// EDIT
-async function editQuestion(id){
-  const token = localStorage.getItem("token");
-
-  const res = await fetch(`${BASE_URL}/questions`,{
-    headers:{ "Authorization":"Bearer "+token }
-  });
-
-  const data = await res.json();
-  const q = data.find(x=>x._id===id);
-
-  class.value=q.cls;
-  subject.value=q.subject;
-  chapter.value=q.chapter;
-  questionText.value=q.text;
-  marks.value=q.marks;
-
-  optA.value=q.options?.A||"";
-  optB.value=q.options?.B||"";
-  optC.value=q.options?.C||"";
-  optD.value=q.options?.D||"";
-
-  editId=id;
-}
-
-// OCR + MCQ
+// OCR
 async function uploadImage(){
   const file=imageInput.files[0];
   const token=localStorage.getItem("token");
-
-  if(!file){ alert("Select image"); return; }
 
   const fd=new FormData();
   fd.append("image",file);
@@ -301,32 +293,7 @@ async function uploadImage(){
   });
 
   const data=await res.json();
-
-  const parsed=parseMCQ(data.text);
-
-  questionText.value=parsed.question;
-  optA.value=parsed.options.A;
-  optB.value=parsed.options.B;
-  optC.value=parsed.options.C;
-  optD.value=parsed.options.D;
-}
-
-// PARSER
-function parseMCQ(text){
-  const lines=text.split("\n").map(l=>l.trim()).filter(l=>l);
-
-  let q="";
-  let opt={A:"",B:"",C:"",D:""};
-
-  lines.forEach(l=>{
-    if(/^A[\.\)]/i.test(l)) opt.A=l.replace(/^A[\.\)]/i,"").trim();
-    else if(/^B[\.\)]/i.test(l)) opt.B=l.replace(/^B[\.\)]/i,"").trim();
-    else if(/^C[\.\)]/i.test(l)) opt.C=l.replace(/^C[\.\)]/i,"").trim();
-    else if(/^D[\.\)]/i.test(l)) opt.D=l.replace(/^D[\.\)]/i,"").trim();
-    else q+=l+" ";
-  });
-
-  return {question:q.trim(),options:opt};
+  questionText.value=data.text;
 }
 
 // CLEAR
@@ -335,11 +302,8 @@ function clearForm(){
   subject.value="";
   chapter.value="";
   questionText.value="";
+  correctAnswer.value="";
   marks.value="";
-  optA.value="";
-  optB.value="";
-  optC.value="";
-  optD.value="";
 }
 
 </script>
