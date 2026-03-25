@@ -116,6 +116,10 @@
       <textarea id="questionText" placeholder="Enter Question"></textarea>
       <input type="number" id="marks" placeholder="Marks" />
 
+      <!-- OCR -->
+      <input type="file" id="imageInput" />
+      <button onclick="uploadImage()">Scan Image 📷</button>
+
       <button onclick="addQuestion()">Save Question</button>
 
       <h3>Saved Questions</h3>
@@ -132,13 +136,16 @@ const BASE_URL = "https://exam-backend-cu62.onrender.com";
 let editId = null;
 
 // ======================
-// AUTO LOGIN
+// AUTO LOGIN + LOAD DATA
 // ======================
 window.onload = () => {
   const token = localStorage.getItem("token");
+
   if (token) {
     document.getElementById("login").style.display = "none";
     document.getElementById("dashboard").style.display = "block";
+
+    loadQuestions(); // ✅ FIX
   }
 };
 
@@ -180,6 +187,8 @@ async function login() {
 
     document.getElementById("login").style.display = "none";
     document.getElementById("dashboard").style.display = "block";
+
+    loadQuestions(); // ✅ FIX
   } else {
     document.getElementById("msg").innerText = data.message;
   }
@@ -249,7 +258,7 @@ async function addQuestion() {
       },
       body: JSON.stringify(q)
     });
-    alert("Added ✅");
+    alert("Saved successfully ✅");
   }
 
   clearForm();
@@ -262,10 +271,7 @@ async function addQuestion() {
 async function loadQuestions() {
   const token = localStorage.getItem("token");
 
-  if (!token) {
-    alert("Login required");
-    return;
-  }
+  if (!token) return;
 
   try {
     const res = await fetch(`${BASE_URL}/questions`, {
@@ -273,6 +279,12 @@ async function loadQuestions() {
         "Authorization": "Bearer " + token
       }
     });
+
+    if (res.status === 401) {
+      alert("Session expired. Login again.");
+      logout();
+      return;
+    }
 
     const data = await res.json();
 
@@ -345,7 +357,35 @@ async function editQuestion(id) {
 }
 
 // ======================
-// CLEAR
+// OCR UPLOAD
+// ======================
+async function uploadImage() {
+  const file = document.getElementById("imageInput").files[0];
+  const token = localStorage.getItem("token");
+
+  if (!file) {
+    alert("Select image first");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await fetch(`${BASE_URL}/ocr`, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + token
+    },
+    body: formData
+  });
+
+  const data = await res.json();
+
+  document.getElementById("questionText").value = data.text;
+}
+
+// ======================
+// CLEAR FORM
 // ======================
 function clearForm() {
   document.getElementById("class").value = "";
