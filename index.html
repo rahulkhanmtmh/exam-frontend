@@ -192,10 +192,11 @@
       flex: 1;
     }
 
+    /* Make buttons clearly visible */
     .sidebar button {
       width: 100%;
-      background: #f8fafc;
-      border: none;
+      background: #e2e8f0;        /* darker gray background */
+      border: 1px solid #cbd5e1;  /* subtle border */
       padding: 12px;
       margin: 8px 0;
       border-radius: 14px;
@@ -203,11 +204,22 @@
       text-align: left;
       cursor: pointer;
       transition: all 0.2s;
+      color: #1e293b;             /* dark text */
     }
 
     .sidebar button:hover {
-      background: #eef2ff;
+      background: #cbd5e1;
       color: #4f46e5;
+    }
+
+    /* Logout button gets a distinct red tone */
+    .sidebar button.logout-btn {
+      background: #ef4444;
+      border-color: #dc2626;
+      color: white;
+    }
+    .sidebar button.logout-btn:hover {
+      background: #dc2626;
     }
 
     /* Three-dot dropdown container */
@@ -220,8 +232,8 @@
 
     .three-dot-btn {
       width: 100%;
-      background: #f1f5f9;
-      border: none;
+      background: #e2e8f0;
+      border: 1px solid #cbd5e1;
       padding: 10px;
       border-radius: 14px;
       text-align: center;
@@ -369,7 +381,7 @@
       <button onclick="showPage('home')"><i class="fas fa-home"></i> Home</button>
       <button onclick="showPage('add')"><i class="fas fa-plus-circle"></i> Add Question</button>
       <button onclick="showPage('list')"><i class="fas fa-list-ul"></i> My Questions</button>
-      <button onclick="logout()" style="background:#ef4444; color:white;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
 
     <!-- Three-dot dropdown -->
@@ -556,8 +568,8 @@
         localStorage.setItem('token', data.token);
         document.getElementById('login').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
-        showPage('home');          // Show home section
-        loadQuestions();           // Preload questions (for list)
+        showPage('home');
+        loadQuestions();
         clearForm();
       } else {
         showError(msgDiv, data.message || 'Invalid credentials');
@@ -834,7 +846,6 @@
   window.onload = async () => {
     const token = localStorage.getItem('token');
     if (token) {
-      // Validate token
       try {
         const res = await fetch(`${BASE_URL}/questions`, {
           headers: { 'Authorization': 'Bearer ' + token }
@@ -851,7 +862,6 @@
           loadQuestions();
         }
       } catch (err) {
-        // Network error, fallback to login
         localStorage.removeItem('token');
         document.getElementById('login').style.display = 'flex';
         document.getElementById('dashboard').style.display = 'none';
