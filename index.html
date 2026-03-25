@@ -4,72 +4,35 @@
   <title>Exam App</title>
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #87CEEB;
-    }
-
-    #login, #dashboard {
-      padding: 20px;
-    }
-
+    body { margin:0; font-family: Arial; background:#87CEEB; }
+    #login,#dashboard { padding:20px; }
     #login {
-      max-width: 300px;
-      margin: 100px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
+      max-width:300px; margin:100px auto; background:white;
+      padding:20px; border-radius:10px; text-align:center;
     }
-
-    input, textarea {
-      width: 90%;
-      padding: 10px;
-      margin: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+    input,textarea {
+      width:90%; padding:10px; margin:5px;
+      border-radius:5px; border:1px solid #ccc;
     }
-
     button {
-      padding: 10px;
-      width: 95%;
-      background: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      padding:10px; width:95%; background:#007BFF;
+      color:white; border:none; border-radius:5px;
+      cursor:pointer;
     }
-
-    button:hover {
-      background: #0056b3;
-    }
-
-    #dashboard {
-      display: none;
-    }
-
+    button:hover { background:#0056b3; }
+    #dashboard { display:none; }
     .sidebar {
-      width: 220px;
-      height: 100vh;
-      background: white;
-      position: fixed;
-      padding: 10px;
+      width:220px; height:100vh; background:white;
+      position:fixed; padding:10px;
     }
-
     .content {
-      margin-left: 240px;
-      padding: 20px;
-      background: white;
-      min-height: 100vh;
-      border-radius: 10px;
+      margin-left:240px; padding:20px;
+      background:white; min-height:100vh;
+      border-radius:10px;
     }
-
     .card {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin: 5px;
-      border-radius: 5px;
+      border:1px solid #ccc; padding:10px;
+      margin:5px; border-radius:5px;
     }
   </style>
 </head>
@@ -79,20 +42,16 @@
 <!-- LOGIN -->
 <div id="login">
   <h2>School Login</h2>
-
   <input type="text" id="school" placeholder="School Name (Register only)" />
   <input type="email" id="email" placeholder="Email" />
   <input type="password" id="password" placeholder="Password" />
-
   <button onclick="register()">Register</button>
   <button onclick="login()">Login</button>
-
   <p id="msg"></p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard">
-
   <div class="sidebar">
     <h3>Exam App</h3>
     <button onclick="showPage('home')">Home</button>
@@ -114,10 +73,13 @@
       <input type="text" id="chapter" placeholder="Chapter" />
 
       <textarea id="questionText" placeholder="Enter Question"></textarea>
+
+      <!-- MCQ -->
       <input type="text" id="optA" placeholder="Option A" />
       <input type="text" id="optB" placeholder="Option B" />
       <input type="text" id="optC" placeholder="Option C" />
       <input type="text" id="optD" placeholder="Option D" />
+
       <input type="number" id="marks" placeholder="Marks" />
 
       <!-- OCR -->
@@ -131,7 +93,6 @@
     </div>
 
   </div>
-
 </div>
 
 <script>
@@ -139,283 +100,246 @@
 const BASE_URL = "https://exam-backend-cu62.onrender.com";
 let editId = null;
 
-// ======================
-// AUTO LOGIN + LOAD DATA
-// ======================
+// AUTO LOGIN
 window.onload = () => {
   const token = localStorage.getItem("token");
-
   if (token) {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
-
-    loadQuestions(); // ✅ FIX
+    loginUI();
+    loadQuestions();
   }
 };
 
-// ======================
-// REGISTER
-// ======================
-async function register() {
-  const schoolName = document.getElementById("school").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const res = await fetch(`${BASE_URL}/register`, {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({ schoolName, email, password })
-  });
-
-  const data = await res.json();
-  document.getElementById("msg").innerText = data.message;
+function loginUI() {
+  document.getElementById("login").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
 }
 
-// ======================
-// LOGIN
-// ======================
-async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const res = await fetch(`${BASE_URL}/login`, {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({ email, password })
+// REGISTER
+async function register() {
+  const res = await fetch(`${BASE_URL}/register`, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      schoolName:school.value,
+      email:email.value,
+      password:password.value
+    })
   });
+  const data = await res.json();
+  msg.innerText = data.message;
+}
 
+// LOGIN
+async function login() {
+  const res = await fetch(`${BASE_URL}/login`, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      email:email.value,
+      password:password.value
+    })
+  });
   const data = await res.json();
 
   if (data.token) {
     localStorage.setItem("token", data.token);
-
-    document.getElementById("login").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
-
-    loadQuestions(); // ✅ FIX
+    loginUI();
+    loadQuestions();
   } else {
-    document.getElementById("msg").innerText = data.message;
+    msg.innerText = data.message;
   }
 }
 
-// ======================
 // LOGOUT
-// ======================
 function logout() {
   localStorage.removeItem("token");
   location.reload();
 }
 
-// ======================
-// PAGE SWITCH
-// ======================
-function showPage(page) {
-  document.getElementById("home").style.display = "none";
-  document.getElementById("question").style.display = "none";
-
-  document.getElementById(page).style.display = "block";
-
-  if (page === "question") loadQuestions();
+// PAGE
+function showPage(p) {
+  home.style.display="none";
+  question.style.display="none";
+  document.getElementById(p).style.display="block";
+  if(p==="question") loadQuestions();
 }
 
-// ======================
 // ADD / UPDATE
-// ======================
 async function addQuestion() {
   const token = localStorage.getItem("token");
 
-  if (!token) {
-    alert("Login required");
-    return;
-  }
-
   const q = {
-    cls: document.getElementById("class").value,
-    subject: document.getElementById("subject").value,
-    chapter: document.getElementById("chapter").value,
-    text: document.getElementById("questionText").value,
-    marks: document.getElementById("marks").value
+    cls:class.value,
+    subject:subject.value,
+    chapter:chapter.value,
+    text:questionText.value,
+    marks:marks.value,
+    options:{
+      A:optA.value,
+      B:optB.value,
+      C:optC.value,
+      D:optD.value
+    }
   };
 
-  if (!q.cls || !q.subject || !q.chapter || !q.text || !q.marks) {
-    alert("Fill all fields");
-    return;
-  }
-
-  if (editId) {
-    await fetch(`${BASE_URL}/update-question/${editId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
+  if(editId){
+    await fetch(`${BASE_URL}/update-question/${editId}`,{
+      method:"PUT",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer "+token
       },
-      body: JSON.stringify(q)
+      body:JSON.stringify(q)
     });
     alert("Updated ✅");
-    editId = null;
+    editId=null;
   } else {
-    await fetch(`${BASE_URL}/add-question`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
+    await fetch(`${BASE_URL}/add-question`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer "+token
       },
-      body: JSON.stringify(q)
+      body:JSON.stringify(q)
     });
-    alert("Saved successfully ✅");
+    alert("Saved ✅");
   }
 
   clearForm();
   loadQuestions();
 }
 
-// ======================
-// LOAD QUESTIONS
-// ======================
+// LOAD
 async function loadQuestions() {
   const token = localStorage.getItem("token");
 
-  if (!token) return;
+  const res = await fetch(`${BASE_URL}/questions`,{
+    headers:{ "Authorization":"Bearer "+token }
+  });
 
-  try {
-    const res = await fetch(`${BASE_URL}/questions`, {
-      headers: {
-        "Authorization": "Bearer " + token
-      }
-    });
-
-    if (res.status === 401) {
-      alert("Session expired. Login again.");
-      logout();
-      return;
-    }
-
-    const data = await res.json();
-
-    const list = document.getElementById("questionList");
-    list.innerHTML = "";
-
-    if (!data.length) {
-      list.innerHTML = "<p>No questions found</p>";
-      return;
-    }
-
-    data.forEach((q) => {
-      list.innerHTML += `
-        <div class="card">
-          <b>${q.cls} | ${q.subject} | ${q.marks} marks</b>
-          <br>${q.text}
-          <br><br>
-          <button onclick="editQuestion('${q._id}')">Edit ✏️</button>
-          <button onclick="deleteQuestion('${q._id}')">Delete ❌</button>
-        </div>
-      `;
-    });
-
-  } catch (err) {
-    alert("Error loading questions");
-    console.log(err);
+  if(res.status===401){
+    alert("Session expired");
+    logout();
+    return;
   }
+
+  const data = await res.json();
+  questionList.innerHTML="";
+
+  if(!data.length){
+    questionList.innerHTML="<p>No questions</p>";
+    return;
+  }
+
+  data.forEach(q=>{
+    questionList.innerHTML+=`
+    <div class="card">
+      <b>${q.cls} | ${q.subject} | ${q.marks} marks</b><br>
+      ${q.text}<br>
+      A. ${q.options?.A||""}<br>
+      B. ${q.options?.B||""}<br>
+      C. ${q.options?.C||""}<br>
+      D. ${q.options?.D||""}<br><br>
+      <button onclick="editQuestion('${q._id}')">Edit</button>
+      <button onclick="deleteQuestion('${q._id}')">Delete</button>
+    </div>`;
+  });
 }
 
-// ======================
 // DELETE
-// ======================
-async function deleteQuestion(id) {
+async function deleteQuestion(id){
   const token = localStorage.getItem("token");
+  if(!confirm("Delete?")) return;
 
-  if (!confirm("Delete this question?")) return;
-
-  await fetch(`${BASE_URL}/delete-question/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Authorization": "Bearer " + token
-    }
+  await fetch(`${BASE_URL}/delete-question/${id}`,{
+    method:"DELETE",
+    headers:{ "Authorization":"Bearer "+token }
   });
 
   loadQuestions();
 }
 
-// ======================
 // EDIT
-// ======================
-async function editQuestion(id) {
+async function editQuestion(id){
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${BASE_URL}/questions`, {
-    headers: {
-      "Authorization": "Bearer " + token
-    }
+  const res = await fetch(`${BASE_URL}/questions`,{
+    headers:{ "Authorization":"Bearer "+token }
   });
 
   const data = await res.json();
-  const q = data.find(item => item._id === id);
+  const q = data.find(x=>x._id===id);
 
-  document.getElementById("class").value = q.cls;
-  document.getElementById("subject").value = q.subject;
-  document.getElementById("chapter").value = q.chapter;
-  document.getElementById("questionText").value = q.text;
-  document.getElementById("marks").value = q.marks;
+  class.value=q.cls;
+  subject.value=q.subject;
+  chapter.value=q.chapter;
+  questionText.value=q.text;
+  marks.value=q.marks;
 
-  editId = id;
+  optA.value=q.options?.A||"";
+  optB.value=q.options?.B||"";
+  optC.value=q.options?.C||"";
+  optD.value=q.options?.D||"";
+
+  editId=id;
 }
 
-// ======================
-// OCR UPLOAD
-// ======================
-async function uploadImage() {
-  const file = document.getElementById("imageInput").files[0];
-  const token = localStorage.getItem("token");
+// OCR + MCQ
+async function uploadImage(){
+  const file=imageInput.files[0];
+  const token=localStorage.getItem("token");
 
-  if (!file) {
-    alert("Select image first");
-    return;
-  }
+  if(!file){ alert("Select image"); return; }
 
-  const formData = new FormData();
-  formData.append("image", file);
+  const fd=new FormData();
+  fd.append("image",file);
 
-  const res = await fetch(`${BASE_URL}/ocr`, {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + token
-    },
-    body: formData
+  const res=await fetch(`${BASE_URL}/ocr`,{
+    method:"POST",
+    headers:{ "Authorization":"Bearer "+token },
+    body:fd
   });
 
-  const data = await res.json();
+  const data=await res.json();
 
-  document.getElementById("questionText").value = data.text;
+  const parsed=parseMCQ(data.text);
+
+  questionText.value=parsed.question;
+  optA.value=parsed.options.A;
+  optB.value=parsed.options.B;
+  optC.value=parsed.options.C;
+  optD.value=parsed.options.D;
 }
 
-// ======================
-// CLEAR FORM
-// ======================
-function clearForm() {
-  document.getElementById("class").value = "";
-  document.getElementById("subject").value = "";
-  document.getElementById("chapter").value = "";
-  document.getElementById("questionText").value = "";
-  document.getElementById("marks").value = "";
-}
+// PARSER
+function parseMCQ(text){
+  const lines=text.split("\n").map(l=>l.trim()).filter(l=>l);
 
-  function parseMCQ(text) {
-  const lines = text.split("\n").map(l => l.trim()).filter(l => l);
+  let q="";
+  let opt={A:"",B:"",C:"",D:""};
 
-  let question = "";
-  let options = { A: "", B: "", C: "", D: "" };
-
-  lines.forEach(line => {
-    if (/^A[\.\)]/i.test(line)) options.A = line.replace(/^A[\.\)]/i, "").trim();
-    else if (/^B[\.\)]/i.test(line)) options.B = line.replace(/^B[\.\)]/i, "").trim();
-    else if (/^C[\.\)]/i.test(line)) options.C = line.replace(/^C[\.\)]/i, "").trim();
-    else if (/^D[\.\)]/i.test(line)) options.D = line.replace(/^D[\.\)]/i, "").trim();
-    else {
-      question += line + " ";
-    }
+  lines.forEach(l=>{
+    if(/^A[\.\)]/i.test(l)) opt.A=l.replace(/^A[\.\)]/i,"").trim();
+    else if(/^B[\.\)]/i.test(l)) opt.B=l.replace(/^B[\.\)]/i,"").trim();
+    else if(/^C[\.\)]/i.test(l)) opt.C=l.replace(/^C[\.\)]/i,"").trim();
+    else if(/^D[\.\)]/i.test(l)) opt.D=l.replace(/^D[\.\)]/i,"").trim();
+    else q+=l+" ";
   });
 
-  return { question: question.trim(), options };
+  return {question:q.trim(),options:opt};
+}
+
+// CLEAR
+function clearForm(){
+  class.value="";
+  subject.value="";
+  chapter.value="";
+  questionText.value="";
+  marks.value="";
+  optA.value="";
+  optB.value="";
+  optC.value="";
+  optD.value="";
 }
 
 </script>
