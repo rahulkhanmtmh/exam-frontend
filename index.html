@@ -556,8 +556,8 @@
         localStorage.setItem('token', data.token);
         document.getElementById('login').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
-        showPage('home');
-        loadQuestions();
+        showPage('home');          // Show home section
+        loadQuestions();           // Preload questions (for list)
         clearForm();
       } else {
         showError(msgDiv, data.message || 'Invalid credentials');
@@ -575,7 +575,6 @@
     document.getElementById('login').style.display = 'flex';
     document.getElementById('dashboard').style.display = 'none';
     setActiveTab('signin');
-    // Clear any displayed questions
     document.getElementById('questionList').innerHTML = '';
   }
 
@@ -585,7 +584,7 @@
     document.getElementById('addQuestionSection').style.display = page === 'add' ? 'block' : 'none';
     document.getElementById('myQuestionsSection').style.display = page === 'list' ? 'block' : 'none';
     if (page === 'list') loadQuestions();
-    if (page === 'add') clearForm(); // reset form when adding new
+    if (page === 'add') clearForm();
   }
 
   // ==================== QUESTION FORM LOGIC ====================
@@ -652,8 +651,8 @@
         alert(editId ? 'Question updated!' : 'Question saved!');
         editId = null;
         clearForm();
-        loadQuestions(); // refresh list
-        showPage('list'); // after save, go to list
+        loadQuestions();
+        showPage('list');
       } else {
         if (res.status === 401) logout();
         else alert('Failed to save question');
@@ -730,7 +729,6 @@
       if (!question) return;
 
       editId = id;
-      // Populate form fields
       document.getElementById('class').value = question.cls || '';
       document.getElementById('subject').value = question.subject || '';
       document.getElementById('chapter').value = question.chapter || '';
@@ -738,11 +736,9 @@
       document.getElementById('marks').value = question.marks || '';
       document.getElementById('correctAnswer').value = question.correctAnswer || '';
 
-      // Set type and trigger UI
       typeSelect.value = question.type || 'MCQ';
       typeSelect.dispatchEvent(new Event('change'));
 
-      // Fill options based on type
       if (question.type === 'MCQ' && question.options) {
         document.getElementById('optA').value = question.options.A || '';
         document.getElementById('optB').value = question.options.B || '';
@@ -816,14 +812,12 @@
     dropdownMenu.classList.toggle('show');
   });
 
-  // Close dropdown when clicking outside
   document.addEventListener('click', (e) => {
     if (!threeDotBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
       dropdownMenu.classList.remove('show');
     }
   });
 
-  // Theme toggle
   function toggleTheme() {
     document.body.classList.toggle('dark');
     const icon = threeDotBtn.querySelector('i');
@@ -836,30 +830,29 @@
     }
   }
 
-  // On load: validate token and show appropriate view
+  // ==================== INITIAL LOAD ====================
   window.onload = async () => {
     const token = localStorage.getItem('token');
     if (token) {
-      // Validate token by trying to fetch questions
+      // Validate token
       try {
         const res = await fetch(`${BASE_URL}/questions`, {
           headers: { 'Authorization': 'Bearer ' + token }
         });
         if (res.status === 401) {
-          // Invalid token, clear and show login
           localStorage.removeItem('token');
           document.getElementById('login').style.display = 'flex';
           document.getElementById('dashboard').style.display = 'none';
           setActiveTab('signin');
         } else {
-          // Valid token, show dashboard
           document.getElementById('login').style.display = 'none';
           document.getElementById('dashboard').style.display = 'block';
           showPage('home');
           loadQuestions();
         }
       } catch (err) {
-        // Network error, still show dashboard? Better to show login because backend might be down
+        // Network error, fallback to login
+        localStorage.removeItem('token');
         document.getElementById('login').style.display = 'flex';
         document.getElementById('dashboard').style.display = 'none';
         setActiveTab('signin');
