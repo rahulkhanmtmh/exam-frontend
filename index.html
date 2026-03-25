@@ -193,6 +193,28 @@
       transition: background 0.3s;
     }
 
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .three-dot-icon {
+      background: transparent;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      color: #4f46e5;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .three-dot-icon:hover {
+      background: #eef2ff;
+    }
+
     .logo h2 {
       font-size: 1.3rem;
       font-weight: 700;
@@ -559,6 +581,7 @@
   <!-- Top Menu Bar -->
   <div class="top-bar">
     <div class="logo">
+      <button class="three-dot-icon" id="topThreeDotBtn"><i class="fas fa-ellipsis-v"></i></button>
       <h2><i class="fas fa-graduation-cap"></i> Exam App</h2>
     </div>
     <div class="nav-links">
@@ -672,6 +695,7 @@
   const sidebar = document.getElementById('sidebar');
   const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
   const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+  const topThreeDotBtn = document.getElementById('topThreeDotBtn');
   const content = document.getElementById('content');
 
   function isMobile() {
@@ -701,6 +725,9 @@
   toggleSidebarBtn.addEventListener('click', toggleSidebar);
   if (mobileMenuToggle) {
     mobileMenuToggle.addEventListener('click', toggleSidebar);
+  }
+  if (topThreeDotBtn) {
+    topThreeDotBtn.addEventListener('click', toggleSidebar);
   }
 
   // Close sidebar when clicking outside on mobile
