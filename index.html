@@ -546,7 +546,7 @@
 </head>
 <body>
 
-<!-- AUTH SECTION (unchanged) -->
+<!-- AUTH SECTION -->
 <div id="login">
   <div class="auth-card">
     <div class="tab-bar">
@@ -559,12 +559,12 @@
       <form id="signinForm">
         <div class="input-group">
           <label>Email</label>
-          <input type="email" class="input-field" id="signinEmail" placeholder="teacher@school.com">
+          <input type="email" class="input-field" id="signinEmail" placeholder="teacher@school.com" autocomplete="off">
         </div>
         <div class="input-group">
           <label>Password</label>
           <div class="password-wrapper">
-            <input type="password" class="input-field" id="signinPassword">
+            <input type="password" class="input-field" id="signinPassword" autocomplete="off">
             <i class="far fa-eye-slash toggle-password" data-target="signinPassword"></i>
           </div>
         </div>
@@ -578,23 +578,23 @@
       <form id="signupForm">
         <div class="input-group">
           <label>School name</label>
-          <input type="text" class="input-field" id="signupSchool">
+          <input type="text" class="input-field" id="signupSchool" autocomplete="off">
         </div>
         <div class="input-group">
           <label>Email</label>
-          <input type="email" class="input-field" id="signupEmail">
+          <input type="email" class="input-field" id="signupEmail" autocomplete="off">
         </div>
         <div class="input-group">
           <label>Password</label>
           <div class="password-wrapper">
-            <input type="password" class="input-field" id="signupPassword">
+            <input type="password" class="input-field" id="signupPassword" autocomplete="off">
             <i class="far fa-eye-slash toggle-password" data-target="signupPassword"></i>
           </div>
         </div>
         <div class="input-group">
           <label>Confirm password</label>
           <div class="password-wrapper">
-            <input type="password" class="input-field" id="signupConfirmPassword">
+            <input type="password" class="input-field" id="signupConfirmPassword" autocomplete="off">
             <i class="far fa-eye-slash toggle-password" data-target="signupConfirmPassword"></i>
           </div>
         </div>
@@ -730,14 +730,63 @@
   const BASE_URL = "https://exam-backend-cu62.onrender.com";
   let editId = null;
 
-  // ==================== UI Helpers ====================
-  const typeSelect = document.getElementById('type');
-  const mcqBox = document.getElementById('mcqBox');
-  const matchBox = document.getElementById('matchBox');
-  typeSelect.addEventListener('change', () => {
-    mcqBox.style.display = typeSelect.value === 'MCQ' ? 'block' : 'none';
-    matchBox.style.display = typeSelect.value === 'MATCH' ? 'block' : 'none';
+  // ==================== SIDEBAR TOGGLE ====================
+  const sidebar = document.getElementById('sidebar');
+  const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+  const topThreeDotBtn = document.getElementById('topThreeDotBtn');
+  const content = document.getElementById('content');
+
+  function isMobile() {
+    return window.innerWidth < 768;
+  }
+
+  function toggleSidebar() {
+    if (isMobile()) {
+      sidebar.classList.toggle('show-mobile');
+    } else {
+      sidebar.classList.toggle('collapsed');
+      if (sidebar.classList.contains('collapsed')) {
+        content.style.marginLeft = '80px';
+      } else {
+        content.style.marginLeft = '260px';
+      }
+    }
+  }
+
+  toggleSidebarBtn.addEventListener('click', toggleSidebar);
+  if (mobileMenuToggle) mobileMenuToggle.addEventListener('click', toggleSidebar);
+  if (topThreeDotBtn) topThreeDotBtn.addEventListener('click', toggleSidebar);
+
+  content.addEventListener('click', (e) => {
+    if (isMobile() && sidebar.classList.contains('show-mobile')) {
+      if (!sidebar.contains(e.target)) sidebar.classList.remove('show-mobile');
+    }
   });
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      content.style.marginLeft = '0';
+      sidebar.classList.remove('collapsed');
+    } else {
+      sidebar.classList.remove('show-mobile');
+      if (sidebar.classList.contains('collapsed')) {
+        content.style.marginLeft = '80px';
+      } else {
+        content.style.marginLeft = '260px';
+      }
+    }
+  });
+
+  // ==================== AUTH UI ====================
+  const signinTab = document.getElementById('signinTabBtn');
+  const signupTab = document.getElementById('signupTabBtn');
+  const signinContainer = document.getElementById('signinFormContainer');
+  const signupContainer = document.getElementById('signupFormContainer');
+  const signinFormElem = document.getElementById('signinForm');
+  const signupFormElem = document.getElementById('signupForm');
+  const msgDiv = document.getElementById('msg');
+  const signupMsgDiv = document.getElementById('signupMsg');
 
   function showError(container, message) {
     container.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
@@ -748,24 +797,135 @@
     container.innerHTML = '';
   }
 
-  // Bulk mode toggle
-  const bulkCheckbox = document.getElementById('bulkModeCheckbox');
-  const bulkArea = document.getElementById('bulkArea');
-  bulkCheckbox.addEventListener('change', () => {
-    bulkArea.style.display = bulkCheckbox.checked ? 'block' : 'none';
-    if (bulkCheckbox.checked) {
-      document.getElementById('singleQuestionForm').style.opacity = '0.5';
+  function setActiveTab(tab) {
+    if (tab === 'signin') {
+      signinTab.classList.add('active');
+      signupTab.classList.remove('active');
+      signinContainer.classList.remove('form-hidden');
+      signupContainer.classList.add('form-hidden');
+      hideError(msgDiv);
+      hideError(signupMsgDiv);
     } else {
-      document.getElementById('singleQuestionForm').style.opacity = '1';
+      signupTab.classList.add('active');
+      signinTab.classList.remove('active');
+      signupContainer.classList.remove('form-hidden');
+      signinContainer.classList.add('form-hidden');
+      hideError(msgDiv);
+      hideError(signupMsgDiv);
     }
-  });
-
-  function clearBulkArea() {
-    document.getElementById('bulkQuestions').value = '';
-    hideError(document.getElementById('bulkStatus'));
   }
 
-  // ==================== Single Question Save ====================
+  signinTab.addEventListener('click', () => setActiveTab('signin'));
+  signupTab.addEventListener('click', () => setActiveTab('signup'));
+
+  document.querySelectorAll('.toggle-password').forEach(icon => {
+    icon.addEventListener('click', function() {
+      const target = document.getElementById(this.getAttribute('data-target'));
+      if (target) {
+        const type = target.type === 'password' ? 'text' : 'password';
+        target.type = type;
+        this.classList.toggle('fa-eye-slash');
+        this.classList.toggle('fa-eye');
+      }
+    });
+  });
+
+  async function register() {
+    const school = document.getElementById('signupSchool').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const confirm = document.getElementById('signupConfirmPassword').value;
+
+    hideError(signupMsgDiv);
+    if (!school || !email || !password) return showError(signupMsgDiv, 'All fields required');
+    if (password !== confirm) return showError(signupMsgDiv, 'Passwords do not match');
+    if (password.length < 6) return showError(signupMsgDiv, 'Password min 6 chars');
+
+    try {
+      const res = await fetch(`${BASE_URL}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ schoolName: school, email, password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Account created! Please sign in.');
+        setActiveTab('signin');
+        document.getElementById('signupSchool').value = '';
+        document.getElementById('signupEmail').value = '';
+        document.getElementById('signupPassword').value = '';
+        document.getElementById('signupConfirmPassword').value = '';
+      } else {
+        showError(signupMsgDiv, data.message || 'Registration failed');
+      }
+    } catch (err) {
+      showError(signupMsgDiv, 'Network error');
+    }
+  }
+
+  async function login() {
+    const email = document.getElementById('signinEmail').value.trim();
+    const password = document.getElementById('signinPassword').value;
+    hideError(msgDiv);
+    if (!email || !password) return showError(msgDiv, 'Email and password required');
+
+    try {
+      const res = await fetch(`${BASE_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        showPage('home');
+        loadQuestions();
+        clearForm();
+        if (isMobile()) sidebar.classList.remove('show-mobile');
+      } else {
+        showError(msgDiv, data.message || 'Invalid credentials');
+      }
+    } catch (err) {
+      showError(msgDiv, 'Server error');
+    }
+  }
+
+  signinFormElem.addEventListener('submit', (e) => { e.preventDefault(); login(); });
+  signupFormElem.addEventListener('submit', (e) => { e.preventDefault(); register(); });
+
+  function logout() {
+    localStorage.removeItem('token');
+    document.getElementById('login').style.display = 'flex';
+    document.getElementById('dashboard').style.display = 'none';
+    setActiveTab('signin');
+    document.getElementById('questionList').innerHTML = '';
+    // clear signin fields (they will be empty anyway)
+    document.getElementById('signinEmail').value = '';
+    document.getElementById('signinPassword').value = '';
+  }
+
+  // ==================== DASHBOARD NAVIGATION ====================
+  function showPage(page) {
+    document.getElementById('home').style.display = page === 'home' ? 'block' : 'none';
+    document.getElementById('addQuestionSection').style.display = page === 'add' ? 'block' : 'none';
+    document.getElementById('myQuestionsSection').style.display = page === 'list' ? 'block' : 'none';
+    if (page === 'list') loadQuestions();
+    if (page === 'add') clearForm();
+    if (isMobile()) sidebar.classList.remove('show-mobile');
+  }
+
+  // ==================== QUESTION FORM LOGIC ====================
+  const typeSelect = document.getElementById('type');
+  const mcqBox = document.getElementById('mcqBox');
+  const matchBox = document.getElementById('matchBox');
+
+  typeSelect.addEventListener('change', () => {
+    mcqBox.style.display = typeSelect.value === 'MCQ' ? 'block' : 'none';
+    matchBox.style.display = typeSelect.value === 'MATCH' ? 'block' : 'none';
+  });
+
   async function saveQuestion() {
     const token = localStorage.getItem('token');
     if (!token) { logout(); return; }
@@ -831,7 +991,164 @@
     }
   }
 
-  // ==================== Bulk Add Questions ====================
+  async function loadQuestions() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await fetch(`${BASE_URL}/questions`, {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (res.status === 401) {
+        logout();
+        return;
+      }
+      const data = await res.json();
+      const container = document.getElementById('questionList');
+      container.innerHTML = '';
+      if (!Array.isArray(data)) return;
+      data.forEach(q => {
+        let optionsHtml = '';
+        if (q.type === 'MCQ' && q.options) {
+          optionsHtml = `<br>A. ${q.options.A || ''}<br>B. ${q.options.B || ''}<br>C. ${q.options.C || ''}<br>D. ${q.options.D || ''}<br>`;
+        } else if (q.type === 'MATCH' && q.options) {
+          optionsHtml = `<br>Column A: ${(q.options.colA || []).join(', ')}<br>Column B: ${(q.options.colB || []).join(', ')}<br>`;
+        }
+        container.innerHTML += `
+          <div class="card">
+            <b>${q.cls} | ${q.subject} | ${q.type}</b><br>
+            ${q.text}<br>
+            ${optionsHtml}
+            ✅ Correct: ${q.correctAnswer || '—'}<br>
+            ⭐ Marks: ${q.marks || 0}<br>
+            <div class="flex-buttons">
+              <button onclick="editQuestion('${q._id}')" style="background:#3b82f6;">Edit</button>
+              <button onclick="deleteQuestion('${q._id}')" style="background:#ef4444;">Delete</button>
+            </div>
+          </div>`;
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function deleteQuestion(id) {
+    const token = localStorage.getItem('token');
+    if (!token || !confirm('Delete this question?')) return;
+    const res = await fetch(`${BASE_URL}/delete-question/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.status === 401) logout();
+    else loadQuestions();
+  }
+
+  async function editQuestion(id) {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await fetch(`${BASE_URL}/questions`, {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (res.status === 401) {
+        logout();
+        return;
+      }
+      const questions = await res.json();
+      const question = questions.find(q => q._id === id);
+      if (!question) return;
+
+      editId = id;
+      document.getElementById('class').value = question.cls || '';
+      document.getElementById('subject').value = question.subject || '';
+      document.getElementById('chapter').value = question.chapter || '';
+      document.getElementById('questionText').value = question.text || '';
+      document.getElementById('marks').value = question.marks || '';
+      document.getElementById('correctAnswer').value = question.correctAnswer || '';
+
+      typeSelect.value = question.type || 'MCQ';
+      typeSelect.dispatchEvent(new Event('change'));
+
+      if (question.type === 'MCQ' && question.options) {
+        document.getElementById('optA').value = question.options.A || '';
+        document.getElementById('optB').value = question.options.B || '';
+        document.getElementById('optC').value = question.options.C || '';
+        document.getElementById('optD').value = question.options.D || '';
+      } else if (question.type === 'MATCH' && question.options) {
+        const colA = question.options.colA || [];
+        const colB = question.options.colB || [];
+        document.getElementById('colA1').value = colA[0] || '';
+        document.getElementById('colA2').value = colA[1] || '';
+        document.getElementById('colA3').value = colA[2] || '';
+        document.getElementById('colB1').value = colB[0] || '';
+        document.getElementById('colB2').value = colB[1] || '';
+        document.getElementById('colB3').value = colB[2] || '';
+      }
+
+      showPage('add');
+    } catch (err) {
+      alert('Could not load question for editing');
+    }
+  }
+
+  function clearForm() {
+    editId = null;
+    document.getElementById('class').value = '';
+    document.getElementById('subject').value = '';
+    document.getElementById('chapter').value = '';
+    document.getElementById('questionText').value = '';
+    document.getElementById('marks').value = '';
+    document.getElementById('correctAnswer').value = '';
+    document.getElementById('optA').value = '';
+    document.getElementById('optB').value = '';
+    document.getElementById('optC').value = '';
+    document.getElementById('optD').value = '';
+    document.getElementById('colA1').value = '';
+    document.getElementById('colA2').value = '';
+    document.getElementById('colA3').value = '';
+    document.getElementById('colB1').value = '';
+    document.getElementById('colB2').value = '';
+    document.getElementById('colB3').value = '';
+    typeSelect.value = 'MCQ';
+    typeSelect.dispatchEvent(new Event('change'));
+  }
+
+  async function uploadImage() {
+    const token = localStorage.getItem('token');
+    const file = document.getElementById('imageInput').files[0];
+    if (!file) return alert('Select an image');
+    const fd = new FormData();
+    fd.append('image', file);
+    try {
+      const res = await fetch(`${BASE_URL}/ocr`, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+        body: fd
+      });
+      if (res.status === 401) logout();
+      const data = await res.json();
+      document.getElementById('questionText').value = data.text || 'OCR failed';
+    } catch (err) {
+      alert('OCR error');
+    }
+  }
+
+  // ==================== BULK IMPORT ====================
+  const bulkCheckbox = document.getElementById('bulkModeCheckbox');
+  const bulkArea = document.getElementById('bulkArea');
+  bulkCheckbox.addEventListener('change', () => {
+    bulkArea.style.display = bulkCheckbox.checked ? 'block' : 'none';
+    if (bulkCheckbox.checked) {
+      document.getElementById('singleQuestionForm').style.opacity = '0.5';
+    } else {
+      document.getElementById('singleQuestionForm').style.opacity = '1';
+    }
+  });
+
+  function clearBulkArea() {
+    document.getElementById('bulkQuestions').value = '';
+    hideError(document.getElementById('bulkStatus'));
+  }
+
   async function addBulkQuestions() {
     const token = localStorage.getItem('token');
     if (!token) { logout(); return; }
@@ -848,7 +1165,6 @@
       return;
     }
 
-    // Get common fields from the form
     const commonClass = document.getElementById('class').value;
     const commonSubject = document.getElementById('subject').value;
     const commonChapter = document.getElementById('chapter').value;
@@ -856,7 +1172,6 @@
     const commonMarks = document.getElementById('marks').value;
     const commonCorrectAnswer = document.getElementById('correctAnswer').value;
 
-    // For MCQ, we need to grab the options from the form (they will be the same for all bulk questions)
     let commonOptions = {};
     if (commonType === 'MCQ') {
       commonOptions = {
@@ -908,57 +1223,93 @@
           successCount++;
         } else {
           failCount++;
-          console.error('Failed to add:', line);
         }
       } catch (err) {
         failCount++;
-        console.error(err);
       }
     }
 
-    // Show result
     const statusDiv = document.getElementById('bulkStatus');
     if (successCount > 0) {
       statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> Added ${successCount} questions successfully.${failCount > 0 ? ` ${failCount} failed.` : ''}`;
       statusDiv.style.backgroundColor = '#d1fae5';
       statusDiv.style.color = '#065f46';
+      statusDiv.style.display = 'block';
+      loadQuestions();
+      document.getElementById('bulkQuestions').value = '';
+      showPage('list');
     } else {
       showError(statusDiv, `Failed to add any questions. ${failCount} errors.`);
     }
     setTimeout(() => {
       statusDiv.style.display = 'none';
     }, 5000);
+  }
 
-    // Refresh list and clear bulk area if at least one succeeded
-    if (successCount > 0) {
-      loadQuestions();
-      document.getElementById('bulkQuestions').value = '';
-      // Optional: switch to My Questions tab
-      showPage('list');
+  // ==================== THEME & THREE-DOT DROPDOWN ====================
+  const threeDotBtn = document.getElementById('threeDotBtn');
+  const dropdownMenu = document.getElementById('dropdownMenu');
+
+  threeDotBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdownMenu.classList.toggle('show');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!threeDotBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+      dropdownMenu.classList.remove('show');
+    }
+  });
+
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+    const icon = threeDotBtn.querySelector('i');
+    if (document.body.classList.contains('dark')) {
+      icon.classList.remove('fa-ellipsis-h');
+      icon.classList.add('fa-sun');
+    } else {
+      icon.classList.remove('fa-sun');
+      icon.classList.add('fa-ellipsis-h');
     }
   }
 
-  // ==================== Other Functions (unchanged but necessary) ====================
-  async function loadQuestions() { /* same as before */ }
-  async function deleteQuestion(id) { /* same */ }
-  async function editQuestion(id) { /* same */ }
-  function clearForm() { /* same */ }
-  async function uploadImage() { /* same */ }
-  function toggleTheme() { /* same */ }
-  function logout() { /* same */ }
-  function showPage(page) { /* same */ }
-
-  // ... (include all the other functions exactly as before, but they are omitted here for brevity.
-  // In the final HTML, include the full JavaScript from the previous version. I'll add them here.)
-
-  // ==================== (The rest of the functions are identical to the previous version) ====================
-  // I'm adding them again to ensure completeness (they were already defined above in previous version)
-
-  // For brevity, I'm not repeating the entire script here – but in the final answer, I will provide the complete script.
-  // The above bulk functions are added, and the rest are same as earlier.
-
-  // To keep the answer manageable, I'll assume the rest of the functions (loadQuestions, deleteQuestion, etc.) are the same as in the previous working version.
-  // In the final code block, I'll include the complete script.
+  // ==================== INITIAL LOAD ====================
+  window.onload = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const res = await fetch(`${BASE_URL}/questions`, {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.status === 401) {
+          localStorage.removeItem('token');
+          document.getElementById('login').style.display = 'flex';
+          document.getElementById('dashboard').style.display = 'none';
+          setActiveTab('signin');
+        } else {
+          document.getElementById('login').style.display = 'none';
+          document.getElementById('dashboard').style.display = 'block';
+          showPage('home');
+          loadQuestions();
+          if (isMobile()) {
+            sidebar.classList.remove('show-mobile');
+          } else {
+            sidebar.classList.remove('collapsed');
+            content.style.marginLeft = '260px';
+          }
+        }
+      } catch (err) {
+        localStorage.removeItem('token');
+        document.getElementById('login').style.display = 'flex';
+        document.getElementById('dashboard').style.display = 'none';
+        setActiveTab('signin');
+      }
+    } else {
+      document.getElementById('login').style.display = 'flex';
+      document.getElementById('dashboard').style.display = 'none';
+      setActiveTab('signin');
+    }
+  };
 </script>
 </body>
 </html>
