@@ -172,31 +172,102 @@
       display: none;
     }
 
+    /* Sidebar - desktop default */
     .sidebar {
       width: 260px;
       height: 100vh;
       background: white;
       position: fixed;
+      top: 0;
+      left: 0;
       padding: 24px 16px;
       box-shadow: 2px 0 12px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
+      transition: transform 0.3s ease, width 0.3s ease;
+      z-index: 1000;
     }
 
-    .sidebar h3 {
+    /* Desktop collapsed state */
+    .sidebar.collapsed {
+      width: 80px;
+    }
+
+    .sidebar.collapsed .nav-buttons button span,
+    .sidebar.collapsed .dropdown-container .three-dot-btn span,
+    .sidebar.collapsed .sidebar h3 span {
+      display: none;
+    }
+
+    .sidebar.collapsed .nav-buttons button i,
+    .sidebar.collapsed .dropdown-container .three-dot-btn i,
+    .sidebar.collapsed .sidebar h3 i {
+      margin-right: 0;
+    }
+
+    .sidebar.collapsed .nav-buttons button {
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    .sidebar.collapsed .dropdown-container .three-dot-btn {
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .sidebar.collapsed .sidebar h3 {
+      text-align: center;
+    }
+
+    /* Sidebar header with toggle button */
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 2rem;
-      font-size: 1.3rem;
+    }
+    .toggle-sidebar-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      color: #4f46e5;
+    }
+    .toggle-sidebar-btn:hover {
+      background: #eef2ff;
     }
 
+    /* Mobile floating toggle button (visible only on mobile) */
+    .mobile-menu-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      padding: 8px 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      z-index: 1100;
+      display: none;
+      font-size: 1.2rem;
+    }
+    body.dark .mobile-menu-toggle {
+      background: #1e293b;
+      color: white;
+    }
+
+    /* Nav buttons */
     .sidebar .nav-buttons {
       flex: 1;
     }
 
-    /* Make buttons clearly visible */
     .sidebar button {
       width: 100%;
-      background: #e2e8f0;        /* darker gray background */
-      border: 1px solid #cbd5e1;  /* subtle border */
+      background: #e2e8f0;
+      border: 1px solid #cbd5e1;
       padding: 12px;
       margin: 8px 0;
       border-radius: 14px;
@@ -204,7 +275,7 @@
       text-align: left;
       cursor: pointer;
       transition: all 0.2s;
-      color: #1e293b;             /* dark text */
+      color: #1e293b;
     }
 
     .sidebar button:hover {
@@ -212,7 +283,7 @@
       color: #4f46e5;
     }
 
-    /* Logout button gets a distinct red tone */
+    /* Logout button */
     .sidebar button.logout-btn {
       background: #ef4444;
       border-color: #dc2626;
@@ -222,7 +293,7 @@
       background: #dc2626;
     }
 
-    /* Three-dot dropdown container */
+    /* Three-dot dropdown */
     .dropdown-container {
       position: relative;
       margin-top: 1rem;
@@ -236,7 +307,7 @@
       border: 1px solid #cbd5e1;
       padding: 10px;
       border-radius: 14px;
-      text-align: center;
+      text-align: left;
       cursor: pointer;
       font-size: 1.2rem;
     }
@@ -274,12 +345,74 @@
       background: #f1f5f9;
     }
 
+    /* Main content */
     .content {
-      margin-left: 280px;
+      margin-left: 260px;
       padding: 2rem;
       min-height: 100vh;
+      transition: margin-left 0.3s ease;
     }
 
+    /* When sidebar is collapsed on desktop */
+    .sidebar.collapsed + .content {
+      margin-left: 80px;
+    }
+
+    /* Responsive styles for mobile */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 260px;
+        box-shadow: none;
+      }
+      .sidebar.show-mobile {
+        transform: translateX(0);
+        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+      }
+      .content {
+        margin-left: 0 !important;
+        padding: 1.5rem;
+      }
+      .mobile-menu-toggle {
+        display: block;
+      }
+      /* On mobile, the sidebar header toggle button is still visible inside sidebar for closing */
+      .sidebar .toggle-sidebar-btn {
+        display: block;
+      }
+      /* Hide the desktop collapse behavior on mobile */
+      .sidebar.collapsed {
+        width: 260px; /* not used, but keep for consistency */
+      }
+      .sidebar.collapsed .nav-buttons button span,
+      .sidebar.collapsed .dropdown-container .three-dot-btn span,
+      .sidebar.collapsed .sidebar h3 span {
+        display: inline;
+      }
+      .sidebar.collapsed .nav-buttons button {
+        text-align: left;
+        padding: 12px;
+      }
+      .sidebar.collapsed .dropdown-container .three-dot-btn {
+        text-align: left;
+        padding: 10px;
+      }
+      .sidebar.collapsed .sidebar h3 {
+        text-align: left;
+      }
+      /* Adjust cards and inputs for mobile */
+      .card {
+        padding: 0.8rem;
+      }
+      input, textarea, select {
+        padding: 8px;
+      }
+      button {
+        padding: 8px 12px;
+      }
+    }
+
+    /* Card styling */
     .card {
       background: white;
       border: 1px solid #e2e8f0;
@@ -309,6 +442,7 @@
       display: flex;
       gap: 12px;
       margin-top: 12px;
+      flex-wrap: wrap;
     }
   </style>
 </head>
@@ -375,18 +509,28 @@
 
 <!-- DASHBOARD -->
 <div id="dashboard">
-  <div class="sidebar">
-    <h3><i class="fas fa-graduation-cap"></i> Exam App</h3>
+  <!-- Mobile floating menu toggle button -->
+  <button class="mobile-menu-toggle" id="mobileMenuToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3><i class="fas fa-graduation-cap"></i> <span>Exam App</span></h3>
+      <button class="toggle-sidebar-btn" id="toggleSidebarBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
     <div class="nav-buttons">
-      <button onclick="showPage('home')"><i class="fas fa-home"></i> Home</button>
-      <button onclick="showPage('add')"><i class="fas fa-plus-circle"></i> Add Question</button>
-      <button onclick="showPage('list')"><i class="fas fa-list-ul"></i> My Questions</button>
-      <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      <button onclick="showPage('home')"><i class="fas fa-home"></i> <span>Home</span></button>
+      <button onclick="showPage('add')"><i class="fas fa-plus-circle"></i> <span>Add Question</span></button>
+      <button onclick="showPage('list')"><i class="fas fa-list-ul"></i> <span>My Questions</span></button>
+      <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
     </div>
 
     <!-- Three-dot dropdown -->
     <div class="dropdown-container">
-      <button class="three-dot-btn" id="threeDotBtn"><i class="fas fa-ellipsis-h"></i> More</button>
+      <button class="three-dot-btn" id="threeDotBtn"><i class="fas fa-ellipsis-h"></i> <span>More</span></button>
       <div class="dropdown-menu" id="dropdownMenu">
         <button onclick="toggleTheme()"><i class="fas fa-moon"></i> Dark mode</button>
         <button onclick="alert('Help section coming soon')"><i class="fas fa-question-circle"></i> Help</button>
@@ -395,7 +539,7 @@
     </div>
   </div>
 
-  <div class="content">
+  <div class="content" id="content">
     <!-- Home -->
     <div id="home">
       <h2>📚 Welcome to Exam Portal</h2>
@@ -462,6 +606,80 @@
 <script>
   const BASE_URL = "https://exam-backend-cu62.onrender.com";
   let editId = null;
+
+  // ==================== SIDEBAR TOGGLE (Responsive) ====================
+  const sidebar = document.getElementById('sidebar');
+  const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+  const content = document.getElementById('content');
+
+  function isMobile() {
+    return window.innerWidth < 768;
+  }
+
+  function closeSidebarOnMobile() {
+    if (isMobile() && sidebar.classList.contains('show-mobile')) {
+      sidebar.classList.remove('show-mobile');
+    }
+  }
+
+  function toggleSidebar() {
+    if (isMobile()) {
+      sidebar.classList.toggle('show-mobile');
+    } else {
+      // Desktop: toggle collapsed state
+      sidebar.classList.toggle('collapsed');
+      if (sidebar.classList.contains('collapsed')) {
+        content.style.marginLeft = '80px';
+      } else {
+        content.style.marginLeft = '260px';
+      }
+    }
+  }
+
+  // Event listeners
+  toggleSidebarBtn.addEventListener('click', toggleSidebar);
+  if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', toggleSidebar);
+  }
+
+  // Close sidebar when clicking outside on mobile? Optional: we can close when clicking content.
+  // But we'll add a click handler on content to close only if sidebar is open and we click outside.
+  content.addEventListener('click', (e) => {
+    if (isMobile() && sidebar.classList.contains('show-mobile')) {
+      // Only close if the click target is not inside the sidebar
+      if (!sidebar.contains(e.target)) {
+        sidebar.classList.remove('show-mobile');
+      }
+    }
+  });
+
+  // Handle window resize: reset styles
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      // On mobile, ensure content margin is 0 and sidebar is not collapsed (desktop mode)
+      content.style.marginLeft = '0';
+      sidebar.classList.remove('collapsed');
+      // Ensure sidebar is hidden by default (unless it was shown)
+      // But we don't auto-hide; we keep the current state, but if it's shown and we resize to desktop, it's okay.
+      if (!sidebar.classList.contains('show-mobile')) {
+        // If hidden, we might want to keep hidden? Actually on desktop, sidebar should always be visible.
+        // So we need to show it on desktop if it was hidden on mobile.
+        if (window.innerWidth >= 768 && sidebar.classList.contains('show-mobile')) {
+          sidebar.classList.remove('show-mobile');
+        }
+      }
+    } else {
+      // On desktop, ensure sidebar is visible (no transform) and collapsed state is applied
+      sidebar.classList.remove('show-mobile');
+      // Set content margin based on collapsed state
+      if (sidebar.classList.contains('collapsed')) {
+        content.style.marginLeft = '80px';
+      } else {
+        content.style.marginLeft = '260px';
+      }
+    }
+  });
 
   // ==================== AUTH UI ====================
   const signinTab = document.getElementById('signinTabBtn');
@@ -571,6 +789,10 @@
         showPage('home');
         loadQuestions();
         clearForm();
+        // On login, if mobile, ensure sidebar is hidden initially
+        if (isMobile()) {
+          sidebar.classList.remove('show-mobile');
+        }
       } else {
         showError(msgDiv, data.message || 'Invalid credentials');
       }
@@ -597,6 +819,10 @@
     document.getElementById('myQuestionsSection').style.display = page === 'list' ? 'block' : 'none';
     if (page === 'list') loadQuestions();
     if (page === 'add') clearForm();
+    // On mobile, close sidebar after navigation
+    if (isMobile()) {
+      sidebar.classList.remove('show-mobile');
+    }
   }
 
   // ==================== QUESTION FORM LOGIC ====================
@@ -860,6 +1086,14 @@
           document.getElementById('dashboard').style.display = 'block';
           showPage('home');
           loadQuestions();
+          // Set sidebar initial state based on screen size
+          if (isMobile()) {
+            sidebar.classList.remove('show-mobile');
+          } else {
+            // Desktop: ensure sidebar is visible and not collapsed by default
+            sidebar.classList.remove('collapsed');
+            content.style.marginLeft = '260px';
+          }
         }
       } catch (err) {
         localStorage.removeItem('token');
