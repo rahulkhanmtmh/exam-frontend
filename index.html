@@ -708,7 +708,7 @@
           <input type="checkbox" id="bulkModeCheckbox"> <i class="fas fa-layer-group"></i> Bulk Import (paste multiple questions)
         </label>
         <div id="bulkArea" style="display: none;">
-          <textarea id="bulkQuestions" class="bulk-textarea" placeholder="Enter one question per line.&#10;Example:&#10;What is the capital of France?&#10;Solve for x: 2x + 5 = 15&#10;..."></textarea>
+          <textarea id="bulkQuestions" class="bulk-textarea" placeholder="Enter questions separated by new lines OR by slashes ( / )&#10;Example (lines):&#10;What is the capital of France?&#10;Solve for x: 2x + 5 = 15&#10;&#10;Example (slash):&#10;What is 2+2? / What is the capital of Japan? / Define Newton's first law"></textarea>
           <div class="bulk-actions">
             <button onclick="addBulkQuestions()" id="bulkAddBtn"><i class="fas fa-plus-circle"></i> Add Bulk Questions</button>
             <button onclick="clearBulkArea()">Clear</button>
@@ -901,7 +901,6 @@
     document.getElementById('dashboard').style.display = 'none';
     setActiveTab('signin');
     document.getElementById('questionList').innerHTML = '';
-    // clear signin fields (they will be empty anyway)
     document.getElementById('signinEmail').value = '';
     document.getElementById('signinPassword').value = '';
   }
@@ -1132,7 +1131,7 @@
     }
   }
 
-  // ==================== BULK IMPORT ====================
+  // ==================== BULK IMPORT (with slash separator support) ====================
   const bulkCheckbox = document.getElementById('bulkModeCheckbox');
   const bulkArea = document.getElementById('bulkArea');
   bulkCheckbox.addEventListener('change', () => {
@@ -1159,8 +1158,19 @@
       return;
     }
 
-    const lines = rawText.split(/\r?\n/).filter(line => line.trim().length > 0);
-    if (lines.length === 0) {
+    // Split by newline first
+    let lines = rawText.split(/\r?\n/);
+    let questions = [];
+
+    // If there's only one line and it contains slashes, split by slash
+    if (lines.length === 1 && lines[0].includes('/')) {
+      questions = lines[0].split('/').map(q => q.trim()).filter(q => q.length > 0);
+    } else {
+      // Otherwise, each line is a question
+      questions = lines.filter(line => line.trim().length > 0);
+    }
+
+    if (questions.length === 0) {
       showError(document.getElementById('bulkStatus'), 'No valid questions found.');
       return;
     }
@@ -1198,12 +1208,12 @@
     let successCount = 0;
     let failCount = 0;
 
-    for (const line of lines) {
+    for (const text of questions) {
       const questionData = {
         cls: commonClass,
         subject: commonSubject,
         chapter: commonChapter,
-        text: line.trim(),
+        text: text,
         marks: commonMarks,
         type: commonType,
         options: commonOptions,
