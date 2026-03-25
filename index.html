@@ -399,6 +399,25 @@ function clearForm() {
   document.getElementById("marks").value = "";
 }
 
+  function parseMCQ(text) {
+  const lines = text.split("\n").map(l => l.trim()).filter(l => l);
+
+  let question = "";
+  let options = { A: "", B: "", C: "", D: "" };
+
+  lines.forEach(line => {
+    if (/^A[\.\)]/i.test(line)) options.A = line.replace(/^A[\.\)]/i, "").trim();
+    else if (/^B[\.\)]/i.test(line)) options.B = line.replace(/^B[\.\)]/i, "").trim();
+    else if (/^C[\.\)]/i.test(line)) options.C = line.replace(/^C[\.\)]/i, "").trim();
+    else if (/^D[\.\)]/i.test(line)) options.D = line.replace(/^D[\.\)]/i, "").trim();
+    else {
+      question += line + " ";
+    }
+  });
+
+  return { question: question.trim(), options };
+}
+
 </script>
 
 </body>
