@@ -1,6 +1,6 @@
 // js/questions.js
 import { BASE_URL, getToken, setToken, showError, hideError } from "./auth.js";
-import { showPage, closeMobileSidebar } from "./ui.js";
+import { showPage } from "./main.js";
 
 export let editId = null;
 
@@ -13,11 +13,11 @@ const questionTextarea = document.getElementById("questionText");
 const marksInput = document.getElementById("marks");
 const correctAnswerInput = document.getElementById("correctAnswer");
 
-// Options fields
 const optA = document.getElementById("optA");
 const optB = document.getElementById("optB");
 const optC = document.getElementById("optC");
 const optD = document.getElementById("optD");
+
 const colA1 = document.getElementById("colA1");
 const colA2 = document.getElementById("colA2");
 const colA3 = document.getElementById("colA3");
@@ -25,13 +25,12 @@ const colB1 = document.getElementById("colB1");
 const colB2 = document.getElementById("colB2");
 const colB3 = document.getElementById("colB3");
 
-// Bulk elements
 const bulkCheckbox = document.getElementById("bulkModeCheckbox");
 const bulkArea = document.getElementById("bulkArea");
 const bulkQuestionsTextarea = document.getElementById("bulkQuestions");
 const bulkStatusDiv = document.getElementById("bulkStatus");
 
-// Helper to clear form
+// ==================== Helper Functions ====================
 export function clearForm() {
   editId = null;
   classInput.value = "";
@@ -54,7 +53,6 @@ export function clearForm() {
   typeSelect.dispatchEvent(new Event("change"));
 }
 
-// Build question object from form
 function getQuestionFromForm() {
   let options = {};
   if (typeSelect.value === "MCQ") {
@@ -77,7 +75,7 @@ function getQuestionFromForm() {
   };
 }
 
-// Save one question (add or update)
+// ==================== CRUD Operations ====================
 export async function saveQuestion() {
   const token = getToken();
   if (!token) return false;
@@ -99,7 +97,7 @@ export async function saveQuestion() {
       alert(editId ? "Question updated!" : "Question saved!");
       editId = null;
       clearForm();
-      await loadQuestions(); // refresh list
+      await loadQuestions();
       showPage("list");
       return true;
     } else {
@@ -113,7 +111,6 @@ export async function saveQuestion() {
   }
 }
 
-// Load all questions and render folder view
 export async function loadQuestions() {
   const token = getToken();
   if (!token) return;
@@ -132,7 +129,6 @@ export async function loadQuestions() {
   }
 }
 
-// Delete question
 export async function deleteQuestion(id) {
   const token = getToken();
   if (!token || !confirm("Delete this question?")) return;
@@ -144,7 +140,6 @@ export async function deleteQuestion(id) {
   else await loadQuestions();
 }
 
-// Edit question: fetch all, find by id, populate form and switch to add page
 export async function editQuestion(id) {
   const token = getToken();
   if (!token) return;
@@ -193,13 +188,7 @@ export async function editQuestion(id) {
   }
 }
 
-// Helper: logout and show login
-function logoutAndRedirect() {
-  setToken(null);
-  window.location.reload(); // simple redirect
-}
-
-// Folder rendering (unchanged)
+// ==================== Folder View ====================
 function renderFolderView(questions) {
   const container = document.getElementById("questionList");
   container.innerHTML = "";
@@ -209,6 +198,7 @@ function renderFolderView(questions) {
     return;
   }
 
+  // Group by class
   const groupedByClass = {};
   questions.forEach(q => {
     const className = q.cls && q.cls.trim() !== "" ? q.cls : "Uncategorized";
@@ -218,6 +208,8 @@ function renderFolderView(questions) {
 
   for (const className in groupedByClass) {
     const classQuestions = groupedByClass[className];
+
+    // Group by chapter
     const groupedByChapter = {};
     classQuestions.forEach(q => {
       const chapterName = q.chapter && q.chapter.trim() !== "" ? q.chapter : "General";
@@ -256,6 +248,7 @@ function renderFolderView(questions) {
 
       classChildren.appendChild(chapterDiv);
 
+      // Toggle chapter expansion
       chapterHeader.addEventListener("click", (e) => {
         e.stopPropagation();
         const icon = chapterHeader.querySelector("i:last-child");
@@ -269,6 +262,7 @@ function renderFolderView(questions) {
 
     container.appendChild(classDiv);
 
+    // Toggle class expansion
     classHeader.addEventListener("click", () => {
       const icon = classHeader.querySelector("i:last-child");
       classChildren.classList.toggle("open");
@@ -307,7 +301,12 @@ function createQuestionCard(q) {
   return card;
 }
 
-// Upload OCR
+function logoutAndRedirect() {
+  setToken(null);
+  window.location.reload();
+}
+
+// ==================== OCR ====================
 export async function uploadImage() {
   const token = getToken();
   const fileInput = document.getElementById("imageInput");
@@ -329,7 +328,7 @@ export async function uploadImage() {
   }
 }
 
-// Bulk import
+// ==================== Bulk Import ====================
 export async function addBulkQuestions() {
   const token = getToken();
   if (!token) return;
@@ -339,6 +338,7 @@ export async function addBulkQuestions() {
     return;
   }
 
+  // Split by newline first
   let lines = rawText.split(/\r?\n/);
   let questions = [];
   if (lines.length === 1 && lines[0].includes("/")) {
@@ -419,27 +419,28 @@ export function clearBulkArea() {
   hideError(bulkStatusDiv);
 }
 
-// Bulk mode toggle
+// ==================== UI Initialisers ====================
 export function initBulkMode() {
-  bulkCheckbox.addEventListener("change", () => {
-    bulkArea.style.display = bulkCheckbox.checked ? "block" : "none";
-    const singleForm = document.getElementById("singleQuestionForm");
-    if (bulkCheckbox.checked) {
-      singleForm.style.opacity = "0.5";
-    } else {
-      singleForm.style.opacity = "1";
-    }
-  });
+  if (bulkCheckbox) {
+    bulkCheckbox.addEventListener("change", () => {
+      bulkArea.style.display = bulkCheckbox.checked ? "block" : "none";
+      const singleForm = document.getElementById("singleQuestionForm");
+      if (singleForm) {
+        singleForm.style.opacity = bulkCheckbox.checked ? "0.5" : "1";
+      }
+    });
+  }
 }
 
-// Type switch UI
 export function initTypeSwitch() {
   const mcqBox = document.getElementById("mcqBox");
   const matchBox = document.getElementById("matchBox");
-  typeSelect.addEventListener("change", () => {
-    mcqBox.style.display = typeSelect.value === "MCQ" ? "block" : "none";
-    matchBox.style.display = typeSelect.value === "MATCH" ? "block" : "none";
-  });
-  // initial call
-  typeSelect.dispatchEvent(new Event("change"));
+  if (typeSelect && mcqBox && matchBox) {
+    typeSelect.addEventListener("change", () => {
+      mcqBox.style.display = typeSelect.value === "MCQ" ? "block" : "none";
+      matchBox.style.display = typeSelect.value === "MATCH" ? "block" : "none";
+    });
+    // initial call
+    typeSelect.dispatchEvent(new Event("change"));
+  }
 }
