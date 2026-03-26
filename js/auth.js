@@ -1,12 +1,16 @@
-
 // js/auth.js
 export const BASE_URL = "https://exam-backend-cu62.onrender.com";
-export let currentToken = localStorage.getItem("token");
+
+export function getToken() {
+  return localStorage.getItem("token");
+}
 
 export function setToken(token) {
-  currentToken = token;
-  if (token) localStorage.setItem("token", token);
-  else localStorage.removeItem("token");
+  if (token) {
+    localStorage.setItem("token", token);
+  } else {
+    localStorage.removeItem("token");
+  }
 }
 
 export function showError(container, message) {
@@ -63,5 +67,4 @@ export async function login(email, password) {
 
 export function logout() {
   setToken(null);
-  // Refresh page or call UI reset
 }
