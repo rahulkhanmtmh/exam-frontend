@@ -1,6 +1,5 @@
-
 // js/questions.js
-import { BASE_URL, currentToken, setToken, showError, hideError } from "./auth.js";
+import { BASE_URL, getToken, setToken, showError, hideError } from "./auth.js";
 import { showPage, closeMobileSidebar } from "./ui.js";
 
 export let editId = null;
@@ -80,7 +79,8 @@ function getQuestionFromForm() {
 
 // Save one question (add or update)
 export async function saveQuestion() {
-  if (!currentToken) return false;
+  const token = getToken();
+  if (!token) return false;
   const questionData = getQuestionFromForm();
 
   const url = editId ? `${BASE_URL}/update-question/${editId}` : `${BASE_URL}/add-question`;
@@ -91,7 +91,7 @@ export async function saveQuestion() {
       method,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${currentToken}`
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify(questionData)
     });
@@ -115,10 +115,11 @@ export async function saveQuestion() {
 
 // Load all questions and render folder view
 export async function loadQuestions() {
-  if (!currentToken) return;
+  const token = getToken();
+  if (!token) return;
   try {
     const res = await fetch(`${BASE_URL}/questions`, {
-      headers: { Authorization: `Bearer ${currentToken}` }
+      headers: { Authorization: `Bearer ${token}` }
     });
     if (res.status === 401) {
       logoutAndRedirect();
@@ -133,10 +134,11 @@ export async function loadQuestions() {
 
 // Delete question
 export async function deleteQuestion(id) {
-  if (!currentToken || !confirm("Delete this question?")) return;
+  const token = getToken();
+  if (!token || !confirm("Delete this question?")) return;
   const res = await fetch(`${BASE_URL}/delete-question/${id}`, {
     method: "DELETE",
-    headers: { Authorization: `Bearer ${currentToken}` }
+    headers: { Authorization: `Bearer ${token}` }
   });
   if (res.status === 401) logoutAndRedirect();
   else await loadQuestions();
@@ -144,10 +146,11 @@ export async function deleteQuestion(id) {
 
 // Edit question: fetch all, find by id, populate form and switch to add page
 export async function editQuestion(id) {
-  if (!currentToken) return;
+  const token = getToken();
+  if (!token) return;
   try {
     const res = await fetch(`${BASE_URL}/questions`, {
-      headers: { Authorization: `Bearer ${currentToken}` }
+      headers: { Authorization: `Bearer ${token}` }
     });
     if (res.status === 401) {
       logoutAndRedirect();
@@ -196,7 +199,7 @@ function logoutAndRedirect() {
   window.location.reload(); // simple redirect
 }
 
-// Folder rendering
+// Folder rendering (unchanged)
 function renderFolderView(questions) {
   const container = document.getElementById("questionList");
   container.innerHTML = "";
@@ -206,7 +209,6 @@ function renderFolderView(questions) {
     return;
   }
 
-  // Group by class
   const groupedByClass = {};
   questions.forEach(q => {
     const className = q.cls && q.cls.trim() !== "" ? q.cls : "Uncategorized";
@@ -216,8 +218,6 @@ function renderFolderView(questions) {
 
   for (const className in groupedByClass) {
     const classQuestions = groupedByClass[className];
-
-    // Group by chapter
     const groupedByChapter = {};
     classQuestions.forEach(q => {
       const chapterName = q.chapter && q.chapter.trim() !== "" ? q.chapter : "General";
@@ -256,7 +256,6 @@ function renderFolderView(questions) {
 
       classChildren.appendChild(chapterDiv);
 
-      // Toggle chapter
       chapterHeader.addEventListener("click", (e) => {
         e.stopPropagation();
         const icon = chapterHeader.querySelector("i:last-child");
@@ -301,7 +300,6 @@ function createQuestionCard(q) {
       <button class="delete-question" data-id="${q._id}" style="background:#ef4444;">Delete</button>
     </div>
   `;
-  // Attach event listeners
   const editBtn = card.querySelector(".edit-question");
   const deleteBtn = card.querySelector(".delete-question");
   editBtn.addEventListener("click", () => editQuestion(q._id));
@@ -311,6 +309,7 @@ function createQuestionCard(q) {
 
 // Upload OCR
 export async function uploadImage() {
+  const token = getToken();
   const fileInput = document.getElementById("imageInput");
   const file = fileInput.files[0];
   if (!file) return alert("Select an image");
@@ -319,7 +318,7 @@ export async function uploadImage() {
   try {
     const res = await fetch(`${BASE_URL}/ocr`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${currentToken}` },
+      headers: { Authorization: `Bearer ${token}` },
       body: fd
     });
     if (res.status === 401) logoutAndRedirect();
@@ -332,7 +331,8 @@ export async function uploadImage() {
 
 // Bulk import
 export async function addBulkQuestions() {
-  if (!currentToken) return;
+  const token = getToken();
+  if (!token) return;
   const rawText = bulkQuestionsTextarea.value;
   if (!rawText.trim()) {
     showError(bulkStatusDiv, "Please paste at least one question.");
@@ -387,7 +387,7 @@ export async function addBulkQuestions() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${currentToken}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(questionData)
       });
