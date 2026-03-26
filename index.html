@@ -20,7 +20,7 @@
 
     <div id="signinFormContainer">
       <div class="form-title">Welcome back</div>
-      <form id="signinForm">
+      <form id="signinForm" onsubmit="return false;">
         <div class="input-group">
           <label>Email</label>
           <input type="email" class="input-field" id="signinEmail" placeholder="teacher@school.com" autocomplete="off">
@@ -28,7 +28,7 @@
         <div class="input-group">
           <label>Password</label>
           <div class="password-wrapper">
-            <input type="password" class="input-field" id="signinPassword" autocomplete="off">
+            <input type="password" class="input-field" id="signinPassword" autocomplete="new-password">
             <i class="far fa-eye-slash toggle-password" data-target="signinPassword"></i>
           </div>
         </div>
@@ -39,7 +39,7 @@
 
     <div id="signupFormContainer" class="form-hidden">
       <div class="form-title">Create account</div>
-      <form id="signupForm">
+      <form id="signupForm" onsubmit="return false;">
         <div class="input-group">
           <label>School name</label>
           <input type="text" class="input-field" id="signupSchool" autocomplete="off">
@@ -51,7 +51,7 @@
         <div class="input-group">
           <label>Password</label>
           <div class="password-wrapper">
-            <input type="password" class="input-field" id="signupPassword" autocomplete="off">
+            <input type="password" class="input-field" id="signupPassword" autocomplete="new-password">
             <i class="far fa-eye-slash toggle-password" data-target="signupPassword"></i>
           </div>
         </div>
