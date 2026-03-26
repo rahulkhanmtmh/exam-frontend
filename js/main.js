@@ -1,6 +1,5 @@
-// js/main.js
 import { BASE_URL, getToken, setToken, register, login, showError, hideError } from "./auth.js";
-import { saveQuestion, loadQuestions, clearForm, editQuestion, deleteQuestion, uploadImage, addBulkQuestions, clearBulkArea, initTypeSwitch, initBulkMode } from "./questions.js";
+import { saveQuestion, loadQuestions, clearForm, uploadImage, addBulkQuestions, clearBulkArea, initTypeSwitch, initBulkMode } from "./questions.js";
 import { initUI, bindNavigation, initTheme, initDropdown, bindLogout, initPasswordToggle, setShowPageCallback } from "./ui.js";
 
 // DOM elements
@@ -19,7 +18,6 @@ const signupForm = document.getElementById("signupForm");
 const msgDiv = document.getElementById("msg");
 const signupMsgDiv = document.getElementById("signupMsg");
 
-// Helper: show/hide auth tabs
 function setActiveTab(tab) {
   if (tab === "signin") {
     signinTab.classList.add("active");
@@ -38,7 +36,6 @@ function setActiveTab(tab) {
   }
 }
 
-// Page navigation
 export function showPage(page) {
   homeDiv.style.display = page === "home" ? "block" : "none";
   addSection.style.display = page === "add" ? "block" : "none";
@@ -47,7 +44,6 @@ export function showPage(page) {
   if (page === "add") clearForm();
 }
 
-// Logout function
 function handleLogout() {
   setToken(null);
   loginDiv.style.display = "flex";
@@ -58,7 +54,6 @@ function handleLogout() {
   document.getElementById("signinPassword").value = "";
 }
 
-// Auth event handlers
 signinForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("signinEmail").value.trim();
@@ -70,9 +65,7 @@ signinForm.addEventListener("submit", async (e) => {
     showPage("home");
     loadQuestions();
     clearForm();
-    if (window.innerWidth < 768) {
-      document.getElementById("sidebar").classList.remove("show-mobile");
-    }
+    if (window.innerWidth < 768) document.getElementById("sidebar").classList.remove("show-mobile");
   } else {
     showError(msgDiv, result.message);
   }
@@ -100,7 +93,7 @@ signupForm.addEventListener("submit", async (e) => {
 signinTab.addEventListener("click", () => setActiveTab("signin"));
 signupTab.addEventListener("click", () => setActiveTab("signup"));
 
-// Initialize UI modules
+// Initialize modules
 initUI();
 initTheme();
 initDropdown();
@@ -108,21 +101,16 @@ initPasswordToggle();
 initTypeSwitch();
 initBulkMode();
 
-// Bind navigation
 bindNavigation(showPage);
 bindLogout(handleLogout);
-
-// Set callback for ui.js to call showPage (circular dependency handled)
 setShowPageCallback(showPage);
 
-// Bind button events for question actions
 document.getElementById("saveQuestionBtn").addEventListener("click", saveQuestion);
 document.getElementById("clearFormBtn").addEventListener("click", clearForm);
 document.getElementById("scanImageBtn").addEventListener("click", uploadImage);
 document.getElementById("bulkAddBtn").addEventListener("click", addBulkQuestions);
 document.getElementById("clearBulkBtn").addEventListener("click", clearBulkArea);
 
-// Initial token check
 window.onload = async () => {
   const token = getToken();
   if (token) {
