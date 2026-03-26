@@ -1,4 +1,3 @@
-// js/auth.js
 export const BASE_URL = "https://exam-backend-cu62.onrender.com";
 
 export function getToken() {
@@ -6,11 +5,8 @@ export function getToken() {
 }
 
 export function setToken(token) {
-  if (token) {
-    localStorage.setItem("token", token);
-  } else {
-    localStorage.removeItem("token");
-  }
+  if (token) localStorage.setItem("token", token);
+  else localStorage.removeItem("token");
 }
 
 export function showError(container, message) {
@@ -34,11 +30,8 @@ export async function register(school, email, password, confirm) {
       body: JSON.stringify({ schoolName: school, email, password })
     });
     const data = await res.json();
-    if (res.ok) {
-      return { ok: true, message: data.message };
-    } else {
-      return { ok: false, message: data.message || "Registration failed" };
-    }
+    if (res.ok) return { ok: true, message: data.message };
+    else return { ok: false, message: data.message || "Registration failed" };
   } catch (err) {
     return { ok: false, message: "Network error" };
   }
