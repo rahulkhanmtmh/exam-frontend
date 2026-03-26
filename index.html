@@ -6,6 +6,8 @@
   <title>Exam App · Modern UI</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- MathJax for LaTeX -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
   <style>
     * {
       margin: 0;
@@ -20,7 +22,6 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* Dark mode */
     body.dark {
       background: #0f172a;
       color: #e2e8f0;
@@ -52,7 +53,7 @@
       color: #e2e8f0;
     }
 
-    /* Auth Card Styles */
+    /* Auth Card */
     #login {
       display: flex;
       align-items: center;
@@ -60,7 +61,6 @@
       min-height: 100vh;
       padding: 1.5rem;
     }
-
     .auth-card {
       max-width: 460px;
       width: 100%;
@@ -69,7 +69,6 @@
       box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
       padding: 2rem 1.8rem;
     }
-
     .tab-bar {
       display: flex;
       background: #f1f5f9;
@@ -78,7 +77,6 @@
       margin-bottom: 2rem;
       gap: 6px;
     }
-
     .tab-btn {
       flex: 1;
       text-align: center;
@@ -91,33 +89,25 @@
       color: #475569;
       font-family: inherit;
     }
-
     .tab-btn.active {
       background: white;
       color: #4f46e5;
     }
-
-    .form-hidden {
-      display: none;
-    }
-
+    .form-hidden { display: none; }
     .form-title {
       font-size: 1.6rem;
       font-weight: 700;
       margin-bottom: 1.5rem;
     }
-
     .input-group {
       margin-bottom: 1.3rem;
     }
-
     label {
       display: block;
       font-size: 0.85rem;
       font-weight: 500;
       margin-bottom: 0.45rem;
     }
-
     .input-field {
       width: 100%;
       padding: 0.85rem 1rem;
@@ -127,20 +117,16 @@
       font-size: 0.95rem;
       outline: none;
     }
-
     .input-field:focus {
       border-color: #818cf8;
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
-
     .password-wrapper {
       position: relative;
     }
-
     .password-wrapper input {
       padding-right: 2.7rem;
     }
-
     .toggle-password {
       position: absolute;
       right: 1rem;
@@ -149,7 +135,6 @@
       cursor: pointer;
       color: #94a3b8;
     }
-
     .submit-btn {
       width: 100%;
       background: linear-gradient(105deg, #4f46e5 0%, #6366f1 100%);
@@ -161,7 +146,6 @@
       cursor: pointer;
       margin-top: 0.5rem;
     }
-
     .error-msg {
       background: #fee2e2;
       color: #b91c1c;
@@ -172,12 +156,8 @@
       display: none;
     }
 
-    /* Dashboard Styles */
-    #dashboard {
-      display: none;
-    }
-
-    /* Top Bar */
+    /* Dashboard */
+    #dashboard { display: none; }
     .top-bar {
       position: fixed;
       top: 0;
@@ -190,15 +170,12 @@
       justify-content: space-between;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       z-index: 100;
-      transition: background 0.3s;
     }
-
     .logo {
       display: flex;
       align-items: center;
       gap: 0.8rem;
     }
-
     .top-bar .three-dot-icon {
       background: transparent;
       border: none;
@@ -207,26 +184,14 @@
       color: #4f46e5;
       font-size: 1.3rem;
       cursor: pointer;
-      transition: background 0.2s;
     }
-    .top-bar .three-dot-icon:hover {
-      background: rgba(79, 70, 229, 0.1);
-    }
-    body.dark .top-bar .three-dot-icon:hover {
-      background: rgba(129, 140, 248, 0.2);
-    }
-
-    .logo h2 {
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-
+    .top-bar .three-dot-icon:hover { background: rgba(79, 70, 229, 0.1); }
+    .logo h2 { font-size: 1.3rem; font-weight: 700; }
     .nav-links {
       display: flex;
       gap: 1.5rem;
       align-items: center;
     }
-
     .nav-links a, .nav-links button {
       background: transparent;
       border: none;
@@ -237,18 +202,8 @@
       gap: 0.5rem;
       padding: 0.5rem 0.8rem;
       border-radius: 40px;
-      transition: background 0.2s;
     }
-
-    .nav-links a:hover, .nav-links button:hover {
-      background: #eef2ff;
-    }
-
-    body.dark .nav-links a:hover, body.dark .nav-links button:hover {
-      background: #334155;
-    }
-
-    /* Sidebar */
+    .nav-links a:hover, .nav-links button:hover { background: #eef2ff; }
     .sidebar {
       width: 260px;
       height: 100vh;
@@ -263,37 +218,16 @@
       transition: transform 0.3s ease, width 0.3s ease;
       z-index: 99;
     }
-
-    .sidebar.collapsed {
-      width: 80px;
-    }
-
+    .sidebar.collapsed { width: 80px; }
     .sidebar.collapsed .nav-buttons button span,
     .sidebar.collapsed .dropdown-container .three-dot-btn span,
-    .sidebar.collapsed .sidebar h3 span {
-      display: none;
-    }
-
+    .sidebar.collapsed .sidebar h3 span { display: none; }
     .sidebar.collapsed .nav-buttons button i,
     .sidebar.collapsed .dropdown-container .three-dot-btn i,
-    .sidebar.collapsed .sidebar h3 i {
-      margin-right: 0;
-    }
-
-    .sidebar.collapsed .nav-buttons button {
-      text-align: center;
-      padding: 12px 0;
-    }
-
-    .sidebar.collapsed .dropdown-container .three-dot-btn {
-      text-align: center;
-      padding: 10px 0;
-    }
-
-    .sidebar.collapsed .sidebar h3 {
-      text-align: center;
-    }
-
+    .sidebar.collapsed .sidebar h3 i { margin-right: 0; }
+    .sidebar.collapsed .nav-buttons button { text-align: center; padding: 12px 0; }
+    .sidebar.collapsed .dropdown-container .three-dot-btn { text-align: center; padding: 10px 0; }
+    .sidebar.collapsed .sidebar h3 { text-align: center; }
     .sidebar-header {
       display: flex;
       align-items: center;
@@ -309,14 +243,7 @@
       border-radius: 8px;
       color: #4f46e5;
     }
-    .toggle-sidebar-btn:hover {
-      background: #eef2ff;
-    }
-
-    .sidebar .nav-buttons {
-      flex: 1;
-    }
-
+    .sidebar .nav-buttons { flex: 1; }
     .sidebar button {
       width: 100%;
       background: #e2e8f0;
@@ -327,31 +254,20 @@
       font-weight: 600;
       text-align: left;
       cursor: pointer;
-      transition: all 0.2s;
       color: #1e293b;
     }
-
-    .sidebar button:hover {
-      background: #cbd5e1;
-      color: #4f46e5;
-    }
-
+    .sidebar button:hover { background: #cbd5e1; color: #4f46e5; }
     .sidebar button.logout-btn {
       background: #ef4444;
       border-color: #dc2626;
       color: white;
     }
-    .sidebar button.logout-btn:hover {
-      background: #dc2626;
-    }
-
     .dropdown-container {
       position: relative;
       margin-top: 1rem;
       border-top: 1px solid #e2e8f0;
       padding-top: 1rem;
     }
-
     .three-dot-btn {
       width: 100%;
       background: #e2e8f0;
@@ -362,7 +278,6 @@
       cursor: pointer;
       font-size: 1.2rem;
     }
-
     .dropdown-menu {
       position: absolute;
       bottom: 100%;
@@ -376,11 +291,7 @@
       z-index: 10;
       overflow: hidden;
     }
-
-    .dropdown-menu.show {
-      display: block;
-    }
-
+    .dropdown-menu.show { display: block; }
     .dropdown-menu button {
       width: 100%;
       background: transparent;
@@ -391,12 +302,7 @@
       margin: 0;
       border-radius: 0;
     }
-
-    .dropdown-menu button:hover {
-      background: #f1f5f9;
-    }
-
-    /* Main content */
+    .dropdown-menu button:hover { background: #f1f5f9; }
     .content {
       margin-left: 260px;
       padding: 2rem;
@@ -404,41 +310,20 @@
       transition: margin-left 0.3s ease;
       margin-top: 60px;
     }
-
-    .sidebar.collapsed + .content {
-      margin-left: 80px;
-    }
-
-    /* Mobile styles */
+    .sidebar.collapsed + .content { margin-left: 80px; }
     @media (max-width: 768px) {
-      .top-bar {
-        padding: 0.5rem 1rem;
-      }
-      .nav-links {
-        gap: 0.5rem;
-      }
-      .nav-links a span, .nav-links button span {
-        display: none;
-      }
-      .nav-links a i, .nav-links button i {
-        font-size: 1.2rem;
-      }
+      .top-bar { padding: 0.5rem 1rem; }
+      .nav-links { gap: 0.5rem; }
+      .nav-links a span, .nav-links button span { display: none; }
+      .nav-links a i, .nav-links button i { font-size: 1.2rem; }
       .sidebar {
         top: 0;
         transform: translateX(-100%);
         width: 260px;
-        box-shadow: none;
         z-index: 1000;
       }
-      .sidebar.show-mobile {
-        transform: translateX(0);
-        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
-      }
-      .content {
-        margin-left: 0 !important;
-        padding: 1rem;
-        margin-top: 60px;
-      }
+      .sidebar.show-mobile { transform: translateX(0); }
+      .content { margin-left: 0 !important; padding: 1rem; margin-top: 60px; }
       .mobile-menu-toggle {
         display: block;
         position: fixed;
@@ -453,34 +338,16 @@
         z-index: 1100;
         display: block;
       }
-      body.dark .mobile-menu-toggle {
-        background: #1e293b;
-        color: white;
-      }
-      .sidebar .toggle-sidebar-btn {
-        display: block;
-      }
-      .sidebar.collapsed {
-        width: 260px;
-      }
+      body.dark .mobile-menu-toggle { background: #1e293b; color: white; }
+      .sidebar .toggle-sidebar-btn { display: block; }
+      .sidebar.collapsed { width: 260px; }
       .sidebar.collapsed .nav-buttons button span,
       .sidebar.collapsed .dropdown-container .three-dot-btn span,
-      .sidebar.collapsed .sidebar h3 span {
-        display: inline;
-      }
-      .sidebar.collapsed .nav-buttons button {
-        text-align: left;
-        padding: 12px;
-      }
-      .sidebar.collapsed .dropdown-container .three-dot-btn {
-        text-align: left;
-        padding: 10px;
-      }
-      .sidebar.collapsed .sidebar h3 {
-        text-align: left;
-      }
+      .sidebar.collapsed .sidebar h3 span { display: inline; }
+      .sidebar.collapsed .nav-buttons button { text-align: left; padding: 12px; }
+      .sidebar.collapsed .dropdown-container .three-dot-btn { text-align: left; padding: 10px; }
+      .sidebar.collapsed .sidebar h3 { text-align: left; }
     }
-
     .card {
       background: white;
       border: 1px solid #e2e8f0;
@@ -488,7 +355,6 @@
       margin: 1rem 0;
       border-radius: 1rem;
     }
-
     input, textarea, select {
       width: 100%;
       padding: 10px;
@@ -496,7 +362,6 @@
       border-radius: 14px;
       border: 1.5px solid #e2e8f0;
     }
-
     button {
       background: #4f46e5;
       color: white;
@@ -505,14 +370,12 @@
       border-radius: 40px;
       cursor: pointer;
     }
-
     .flex-buttons {
       display: flex;
       gap: 12px;
       margin-top: 12px;
       flex-wrap: wrap;
     }
-
     .bulk-section {
       margin-top: 20px;
       border-top: 1px solid #e2e8f0;
@@ -525,10 +388,7 @@
       cursor: pointer;
       margin-bottom: 10px;
     }
-    .bulk-toggle input {
-      width: auto;
-      margin: 0;
-    }
+    .bulk-toggle input { width: auto; margin: 0; }
     .bulk-textarea {
       width: 100%;
       min-height: 150px;
@@ -536,16 +396,10 @@
       font-family: monospace;
       margin: 10px 0;
     }
-    .bulk-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
+    .bulk-actions { display: flex; gap: 10px; margin-top: 10px; }
 
-    /* Folder tree styles */
-    .folder-container {
-      margin-top: 1rem;
-    }
+    /* Folder styles */
+    .folder-container { margin-top: 1rem; }
     .folder {
       margin: 0.5rem 0;
       border-left: 2px solid #e2e8f0;
@@ -562,20 +416,25 @@
       margin-bottom: 0.25rem;
       font-weight: 600;
     }
-    body.dark .folder-header {
-      background: #2d3748;
+    body.dark .folder-header { background: #2d3748; }
+    .folder-header i { font-size: 1rem; width: 1.2rem; }
+    .folder-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 0.5rem;
     }
-    .folder-header i {
-      font-size: 1rem;
-      width: 1.2rem;
+    .folder-actions button {
+      background: transparent;
+      color: #4f46e5;
+      padding: 4px 8px;
+      font-size: 0.8rem;
     }
+    .folder-actions button:hover { background: #eef2ff; }
     .folder-children {
       margin-left: 1.5rem;
       display: none;
     }
-    .folder-children.open {
-      display: block;
-    }
+    .folder-children.open { display: block; }
     .chapter-folder {
       margin: 0.5rem 0;
       border-left: 2px solid #cbd5e1;
@@ -591,39 +450,111 @@
       background: #f1f5f9;
       margin-bottom: 0.25rem;
     }
-    body.dark .chapter-header {
-      background: #334155;
+    body.dark .chapter-header { background: #334155; }
+    .chapter-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .chapter-actions button {
+      background: transparent;
+      color: #4f46e5;
+      padding: 4px 8px;
+      font-size: 0.8rem;
     }
     .chapter-children {
       margin-left: 1.5rem;
       display: none;
     }
-    .chapter-children.open {
-      display: block;
-    }
+    .chapter-children.open { display: block; }
     .question-card {
       margin: 0.75rem 0;
       background: white;
       border: 1px solid #e2e8f0;
       padding: 0.8rem;
       border-radius: 0.8rem;
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
     }
-    body.dark .question-card {
-      background: #1e293b;
-      border-color: #334155;
+    .question-checkbox {
+      margin-top: 0.2rem;
+      width: 1.2rem;
+      height: 1.2rem;
+      cursor: pointer;
+    }
+    .question-content {
+      flex: 1;
+    }
+    .question-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-left: auto;
+      align-self: flex-start;
+    }
+    .question-actions button {
+      background: transparent;
+      color: #4f46e5;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+    }
+    .bulk-delete-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      background: #f8fafc;
+      border-radius: 0.5rem;
+    }
+    body.dark .bulk-delete-toolbar {
+      background: #2d3748;
+    }
+    .select-all-checkbox {
+      width: 1.2rem;
+      height: 1.2rem;
+      cursor: pointer;
+    }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      width: 90%;
+      max-width: 400px;
+    }
+    body.dark .modal-content { background: #1e293b; }
+    .modal-content select, .modal-content input {
+      margin: 1rem 0;
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
     }
   </style>
 </head>
 <body>
 
-<!-- AUTH SECTION -->
 <div id="login">
   <div class="auth-card">
     <div class="tab-bar">
       <button class="tab-btn active" id="signinTabBtn"><i class="fas fa-sign-in-alt"></i> Sign in</button>
       <button class="tab-btn" id="signupTabBtn"><i class="fas fa-user-plus"></i> Create account</button>
     </div>
-
     <div id="signinFormContainer">
       <div class="form-title">Welcome back</div>
       <form id="signinForm" onsubmit="return false;">
@@ -642,7 +573,6 @@
       </form>
       <div id="msg" class="error-msg"></div>
     </div>
-
     <div id="signupFormContainer" class="form-hidden">
       <div class="form-title">Create account</div>
       <form id="signupForm" onsubmit="return false;">
@@ -675,7 +605,6 @@
   </div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard">
   <div class="top-bar">
     <div class="logo">
@@ -690,11 +619,7 @@
       <button id="logoutTopBtn"><i class="fas fa-sign-out-alt"></i><span> Logout</span></button>
     </div>
   </div>
-
-  <button class="mobile-menu-toggle" id="mobileMenuToggle">
-    <i class="fas fa-bars"></i>
-  </button>
-
+  <button class="mobile-menu-toggle" id="mobileMenuToggle"><i class="fas fa-bars"></i></button>
   <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <h3><i class="fas fa-graduation-cap"></i> <span>Exam App</span></h3>
@@ -715,22 +640,17 @@
       </div>
     </div>
   </div>
-
   <div class="content" id="content">
     <div id="home">
       <h2>📚 Welcome to Exam Portal</h2>
       <p>Manage your question bank, add new questions, and view saved ones.</p>
     </div>
-
-    <!-- ADD QUESTION SECTION (with bulk import) -->
     <div id="addQuestionSection" style="display:none;">
       <h2><i class="fas fa-plus-circle"></i> Add / Edit Question</h2>
-
       <div id="singleQuestionForm">
         <input type="text" id="class" placeholder="Class">
         <input type="text" id="subject" placeholder="Subject">
         <input type="text" id="chapter" placeholder="Chapter">
-
         <select id="type">
           <option value="MCQ">MCQ</option>
           <option value="SHORT">Short Answer</option>
@@ -738,16 +658,13 @@
           <option value="TRUE_FALSE">True / False</option>
           <option value="MATCH">Match the Column</option>
         </select>
-
-        <textarea id="questionText" placeholder="Enter your question here..."></textarea>
-
+        <textarea id="questionText" placeholder="Enter your question here... (supports LaTeX: $E=mc^2$ or $$\\int_0^1 x^2 dx$$)"></textarea>
         <div id="mcqBox">
           <input type="text" id="optA" placeholder="Option A">
           <input type="text" id="optB" placeholder="Option B">
           <input type="text" id="optC" placeholder="Option C">
           <input type="text" id="optD" placeholder="Option D">
         </div>
-
         <div id="matchBox" style="display:none;">
           <h4>Column A</h4>
           <input type="text" id="colA1" placeholder="A1">
@@ -758,26 +675,19 @@
           <input type="text" id="colB2" placeholder="B2">
           <input type="text" id="colB3" placeholder="B3">
         </div>
-
         <input type="text" id="correctAnswer" placeholder="Correct Answer">
         <input type="number" id="marks" placeholder="Marks">
-
         <input type="file" id="imageInput" accept="image/*">
         <button id="scanImageBtn"><i class="fas fa-camera"></i> Scan Image</button>
-
         <div class="flex-buttons">
           <button id="saveQuestionBtn">Save Question</button>
           <button id="clearFormBtn">Clear</button>
         </div>
       </div>
-
-      <!-- Bulk Import Section -->
       <div class="bulk-section">
-        <label class="bulk-toggle">
-          <input type="checkbox" id="bulkModeCheckbox"> <i class="fas fa-layer-group"></i> Bulk Import (paste multiple questions)
-        </label>
+        <label class="bulk-toggle"><input type="checkbox" id="bulkModeCheckbox"> <i class="fas fa-layer-group"></i> Bulk Import (paste multiple questions)</label>
         <div id="bulkArea" style="display: none;">
-          <textarea id="bulkQuestions" class="bulk-textarea" placeholder="Enter questions separated by new lines OR by slashes ( / )&#10;Example (lines):&#10;What is the capital of France?&#10;Solve for x: 2x + 5 = 15&#10;&#10;Example (slash):&#10;What is 2+2? / What is the capital of Japan? / Define Newton's first law"></textarea>
+          <textarea id="bulkQuestions" class="bulk-textarea" placeholder="Enter questions separated by new lines OR by slashes ( / )"></textarea>
           <div class="bulk-actions">
             <button id="bulkAddBtn"><i class="fas fa-plus-circle"></i> Add Bulk Questions</button>
             <button id="clearBulkBtn">Clear</button>
@@ -786,8 +696,6 @@
         </div>
       </div>
     </div>
-
-    <!-- My Questions Section -->
     <div id="myQuestionsSection" style="display:none;">
       <h2><i class="fas fa-database"></i> My Questions</h2>
       <div id="questionList"></div>
@@ -795,19 +703,29 @@
   </div>
 </div>
 
+<!-- Move Question Modal -->
+<div id="moveModal" class="modal">
+  <div class="modal-content">
+    <h3>Move Question</h3>
+    <label>Class</label>
+    <select id="moveClassSelect"></select>
+    <label>Chapter</label>
+    <select id="moveChapterSelect"></select>
+    <div class="modal-buttons">
+      <button id="moveConfirmBtn">Move</button>
+      <button id="moveCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // ==================== CONFIG ====================
+  // ---------- CONFIG ----------
   const BASE_URL = "https://exam-backend-cu62.onrender.com";
   let editId = null;
 
-  // ==================== AUTH HELPERS ====================
-  function getToken() {
-    return localStorage.getItem("token");
-  }
-  function setToken(token) {
-    if (token) localStorage.setItem("token", token);
-    else localStorage.removeItem("token");
-  }
+  // ---------- AUTH HELPERS ----------
+  function getToken() { return localStorage.getItem("token"); }
+  function setToken(token) { token ? localStorage.setItem("token", token) : localStorage.removeItem("token"); }
   function showError(container, message) {
     container.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
     container.style.display = "block";
@@ -817,12 +735,11 @@
     container.innerHTML = "";
   }
 
-  // ==================== AUTH FUNCTIONS ====================
+  // ---------- AUTH FUNCTIONS ----------
   async function register(school, email, password, confirm) {
     if (!school || !email || !password) return { ok: false, message: "All fields required" };
     if (password !== confirm) return { ok: false, message: "Passwords do not match" };
     if (password.length < 6) return { ok: false, message: "Password min 6 chars" };
-
     try {
       const res = await fetch(`${BASE_URL}/register`, {
         method: "POST",
@@ -832,14 +749,10 @@
       const data = await res.json();
       if (res.ok) return { ok: true, message: data.message };
       else return { ok: false, message: data.message || "Registration failed" };
-    } catch (err) {
-      return { ok: false, message: "Network error" };
-    }
+    } catch { return { ok: false, message: "Network error" }; }
   }
-
   async function login(email, password) {
     if (!email || !password) return { ok: false, message: "Email and password required" };
-
     try {
       const res = await fetch(`${BASE_URL}/login`, {
         method: "POST",
@@ -847,17 +760,10 @@
         body: JSON.stringify({ email, password })
       });
       const data = await res.json();
-      if (data.token) {
-        setToken(data.token);
-        return { ok: true, token: data.token };
-      } else {
-        return { ok: false, message: data.message || "Invalid credentials" };
-      }
-    } catch (err) {
-      return { ok: false, message: "Server error" };
-    }
+      if (data.token) { setToken(data.token); return { ok: true, token: data.token }; }
+      else return { ok: false, message: data.message || "Invalid credentials" };
+    } catch { return { ok: false, message: "Server error" }; }
   }
-
   function logout() {
     setToken(null);
     document.getElementById("login").style.display = "flex";
@@ -868,7 +774,7 @@
     document.getElementById("signinPassword").value = "";
   }
 
-  // ==================== UI HELPERS ====================
+  // ---------- UI HELPERS ----------
   function setActiveTab(tab) {
     const signinTab = document.getElementById("signinTabBtn");
     const signupTab = document.getElementById("signupTabBtn");
@@ -892,7 +798,6 @@
       hideError(signupMsgDiv);
     }
   }
-
   function showPage(page) {
     const homeDiv = document.getElementById("home");
     const addSection = document.getElementById("addQuestionSection");
@@ -904,7 +809,7 @@
     if (page === "add") clearForm();
   }
 
-  // ==================== QUESTION FORM ====================
+  // ---------- QUESTION FORM ----------
   function clearForm() {
     editId = null;
     document.getElementById("class").value = "";
@@ -926,31 +831,11 @@
     document.getElementById("type").value = "MCQ";
     document.getElementById("type").dispatchEvent(new Event("change"));
   }
-
   function getQuestionFromForm() {
     const type = document.getElementById("type").value;
     let options = {};
-    if (type === "MCQ") {
-      options = {
-        A: document.getElementById("optA").value,
-        B: document.getElementById("optB").value,
-        C: document.getElementById("optC").value,
-        D: document.getElementById("optD").value
-      };
-    } else if (type === "MATCH") {
-      options = {
-        colA: [
-          document.getElementById("colA1").value,
-          document.getElementById("colA2").value,
-          document.getElementById("colA3").value
-        ],
-        colB: [
-          document.getElementById("colB1").value,
-          document.getElementById("colB2").value,
-          document.getElementById("colB3").value
-        ]
-      };
-    }
+    if (type === "MCQ") options = { A: document.getElementById("optA").value, B: document.getElementById("optB").value, C: document.getElementById("optC").value, D: document.getElementById("optD").value };
+    else if (type === "MATCH") options = { colA: [document.getElementById("colA1").value, document.getElementById("colA2").value, document.getElementById("colA3").value], colB: [document.getElementById("colB1").value, document.getElementById("colB2").value, document.getElementById("colB3").value] };
     return {
       cls: document.getElementById("class").value,
       subject: document.getElementById("subject").value,
@@ -962,7 +847,6 @@
       correctAnswer: document.getElementById("correctAnswer").value
     };
   }
-
   async function saveQuestion() {
     const token = getToken();
     if (!token) { logout(); return; }
@@ -972,10 +856,7 @@
     try {
       const res = await fetch(url, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(questionData)
       });
       if (res.ok) {
@@ -984,319 +865,413 @@
         clearForm();
         await loadQuestions();
         showPage("list");
-      } else {
-        if (res.status === 401) logout();
-        else alert("Failed to save question");
-      }
-    } catch (err) {
-      alert("Error connecting to server");
-    }
+      } else { if (res.status === 401) logout(); else alert("Failed to save question"); }
+    } catch { alert("Error connecting to server"); }
   }
 
-  // ==================== FOLDER VIEW ====================
-  function createQuestionCard(q) {
-    const card = document.createElement("div");
-    card.className = "question-card";
-    let optionsHtml = "";
-    if (q.type === "MCQ" && q.options) {
-      optionsHtml = `<br>A. ${q.options.A || ""}<br>B. ${q.options.B || ""}<br>C. ${q.options.C || ""}<br>D. ${q.options.D || ""}<br>`;
-    } else if (q.type === "MATCH" && q.options) {
-      optionsHtml = `<br>Column A: ${(q.options.colA || []).join(", ")}<br>Column B: ${(q.options.colB || []).join(", ")}<br>`;
-    }
-    card.innerHTML = `
-      <b>${q.subject || "No subject"} | ${q.type}</b><br>
-      ${q.text}<br>
-      ${optionsHtml}
-      ✅ Correct: ${q.correctAnswer || "—"}<br>
-      ⭐ Marks: ${q.marks || 0}<br>
-      <div class="flex-buttons" style="margin-top:8px;">
-        <button class="edit-question" data-id="${q._id}" style="background:#3b82f6;">Edit</button>
-        <button class="delete-question" data-id="${q._id}" style="background:#ef4444;">Delete</button>
-      </div>
-    `;
-    const editBtn = card.querySelector(".edit-question");
-    const deleteBtn = card.querySelector(".delete-question");
-    editBtn.addEventListener("click", () => editQuestion(q._id));
-    deleteBtn.addEventListener("click", () => deleteQuestion(q._id));
-    return card;
-  }
-
-  async function loadQuestions() {
-    const token = getToken();
-    if (!token) return;
-    try {
-      const res = await fetch(`${BASE_URL}/questions`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.status === 401) { logout(); return; }
-      const data = await res.json();
-      const container = document.getElementById("questionList");
-      container.innerHTML = "";
-      if (!data || data.length === 0) {
-        container.innerHTML = "<p>No questions yet. Add some!</p>";
-        return;
-      }
-
-      // Group by class
-      const groupedByClass = {};
-      data.forEach(q => {
-        const className = q.cls && q.cls.trim() !== "" ? q.cls : "Uncategorized";
-        if (!groupedByClass[className]) groupedByClass[className] = [];
-        groupedByClass[className].push(q);
-      });
-
-      for (const className in groupedByClass) {
-        const classQuestions = groupedByClass[className];
-        // Group by chapter
-        const groupedByChapter = {};
-        classQuestions.forEach(q => {
-          const chapterName = q.chapter && q.chapter.trim() !== "" ? q.chapter : "General";
-          if (!groupedByChapter[chapterName]) groupedByChapter[chapterName] = [];
-          groupedByChapter[chapterName].push(q);
-        });
-
-        const classDiv = document.createElement("div");
-        classDiv.className = "folder";
-        const classHeader = document.createElement("div");
-        classHeader.className = "folder-header";
-        classHeader.innerHTML = `<i class="fas fa-folder"></i> <span>${className}</span> <i class="fas fa-chevron-right" style="margin-left:auto;"></i>`;
-        classDiv.appendChild(classHeader);
-
-        const classChildren = document.createElement("div");
-        classChildren.className = "folder-children";
-        classDiv.appendChild(classChildren);
-
-        for (const chapterName in groupedByChapter) {
-          const chapterQuestions = groupedByChapter[chapterName];
-          const chapterDiv = document.createElement("div");
-          chapterDiv.className = "chapter-folder";
-          const chapterHeader = document.createElement("div");
-          chapterHeader.className = "chapter-header";
-          chapterHeader.innerHTML = `<i class="fas fa-folder-open"></i> <span>${chapterName}</span> <i class="fas fa-chevron-right" style="margin-left:auto;"></i>`;
-          chapterDiv.appendChild(chapterHeader);
-
-          const chapterChildren = document.createElement("div");
-          chapterChildren.className = "chapter-children";
-          chapterDiv.appendChild(chapterChildren);
-
-          chapterQuestions.forEach(q => {
-            const card = createQuestionCard(q);
-            chapterChildren.appendChild(card);
-          });
-
-          classChildren.appendChild(chapterDiv);
-
-          chapterHeader.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const icon = chapterHeader.querySelector("i:last-child");
-            chapterChildren.classList.toggle("open");
-            icon.classList.toggle("fa-chevron-right");
-            icon.classList.toggle("fa-chevron-down");
-          });
-          chapterChildren.classList.remove("open");
-          chapterHeader.querySelector("i:last-child").classList.add("fa-chevron-right");
-        }
-
-        container.appendChild(classDiv);
-
-        classHeader.addEventListener("click", () => {
-          const icon = classHeader.querySelector("i:last-child");
-          classChildren.classList.toggle("open");
-          icon.classList.toggle("fa-chevron-right");
-          icon.classList.toggle("fa-chevron-down");
-        });
-        classChildren.classList.remove("open");
-        classHeader.querySelector("i:last-child").classList.add("fa-chevron-right");
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function deleteQuestion(id) {
-    const token = getToken();
-    if (!token || !confirm("Delete this question?")) return;
-    const res = await fetch(`${BASE_URL}/delete-question/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (res.status === 401) logout();
-    else await loadQuestions();
-  }
-
-  async function editQuestion(id) {
-    const token = getToken();
-    if (!token) return;
-    try {
-      const res = await fetch(`${BASE_URL}/questions`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.status === 401) { logout(); return; }
-      const questions = await res.json();
-      const question = questions.find(q => q._id === id);
-      if (!question) return;
-
-      editId = id;
-      document.getElementById("class").value = question.cls || "";
-      document.getElementById("subject").value = question.subject || "";
-      document.getElementById("chapter").value = question.chapter || "";
-      document.getElementById("questionText").value = question.text || "";
-      document.getElementById("marks").value = question.marks || "";
-      document.getElementById("correctAnswer").value = question.correctAnswer || "";
-
-      const typeSelect = document.getElementById("type");
-      typeSelect.value = question.type || "MCQ";
-      typeSelect.dispatchEvent(new Event("change"));
-
-      if (question.type === "MCQ" && question.options) {
-        document.getElementById("optA").value = question.options.A || "";
-        document.getElementById("optB").value = question.options.B || "";
-        document.getElementById("optC").value = question.options.C || "";
-        document.getElementById("optD").value = question.options.D || "";
-      } else if (question.type === "MATCH" && question.options) {
-        const colA = question.options.colA || [];
-        const colB = question.options.colB || [];
-        document.getElementById("colA1").value = colA[0] || "";
-        document.getElementById("colA2").value = colA[1] || "";
-        document.getElementById("colA3").value = colA[2] || "";
-        document.getElementById("colB1").value = colB[0] || "";
-        document.getElementById("colB2").value = colB[1] || "";
-        document.getElementById("colB3").value = colB[2] || "";
-      }
-
-      showPage("add");
-    } catch (err) {
-      alert("Could not load question for editing");
-    }
-  }
-
-  // ==================== OCR ====================
-  async function uploadImage() {
-    const token = getToken();
-    const fileInput = document.getElementById("imageInput");
-    const file = fileInput.files[0];
-    if (!file) return alert("Select an image");
-    const fd = new FormData();
-    fd.append("image", file);
-    try {
-      const res = await fetch(`${BASE_URL}/ocr`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd
-      });
-      if (res.status === 401) logout();
-      const data = await res.json();
-      document.getElementById("questionText").value = data.text || "OCR failed";
-    } catch (err) {
-      alert("OCR error");
-    }
-  }
-
-  // ==================== BULK IMPORT ====================
+  // ---------- BULK IMPORT ----------
   async function addBulkQuestions() {
     const token = getToken();
     if (!token) return;
     const rawText = document.getElementById("bulkQuestions").value;
-    if (!rawText.trim()) {
-      showError(document.getElementById("bulkStatus"), "Please paste at least one question.");
-      return;
-    }
-
+    if (!rawText.trim()) { showError(document.getElementById("bulkStatus"), "Please paste at least one question."); return; }
     let lines = rawText.split(/\r?\n/);
     let questions = [];
-    if (lines.length === 1 && lines[0].includes("/")) {
-      questions = lines[0].split("/").map(q => q.trim()).filter(q => q.length > 0);
-    } else {
-      questions = lines.filter(line => line.trim().length > 0);
-    }
-
-    if (questions.length === 0) {
-      showError(document.getElementById("bulkStatus"), "No valid questions found.");
-      return;
-    }
-
+    if (lines.length === 1 && lines[0].includes("/")) questions = lines[0].split("/").map(q => q.trim()).filter(q => q.length > 0);
+    else questions = lines.filter(line => line.trim().length > 0);
+    if (questions.length === 0) { showError(document.getElementById("bulkStatus"), "No valid questions found."); return; }
     const commonClass = document.getElementById("class").value;
     const commonSubject = document.getElementById("subject").value;
     const commonChapter = document.getElementById("chapter").value;
     const commonType = document.getElementById("type").value;
     const commonMarks = document.getElementById("marks").value;
     const commonCorrectAnswer = document.getElementById("correctAnswer").value;
-
     let commonOptions = {};
-    if (commonType === "MCQ") {
-      commonOptions = {
-        A: document.getElementById("optA").value,
-        B: document.getElementById("optB").value,
-        C: document.getElementById("optC").value,
-        D: document.getElementById("optD").value
-      };
-    } else if (commonType === "MATCH") {
-      commonOptions = {
-        colA: [
-          document.getElementById("colA1").value,
-          document.getElementById("colA2").value,
-          document.getElementById("colA3").value
-        ],
-        colB: [
-          document.getElementById("colB1").value,
-          document.getElementById("colB2").value,
-          document.getElementById("colB3").value
-        ]
-      };
-    }
-
-    let successCount = 0, failCount = 0;
-
+    if (commonType === "MCQ") commonOptions = { A: document.getElementById("optA").value, B: document.getElementById("optB").value, C: document.getElementById("optC").value, D: document.getElementById("optD").value };
+    else if (commonType === "MATCH") commonOptions = { colA: [document.getElementById("colA1").value, document.getElementById("colA2").value, document.getElementById("colA3").value], colB: [document.getElementById("colB1").value, document.getElementById("colB2").value, document.getElementById("colB3").value] };
+    let success = 0, fail = 0;
     for (const text of questions) {
-      const questionData = {
-        cls: commonClass,
-        subject: commonSubject,
-        chapter: commonChapter,
-        text: text,
-        marks: commonMarks,
-        type: commonType,
-        options: commonOptions,
-        correctAnswer: commonCorrectAnswer
-      };
+      const qData = { cls: commonClass, subject: commonSubject, chapter: commonChapter, text: text, marks: commonMarks, type: commonType, options: commonOptions, correctAnswer: commonCorrectAnswer };
       try {
         const res = await fetch(`${BASE_URL}/add-question`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify(questionData)
+          method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify(qData)
         });
-        if (res.ok) successCount++;
-        else failCount++;
-      } catch (err) {
-        failCount++;
-      }
+        if (res.ok) success++; else fail++;
+      } catch { fail++; }
     }
-
     const statusDiv = document.getElementById("bulkStatus");
-    if (successCount > 0) {
-      statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> Added ${successCount} questions successfully.${failCount > 0 ? ` ${failCount} failed.` : ""}`;
+    if (success > 0) {
+      statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> Added ${success} questions successfully.${fail > 0 ? ` ${fail} failed.` : ""}`;
       statusDiv.style.backgroundColor = "#d1fae5";
       statusDiv.style.color = "#065f46";
       statusDiv.style.display = "block";
       await loadQuestions();
       document.getElementById("bulkQuestions").value = "";
       showPage("list");
-    } else {
-      showError(statusDiv, `Failed to add any questions. ${failCount} errors.`);
-    }
-    setTimeout(() => {
-      statusDiv.style.display = "none";
-    }, 5000);
+    } else showError(statusDiv, `Failed to add any questions. ${fail} errors.`);
+    setTimeout(() => statusDiv.style.display = "none", 5000);
   }
-
   function clearBulkArea() {
     document.getElementById("bulkQuestions").value = "";
     hideError(document.getElementById("bulkStatus"));
   }
 
-  // ==================== UI INITIALISATION ====================
+  // ---------- FOLDER & QUESTION MANAGEMENT ----------
+  let allQuestions = [];
+  async function loadQuestions() {
+    const token = getToken();
+    if (!token) return;
+    try {
+      const res = await fetch(`${BASE_URL}/questions`, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.status === 401) { logout(); return; }
+      allQuestions = await res.json();
+      renderFolderView(allQuestions);
+      // Render LaTeX after DOM update
+      if (window.MathJax) {
+        window.MathJax.typesetPromise();
+      }
+    } catch (err) { console.error(err); }
+  }
+
+  // Helper to render LaTeX in a string
+  function renderLaTeX(text) {
+    return text; // MathJax will handle it when typeset is called
+  }
+
+  function renderFolderView(questions) {
+    const container = document.getElementById("questionList");
+    container.innerHTML = "";
+    if (!questions || questions.length === 0) { container.innerHTML = "<p>No questions yet. Add some!</p>"; return; }
+
+    // Add bulk delete toolbar
+    const toolbar = document.createElement("div");
+    toolbar.className = "bulk-delete-toolbar";
+    toolbar.innerHTML = `
+      <label style="display: flex; align-items: center; gap: 0.5rem;">
+        <input type="checkbox" id="selectAllCheckbox" class="select-all-checkbox"> Select All
+      </label>
+      <button id="deleteSelectedBtn" class="delete-selected-btn" style="background:#ef4444;">Delete Selected</button>
+    `;
+    container.appendChild(toolbar);
+
+    const groupedByClass = {};
+    questions.forEach(q => {
+      const className = q.cls && q.cls.trim() !== "" ? q.cls : "Uncategorized";
+      if (!groupedByClass[className]) groupedByClass[className] = [];
+      groupedByClass[className].push(q);
+    });
+    for (const className in groupedByClass) {
+      const classQuestions = groupedByClass[className];
+      const groupedByChapter = {};
+      classQuestions.forEach(q => {
+        const chapterName = q.chapter && q.chapter.trim() !== "" ? q.chapter : "General";
+        if (!groupedByChapter[chapterName]) groupedByChapter[chapterName] = [];
+        groupedByChapter[chapterName].push(q);
+      });
+      const classDiv = document.createElement("div");
+      classDiv.className = "folder";
+      const classHeader = document.createElement("div");
+      classHeader.className = "folder-header";
+      classHeader.innerHTML = `<i class="fas fa-folder"></i> <span>${className}</span>`;
+      const actions = document.createElement("div");
+      actions.className = "folder-actions";
+      const renameClassBtn = document.createElement("button");
+      renameClassBtn.innerHTML = '<i class="fas fa-edit"></i>';
+      renameClassBtn.title = "Rename class";
+      renameClassBtn.onclick = (e) => { e.stopPropagation(); renameClass(className); };
+      const deleteClassBtn = document.createElement("button");
+      deleteClassBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+      deleteClassBtn.title = "Delete class (moves all questions to Uncategorized)";
+      deleteClassBtn.onclick = (e) => { e.stopPropagation(); deleteClass(className); };
+      actions.appendChild(renameClassBtn);
+      actions.appendChild(deleteClassBtn);
+      classHeader.appendChild(actions);
+      classDiv.appendChild(classHeader);
+      const classChildren = document.createElement("div");
+      classChildren.className = "folder-children";
+      classDiv.appendChild(classChildren);
+      for (const chapterName in groupedByChapter) {
+        const chapterQuestions = groupedByChapter[chapterName];
+        const chapterDiv = document.createElement("div");
+        chapterDiv.className = "chapter-folder";
+        const chapterHeader = document.createElement("div");
+        chapterHeader.className = "chapter-header";
+        chapterHeader.innerHTML = `<i class="fas fa-folder-open"></i> <span>${chapterName}</span>`;
+        const chapActions = document.createElement("div");
+        chapActions.className = "chapter-actions";
+        const renameChapBtn = document.createElement("button");
+        renameChapBtn.innerHTML = '<i class="fas fa-edit"></i>';
+        renameChapBtn.title = "Rename chapter";
+        renameChapBtn.onclick = (e) => { e.stopPropagation(); renameChapter(className, chapterName); };
+        const deleteChapBtn = document.createElement("button");
+        deleteChapBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        deleteChapBtn.title = "Delete chapter (moves all questions to General)";
+        deleteChapBtn.onclick = (e) => { e.stopPropagation(); deleteChapter(className, chapterName); };
+        chapActions.appendChild(renameChapBtn);
+        chapActions.appendChild(deleteChapBtn);
+        chapterHeader.appendChild(chapActions);
+        chapterDiv.appendChild(chapterHeader);
+        const chapterChildren = document.createElement("div");
+        chapterChildren.className = "chapter-children";
+        chapterDiv.appendChild(chapterChildren);
+        chapterQuestions.forEach(q => {
+          const card = createQuestionCard(q);
+          chapterChildren.appendChild(card);
+        });
+        classChildren.appendChild(chapterDiv);
+        chapterHeader.addEventListener("click", (e) => {
+          if (e.target.closest('.chapter-actions')) return;
+          const icon = chapterHeader.querySelector("i:first-child");
+          chapterChildren.classList.toggle("open");
+          icon.classList.toggle("fa-folder-open");
+          icon.classList.toggle("fa-folder");
+        });
+        chapterChildren.classList.remove("open");
+      }
+      container.appendChild(classDiv);
+      classHeader.addEventListener("click", (e) => {
+        if (e.target.closest('.folder-actions')) return;
+        const icon = classHeader.querySelector("i:first-child");
+        classChildren.classList.toggle("open");
+        icon.classList.toggle("fa-folder-open");
+        icon.classList.toggle("fa-folder");
+      });
+      classChildren.classList.remove("open");
+    }
+
+    // Attach select all and delete selected handlers
+    const selectAll = document.getElementById("selectAllCheckbox");
+    const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
+    if (selectAll) {
+      selectAll.addEventListener("change", (e) => {
+        const checkboxes = document.querySelectorAll(".question-checkbox");
+        checkboxes.forEach(cb => cb.checked = e.target.checked);
+      });
+    }
+    if (deleteSelectedBtn) {
+      deleteSelectedBtn.addEventListener("click", async () => {
+        const selected = Array.from(document.querySelectorAll(".question-checkbox:checked")).map(cb => cb.value);
+        if (selected.length === 0) return alert("No questions selected.");
+        if (!confirm(`Delete ${selected.length} selected question(s)?`)) return;
+        const token = getToken();
+        let deleted = 0, failed = 0;
+        for (const id of selected) {
+          const res = await fetch(`${BASE_URL}/delete-question/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) deleted++; else failed++;
+        }
+        alert(`Deleted ${deleted} questions. ${failed} failed.`);
+        await loadQuestions();
+      });
+    }
+  }
+
+  function createQuestionCard(q) {
+    const card = document.createElement("div");
+    card.className = "question-card";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "question-checkbox";
+    checkbox.value = q._id;
+    const contentDiv = document.createElement("div");
+    contentDiv.className = "question-content";
+    let optionsHtml = "";
+    if (q.type === "MCQ" && q.options) optionsHtml = `<br>A. ${q.options.A || ""}<br>B. ${q.options.B || ""}<br>C. ${q.options.C || ""}<br>D. ${q.options.D || ""}<br>`;
+    else if (q.type === "MATCH" && q.options) optionsHtml = `<br>Column A: ${(q.options.colA || []).join(", ")}<br>Column B: ${(q.options.colB || []).join(", ")}<br>`;
+    contentDiv.innerHTML = `
+      <b>${q.subject || "No subject"} | ${q.type}</b><br>
+      <div class="question-text">${renderLaTeX(q.text)}</div>
+      ${optionsHtml}
+      ✅ Correct: ${q.correctAnswer || "—"}<br>
+      ⭐ Marks: ${q.marks || 0}<br>
+    `;
+    const actions = document.createElement("div");
+    actions.className = "question-actions";
+    const moveBtn = document.createElement("button");
+    moveBtn.innerHTML = '<i class="fas fa-arrow-right"></i>';
+    moveBtn.title = "Move";
+    moveBtn.onclick = (e) => { e.stopPropagation(); openMoveModal(q._id, q.cls, q.chapter); };
+    const editBtn = document.createElement("button");
+    editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+    editBtn.onclick = (e) => { e.stopPropagation(); editQuestion(q._id); };
+    const deleteBtn = document.createElement("button");
+    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    deleteBtn.onclick = (e) => { e.stopPropagation(); deleteQuestion(q._id); };
+    actions.appendChild(moveBtn);
+    actions.appendChild(editBtn);
+    actions.appendChild(deleteBtn);
+    card.appendChild(checkbox);
+    card.appendChild(contentDiv);
+    card.appendChild(actions);
+    return card;
+  }
+
+  async function deleteQuestion(id) {
+    if (!confirm("Delete this question?")) return;
+    const token = getToken();
+    const res = await fetch(`${BASE_URL}/delete-question/${id}`, {
+      method: "DELETE", headers: { Authorization: `Bearer ${token}` }
+    });
+    if (res.status === 401) logout();
+    else await loadQuestions();
+  }
+  async function editQuestion(id) {
+    const token = getToken();
+    if (!token) return;
+    const question = allQuestions.find(q => q._id === id);
+    if (!question) return;
+    editId = id;
+    document.getElementById("class").value = question.cls || "";
+    document.getElementById("subject").value = question.subject || "";
+    document.getElementById("chapter").value = question.chapter || "";
+    document.getElementById("questionText").value = question.text || "";
+    document.getElementById("marks").value = question.marks || "";
+    document.getElementById("correctAnswer").value = question.correctAnswer || "";
+    document.getElementById("type").value = question.type || "MCQ";
+    document.getElementById("type").dispatchEvent(new Event("change"));
+    if (question.type === "MCQ" && question.options) {
+      document.getElementById("optA").value = question.options.A || "";
+      document.getElementById("optB").value = question.options.B || "";
+      document.getElementById("optC").value = question.options.C || "";
+      document.getElementById("optD").value = question.options.D || "";
+    } else if (question.type === "MATCH" && question.options) {
+      const colA = question.options.colA || [];
+      const colB = question.options.colB || [];
+      document.getElementById("colA1").value = colA[0] || "";
+      document.getElementById("colA2").value = colA[1] || "";
+      document.getElementById("colA3").value = colA[2] || "";
+      document.getElementById("colB1").value = colB[0] || "";
+      document.getElementById("colB2").value = colB[1] || "";
+      document.getElementById("colB3").value = colB[2] || "";
+    }
+    showPage("add");
+  }
+
+  // Folder rename/delete functions
+  async function renameClass(oldName) {
+    const newName = prompt("Enter new class name:", oldName);
+    if (!newName || newName === oldName) return;
+    const token = getToken();
+    const questionsToUpdate = allQuestions.filter(q => (q.cls || "Uncategorized") === oldName);
+    let success = 0, fail = 0;
+    for (const q of questionsToUpdate) {
+      const updated = { ...q, cls: newName };
+      const res = await fetch(`${BASE_URL}/update-question/${q._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(updated)
+      });
+      if (res.ok) success++; else fail++;
+    }
+    alert(`Renamed ${success} questions. ${fail} failed.`);
+    await loadQuestions();
+  }
+  async function deleteClass(className) {
+    if (!confirm(`Delete class "${className}"? All questions will be moved to "Uncategorized".`)) return;
+    const token = getToken();
+    const questionsToUpdate = allQuestions.filter(q => (q.cls || "Uncategorized") === className);
+    let success = 0, fail = 0;
+    for (const q of questionsToUpdate) {
+      const updated = { ...q, cls: "" };
+      const res = await fetch(`${BASE_URL}/update-question/${q._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(updated)
+      });
+      if (res.ok) success++; else fail++;
+    }
+    alert(`Moved ${success} questions to Uncategorized. ${fail} failed.`);
+    await loadQuestions();
+  }
+  async function renameChapter(className, oldChapter) {
+    const newChapter = prompt("Enter new chapter name:", oldChapter);
+    if (!newChapter || newChapter === oldChapter) return;
+    const token = getToken();
+    const questionsToUpdate = allQuestions.filter(q => (q.cls || "Uncategorized") === className && (q.chapter || "General") === oldChapter);
+    let success = 0, fail = 0;
+    for (const q of questionsToUpdate) {
+      const updated = { ...q, chapter: newChapter };
+      const res = await fetch(`${BASE_URL}/update-question/${q._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(updated)
+      });
+      if (res.ok) success++; else fail++;
+    }
+    alert(`Renamed ${success} chapters. ${fail} failed.`);
+    await loadQuestions();
+  }
+  async function deleteChapter(className, chapterName) {
+    if (!confirm(`Delete chapter "${chapterName}"? All questions will be moved to "General".`)) return;
+    const token = getToken();
+    const questionsToUpdate = allQuestions.filter(q => (q.cls || "Uncategorized") === className && (q.chapter || "General") === chapterName);
+    let success = 0, fail = 0;
+    for (const q of questionsToUpdate) {
+      const updated = { ...q, chapter: "" };
+      const res = await fetch(`${BASE_URL}/update-question/${q._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(updated)
+      });
+      if (res.ok) success++; else fail++;
+    }
+    alert(`Moved ${success} questions to General. ${fail} failed.`);
+    await loadQuestions();
+  }
+
+  // Move question modal
+  let moveQuestionId = null;
+  function openMoveModal(id, currentClass, currentChapter) {
+    moveQuestionId = id;
+    const classSelect = document.getElementById("moveClassSelect");
+    const chapterSelect = document.getElementById("moveChapterSelect");
+    const classes = [...new Set(allQuestions.map(q => q.cls && q.cls.trim() !== "" ? q.cls : "Uncategorized"))];
+    classSelect.innerHTML = '<option value="">Select class</option>' + classes.map(c => `<option value="${c}" ${c === currentClass ? "selected" : ""}>${c}</option>`).join('');
+    classSelect.onchange = () => updateChapterSelect(classSelect.value, currentChapter);
+    updateChapterSelect(currentClass, currentChapter);
+    document.getElementById("moveModal").style.display = "flex";
+  }
+  function updateChapterSelect(className, currentChapter) {
+    const chapterSelect = document.getElementById("moveChapterSelect");
+    const chapters = [...new Set(allQuestions.filter(q => (q.cls || "Uncategorized") === className).map(q => q.chapter && q.chapter.trim() !== "" ? q.chapter : "General"))];
+    chapterSelect.innerHTML = '<option value="">Select chapter</option>' + chapters.map(ch => `<option value="${ch}" ${ch === currentChapter ? "selected" : ""}>${ch}</option>`).join('');
+  }
+  async function moveQuestion() {
+    const newClass = document.getElementById("moveClassSelect").value;
+    const newChapter = document.getElementById("moveChapterSelect").value;
+    if (!newClass) { alert("Please select a class."); return; }
+    const token = getToken();
+    const question = allQuestions.find(q => q._id === moveQuestionId);
+    if (!question) return;
+    const updated = { ...question, cls: newClass, chapter: newChapter };
+    const res = await fetch(`${BASE_URL}/update-question/${moveQuestionId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify(updated)
+    });
+    if (res.ok) {
+      await loadQuestions();
+      document.getElementById("moveModal").style.display = "none";
+    } else { alert("Move failed."); }
+  }
+
+  // ---------- OCR ----------
+  async function uploadImage() {
+    const token = getToken();
+    const file = document.getElementById("imageInput").files[0];
+    if (!file) return alert("Select an image");
+    const fd = new FormData(); fd.append("image", file);
+    try {
+      const res = await fetch(`${BASE_URL}/ocr`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd });
+      if (res.status === 401) logout();
+      const data = await res.json();
+      document.getElementById("questionText").value = data.text || "OCR failed";
+    } catch { alert("OCR error"); }
+  }
+
+  // ---------- UI INIT ----------
   function initTypeSwitch() {
     const typeSelect = document.getElementById("type");
     const mcqBox = document.getElementById("mcqBox");
@@ -1307,60 +1282,38 @@
     });
     typeSelect.dispatchEvent(new Event("change"));
   }
-
   function initBulkMode() {
     const bulkCheckbox = document.getElementById("bulkModeCheckbox");
     const bulkArea = document.getElementById("bulkArea");
     const singleForm = document.getElementById("singleQuestionForm");
     bulkCheckbox.addEventListener("change", () => {
       bulkArea.style.display = bulkCheckbox.checked ? "block" : "none";
-      if (singleForm) singleForm.style.opacity = bulkCheckbox.checked ? "0.5" : "1";
+      singleForm.style.opacity = bulkCheckbox.checked ? "0.5" : "1";
     });
   }
-
   function initSidebar() {
     const sidebar = document.getElementById("sidebar");
     const toggleSidebarBtn = document.getElementById("toggleSidebarBtn");
     const mobileMenuToggle = document.getElementById("mobileMenuToggle");
     const topThreeDotBtn = document.getElementById("topThreeDotBtn");
     const content = document.getElementById("content");
-
     function isMobile() { return window.innerWidth < 768; }
-
     function toggleSidebar() {
-      if (isMobile()) {
-        sidebar.classList.toggle("show-mobile");
-      } else {
-        sidebar.classList.toggle("collapsed");
-        content.style.marginLeft = sidebar.classList.contains("collapsed") ? "80px" : "260px";
-      }
+      if (isMobile()) sidebar.classList.toggle("show-mobile");
+      else { sidebar.classList.toggle("collapsed"); content.style.marginLeft = sidebar.classList.contains("collapsed") ? "80px" : "260px"; }
     }
-
     toggleSidebarBtn.addEventListener("click", toggleSidebar);
     if (mobileMenuToggle) mobileMenuToggle.addEventListener("click", toggleSidebar);
     if (topThreeDotBtn) topThreeDotBtn.addEventListener("click", toggleSidebar);
-
-    content.addEventListener("click", (e) => {
-      if (isMobile() && sidebar.classList.contains("show-mobile") && !sidebar.contains(e.target)) {
-        sidebar.classList.remove("show-mobile");
-      }
-    });
-
+    content.addEventListener("click", (e) => { if (isMobile() && sidebar.classList.contains("show-mobile") && !sidebar.contains(e.target)) sidebar.classList.remove("show-mobile"); });
     window.addEventListener("resize", () => {
-      if (isMobile()) {
-        content.style.marginLeft = "0";
-        sidebar.classList.remove("collapsed");
-      } else {
-        sidebar.classList.remove("show-mobile");
-        content.style.marginLeft = sidebar.classList.contains("collapsed") ? "80px" : "260px";
-      }
+      if (isMobile()) { content.style.marginLeft = "0"; sidebar.classList.remove("collapsed"); }
+      else { sidebar.classList.remove("show-mobile"); content.style.marginLeft = sidebar.classList.contains("collapsed") ? "80px" : "260px"; }
     });
   }
-
   function initTheme() {
     const themeButtons = ["themeTopBtn", "themeDropdownBtn"];
     const threeDotBtn = document.getElementById("threeDotBtn");
-
     function toggleTheme() {
       document.body.classList.toggle("dark");
       if (threeDotBtn) {
@@ -1374,81 +1327,46 @@
         }
       }
     }
-    themeButtons.forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.addEventListener("click", toggleTheme);
-    });
+    themeButtons.forEach(id => { const btn = document.getElementById(id); if (btn) btn.addEventListener("click", toggleTheme); });
   }
-
   function initDropdown() {
     const threeDotBtn = document.getElementById("threeDotBtn");
     const dropdownMenu = document.getElementById("dropdownMenu");
-    if (threeDotBtn && dropdownMenu) {
-      threeDotBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        dropdownMenu.classList.toggle("show");
-      });
-      document.addEventListener("click", (e) => {
-        if (!threeDotBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
-          dropdownMenu.classList.remove("show");
-        }
-      });
-    }
+    threeDotBtn.addEventListener("click", (e) => { e.stopPropagation(); dropdownMenu.classList.toggle("show"); });
+    document.addEventListener("click", (e) => { if (!threeDotBtn.contains(e.target) && !dropdownMenu.contains(e.target)) dropdownMenu.classList.remove("show"); });
   }
-
   function initPasswordToggle() {
     document.querySelectorAll(".toggle-password").forEach(icon => {
       icon.addEventListener("click", function() {
         const target = document.getElementById(this.getAttribute("data-target"));
-        if (target) {
-          const type = target.type === "password" ? "text" : "password";
-          target.type = type;
-          this.classList.toggle("fa-eye-slash");
-          this.classList.toggle("fa-eye");
-        }
+        if (target) { const type = target.type === "password" ? "text" : "password"; target.type = type; this.classList.toggle("fa-eye-slash"); this.classList.toggle("fa-eye"); }
       });
     });
   }
-
   function bindNavigation() {
     const homeLinks = ["homeLink", "homeSidebarBtn"];
     const addLinks = ["addLink", "addSidebarBtn"];
     const listLinks = ["listLink", "listSidebarBtn"];
-    homeLinks.forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.addEventListener("click", () => showPage("home"));
-    });
-    addLinks.forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.addEventListener("click", () => showPage("add"));
-    });
-    listLinks.forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.addEventListener("click", () => showPage("list"));
-    });
+    homeLinks.forEach(id => { const btn = document.getElementById(id); if (btn) btn.addEventListener("click", () => showPage("home")); });
+    addLinks.forEach(id => { const btn = document.getElementById(id); if (btn) btn.addEventListener("click", () => showPage("add")); });
+    listLinks.forEach(id => { const btn = document.getElementById(id); if (btn) btn.addEventListener("click", () => showPage("list")); });
   }
-
   function bindLogout() {
     const logoutBtns = ["logoutTopBtn", "logoutSidebarBtn"];
-    logoutBtns.forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.addEventListener("click", logout);
-    });
+    logoutBtns.forEach(id => { const btn = document.getElementById(id); if (btn) btn.addEventListener("click", logout); });
   }
-
   function bindButtons() {
     document.getElementById("saveQuestionBtn").addEventListener("click", saveQuestion);
     document.getElementById("clearFormBtn").addEventListener("click", clearForm);
     document.getElementById("scanImageBtn").addEventListener("click", uploadImage);
     document.getElementById("bulkAddBtn").addEventListener("click", addBulkQuestions);
     document.getElementById("clearBulkBtn").addEventListener("click", clearBulkArea);
+    document.getElementById("moveConfirmBtn").addEventListener("click", moveQuestion);
+    document.getElementById("moveCancelBtn").addEventListener("click", () => document.getElementById("moveModal").style.display = "none");
   }
 
-  // ==================== EVENT LISTENERS FOR AUTH ====================
-  const signinForm = document.getElementById("signinForm");
-  const signupForm = document.getElementById("signupForm");
-
-  signinForm.addEventListener("submit", async (e) => {
+  // ---------- AUTH EVENT LISTENERS ----------
+  document.getElementById("signinForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("signinEmail").value.trim();
     const password = document.getElementById("signinPassword").value;
@@ -1460,12 +1378,9 @@
       loadQuestions();
       clearForm();
       if (window.innerWidth < 768) document.getElementById("sidebar").classList.remove("show-mobile");
-    } else {
-      showError(document.getElementById("msg"), result.message);
-    }
+    } else showError(document.getElementById("msg"), result.message);
   });
-
-  signupForm.addEventListener("submit", async (e) => {
+  document.getElementById("signupForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const school = document.getElementById("signupSchool").value.trim();
     const email = document.getElementById("signupEmail").value.trim();
@@ -1479,15 +1394,12 @@
       document.getElementById("signupEmail").value = "";
       document.getElementById("signupPassword").value = "";
       document.getElementById("signupConfirmPassword").value = "";
-    } else {
-      showError(document.getElementById("signupMsg"), result.message);
-    }
+    } else showError(document.getElementById("signupMsg"), result.message);
   });
-
   document.getElementById("signinTabBtn").addEventListener("click", () => setActiveTab("signin"));
   document.getElementById("signupTabBtn").addEventListener("click", () => setActiveTab("signup"));
 
-  // ==================== INIT ====================
+  // ---------- INIT ----------
   window.onload = async () => {
     initSidebar();
     initTheme();
@@ -1498,41 +1410,14 @@
     bindNavigation();
     bindLogout();
     bindButtons();
-
     const token = getToken();
     if (token) {
       try {
-        const res = await fetch(`${BASE_URL}/questions`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.status === 401) {
-          setToken(null);
-          document.getElementById("login").style.display = "flex";
-          document.getElementById("dashboard").style.display = "none";
-          setActiveTab("signin");
-        } else {
-          document.getElementById("login").style.display = "none";
-          document.getElementById("dashboard").style.display = "block";
-          showPage("home");
-          loadQuestions();
-          if (window.innerWidth < 768) {
-            document.getElementById("sidebar").classList.remove("show-mobile");
-          } else {
-            document.getElementById("sidebar").classList.remove("collapsed");
-            document.getElementById("content").style.marginLeft = "260px";
-          }
-        }
-      } catch (err) {
-        setToken(null);
-        document.getElementById("login").style.display = "flex";
-        document.getElementById("dashboard").style.display = "none";
-        setActiveTab("signin");
-      }
-    } else {
-      document.getElementById("login").style.display = "flex";
-      document.getElementById("dashboard").style.display = "none";
-      setActiveTab("signin");
-    }
+        const res = await fetch(`${BASE_URL}/questions`, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.status === 401) { setToken(null); document.getElementById("login").style.display = "flex"; document.getElementById("dashboard").style.display = "none"; setActiveTab("signin"); }
+        else { document.getElementById("login").style.display = "none"; document.getElementById("dashboard").style.display = "block"; showPage("home"); loadQuestions(); if (window.innerWidth < 768) document.getElementById("sidebar").classList.remove("show-mobile"); else { document.getElementById("sidebar").classList.remove("collapsed"); document.getElementById("content").style.marginLeft = "260px"; } }
+      } catch { setToken(null); document.getElementById("login").style.display = "flex"; document.getElementById("dashboard").style.display = "none"; setActiveTab("signin"); }
+    } else { document.getElementById("login").style.display = "flex"; document.getElementById("dashboard").style.display = "none"; setActiveTab("signin"); }
   };
 </script>
 </body>
