@@ -1,1 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Exam App · Modern UI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    body.dark .sidebar,
+    body.dark .card,
+    body.dark .auth-card,
+    body.dark .top-bar {
+      background: #1e293b;
+      border-color: #334155;
+      color: #e2e8f0;
+    }
+    body.dark .input-field,
+    body.dark textarea,
+    body.dark select {
+      background: #334155;
+      border-color: #475569;
+      color: white;
+    }
+    body.dark .tab-btn.active {
+      background: #334155;
+      color: #818cf8;
+    }
+    body.dark .tab-bar {
+      background: #0f172a;
+    }
+    body.dark .top-bar a,
+    body.dark .top-bar button {
+      color: #e2e8f0;
+    }
+
+    /* Auth Card */
+    #login {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+    .auth-card {
+      max-width: 460px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+      padding: 2rem 1.8rem;
+    }
+    .tab-bar {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: 60px;
+      padding: 6px;
+      margin-bottom: 2rem;
+      gap: 6px;
+    }
+    .tab-btn {
+      flex: 1;
+      text-align: center;
+      background: transparent;
+      border: none;
+      font-weight: 600;
+      padding: 0.7rem 0;
+      border-radius: 40px;
+      cursor: pointer;
+      color: #475569;
+      font-family: inherit;
+    }
+    .tab-btn.active {
+      background: white;
+      color: #4f46e5;
+    }
+    .form-hidden { display: none; }
+    .form-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    .input-group {
+      margin-bottom: 1.3rem;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.45rem;
+    }
+    .input-field {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 1rem;
+      border: 1.5px solid #e2e8f0;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .input-field:focus {
+      border-color: #818cf8;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+    .password-wrapper {
+      position: relative;
+    }
+    .password-wrapper input {
+      padding-right: 2.7rem;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #94a3b8;
+    }
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(105deg, #4f46e5 0%, #6366f1 100%);
+      border: none;
+      padding: 0.9rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .error-msg {
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 0.7rem;
+      border-radius: 1rem;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    /* Dashboard */
+    #dashboard { display: none; }
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      padding: 0.8rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      z-index: 100;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .top-bar .three-dot-icon {
+      background: transparent;
+      border: none;
+      padding: 8px;
+      border-radius: 8px;
+      color: #4f46e5;
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+    .top-bar .three-dot-icon:hover { background: rgba(79, 70, 229, 0.1); }
+    .logo h2 { font-size: 1.3rem; font-weight: 700; }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .nav-links a, .nav-links button {
+      background: transparent;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.8rem;
+      border-radius: 40px;
+    }
+    .nav-links a:hover, .nav-links button:hover { background: #eef2ff; }
+    .sidebar {
+      width: 260px;
+      height: 100vh;
+      background: white;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      padding: 24px 16px;
+      box-shadow: 2px 0 12px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, width 0.3s ease;
+      z-index: 99;
+    }
+    .sidebar.collapsed { width: 80px; }
+    .sidebar.collapsed .nav-buttons button span,
+    .sidebar.collapsed .dropdown-container .three-dot-btn span,
+    .sidebar.collapsed .sidebar h3 span { display: none; }
+    .sidebar.collapsed .nav-buttons button i,
+    .sidebar.collapsed .dropdown-container .three-dot-btn i,
+    .sidebar.collapsed .sidebar h3 i { margin-right: 0; }
+    .sidebar.collapsed .nav-buttons button { text-align: center; padding: 12px 0; }
+    .sidebar.collapsed .dropdown-container .three-dot-btn { text-align: center; padding: 10px 0; }
+    .sidebar.collapsed .sidebar h3 { text-align: center; }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    .toggle-sidebar-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      color: #4f46e5;
+    }
+    .sidebar .nav-buttons { flex: 1; }
+    .sidebar button {
+      width: 100%;
+      background: #e2e8f0;
+      border: 1px solid #cbd5e1;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 14px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      color: #1e293b;
+    }
+    .sidebar button:hover { background: #cbd5e1; color: #4f46e5; }
+    .sidebar button.logout-btn {
+      background: #ef4444;
+      border-color: #dc2626;
+      color: white;
+    }
+    .dropdown-container {
+      position: relative;
+      margin-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1rem;
+    }
+    .three-dot-btn {
+      width: 100%;
+      background: #e2e8f0;
+      border: 1px solid #cbd5e1;
+      padding: 10px;
+      border-radius: 14px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    .dropdown-menu {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      margin-bottom: 8px;
+      display: none;
+      z-index: 10;
+      overflow: hidden;
+    }
+    .dropdown-menu.show { display: block; }
+    .dropdown-menu button {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 10px 16px;
+      text-align: left;
+      font-weight: 500;
+      margin: 0;
+      border-radius: 0;
+    }
+    .dropdown-menu button:hover { background: #f1f5f9; }
+    .content {
+      margin-left: 260px;
+      padding: 2rem;
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+      margin-top: 60px;
+    }
+    .sidebar.collapsed + .content { margin-left: 80px; }
+    @media (max-width: 768px) {
+      .top-bar { padding: 0.5rem 1rem; }
+      .nav-links { gap: 0.5rem; }
+      .nav-links a span, .nav-links button span { display: none; }
+      .nav-links a i, .nav-links button i { font-size: 1.2rem; }
+      .sidebar {
+        top: 0;
+        transform: translateX(-100%);
+        width: 260px;
+        z-index: 1000;
+      }
+      .sidebar.show-mobile { transform: translateX(0); }
+      .content { margin-left: 0 !important; padding: 1rem; margin-top: 60px; }
+      .mobile-menu-toggle {
+        display: block;
+        position: fixed;
+        top: 0.8rem;
+        left: 1rem;
+        background: white;
+        border: none;
+        border-radius: 50%;
+        padding: 8px 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        cursor: pointer;
+        z-index: 1100;
+        display: block;
+      }
+      body.dark .mobile-menu-toggle { background: #1e293b; color: white; }
+      .sidebar .toggle-sidebar-btn { display: block; }
+      .sidebar.collapsed { width: 260px; }
+      .sidebar.collapsed .nav-buttons button span,
+      .sidebar.collapsed .dropdown-container .three-dot-btn span,
+      .sidebar.collapsed .sidebar h3 span { display: inline; }
+      .sidebar.collapsed .nav-buttons button { text-align: left; padding: 12px; }
+      .sidebar.collapsed .dropdown-container .three-dot-btn { text-align: left; padding: 10px; }
+      .sidebar.collapsed .sidebar h3 { text-align: left; }
+    }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 1rem;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 14px;
+      border: 1.5px solid #e2e8f0;
+    }
+    button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 40px;
+      cursor: pointer;
+    }
+    .flex-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .bulk-section {
+      margin-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 20px;
+    }
+    .bulk-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .bulk-toggle input { width: auto; margin: 0; }
+    .bulk-textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 12px;
+      font-family: monospace;
+      margin: 10px 0;
+    }
+    .bulk-actions { display: flex; gap: 10px; margin-top: 10px; }
+
+    /* Folder styles */
+    .folder-container { margin-top: 1rem; }
+    .folder {
+      margin: 0.5rem 0;
+      border-left: 2px solid #e2e8f0;
+      padding-left: 0.5rem;
+    }
+    .folder-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      background: #f8fafc;
+      border-radius: 0.5rem;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+    body.dark .folder-header { background: #2d3748; }
+    .folder-header i { font-size: 1rem; width: 1.2rem; }
+    .folder-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .folder-actions button {
+      background: transparent;
+      color: #4f46e5;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+    }
+    .folder-actions button:hover { background: #eef2ff; }
+    .folder-children {
+      margin-left: 1.5rem;
+      display: none;
+    }
+    .folder-children.open { display: block; }
+    .chapter-folder {
+      margin: 0.5rem 0;
+      border-left: 2px solid #cbd5e1;
+      padding-left: 0.5rem;
+    }
+    .chapter-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      padding: 0.3rem 0.5rem;
+      border-radius: 0.5rem;
+      background: #f1f5f9;
+      margin-bottom: 0.25rem;
+    }
+    body.dark .chapter-header { background: #334155; }
+    .chapter-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .chapter-actions button {
+      background: transparent;
+      color: #4f46e5;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+    }
+    .chapter-children {
+      margin-left: 1.5rem;
+      display: none;
+    }
+    .chapter-children.open { display: block; }
+    .question-card {
+      margin: 0.75rem 0;
+      background: white;
+      border: 1px solid #e2e8f0;
+      padding: 0.8rem;
+      border-radius: 0.8rem;
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+    .question-checkbox {
+      margin-top: 0.2rem;
+      width: 1.2rem;
+      height: 1.2rem;
+      cursor: pointer;
+    }
+    .question-content {
+      flex: 1;
+    }
+    .question-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-left: auto;
+      align-self: flex-start;
+    }
+    .question-actions button {
+      background: transparent;
+      color: #4f46e5;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+    }
+    .bulk-delete-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      background: #f8fafc;
+      border-radius: 0.5rem;
+    }
+    body.dark .bulk-delete-toolbar {
+      background: #2d3748;
+    }
+    .select-all-checkbox {
+      width: 1.2rem;
+      height: 1.2rem;
+      cursor: pointer;
+    }
+    .create-folder-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .create-folder-bar button {
+      background: #10b981;
+    }
+    .create-folder-bar button:hover {
+      background: #059669;
+    }
+    .empty-folder {
+      opacity: 0.7;
+      font-style: italic;
+    }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      width: 90%;
+      max-width: 400px;
+    }
+    body.dark .modal-content { background: #1e293b; }
+    .modal-content select, .modal-content input {
+      margin: 1rem 0;
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+    }
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <div class="auth-card">
+    <div class="tab-bar">
+      <button class="tab-btn active" id="signinTabBtn"><i class="fas fa-sign-in-alt"></i> Sign in</button>
+      <button class="tab-btn" id="signupTabBtn"><i class="fas fa-user-plus"></i> Create account</button>
+    </div>
+    <div id="signinFormContainer">
+      <div class="form-title">Welcome back</div>
+      <form id="signinForm" onsubmit="return false;">
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" class="input-field" id="signinEmail" placeholder="teacher@school.com" autocomplete="off">
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input type="password" class="input-field" id="signinPassword" autocomplete="new-password">
+            <i class="far fa-eye-slash toggle-password" data-target="signinPassword"></i>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Sign in</button>
+      </form>
+      <div id="msg" class="error-msg"></div>
+    </div>
+    <div id="signupFormContainer" class="form-hidden">
+      <div class="form-title">Create account</div>
+      <form id="signupForm" onsubmit="return false;">
+        <div class="input-group">
+          <label>School name</label>
+          <input type="text" class="input-field" id="signupSchool" autocomplete="off">
+        </div>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" class="input-field" id="signupEmail" autocomplete="off">
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input type="password" class="input-field" id="signupPassword" autocomplete="new-password">
+            <i class="far fa-eye-slash toggle-password" data-target="signupPassword"></i>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Confirm password</label>
+          <div class="password-wrapper">
+            <input type="password" class="input-field" id="signupConfirmPassword" autocomplete="off">
+            <i class="far fa-eye-slash toggle-password" data-target="signupConfirmPassword"></i>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Sign up</button>
+      </form>
+      <div id="signupMsg" class="error-msg"></div>
+    </div>
+  </div>
+</div>
+
+<div id="dashboard">
+  <div class="top-bar">
+    <div class="logo">
+      <button class="three-dot-icon" id="topThreeDotBtn"><i class="fas fa-ellipsis-v"></i></button>
+      <h2><i class="fas fa-graduation-cap"></i> Exam App</h2>
+    </div>
+    <div class="nav-links">
+      <a href="#" id="homeLink"><i class="fas fa-home"></i><span> Home</span></a>
+      <a href="#" id="addLink"><i class="fas fa-plus-circle"></i><span> Add</span></a>
+      <a href="#" id="listLink"><i class="fas fa-list-ul"></i><span> My Qs</span></a>
+      <button id="themeTopBtn"><i class="fas fa-moon"></i><span> Theme</span></button>
+      <button id="logoutTopBtn"><i class="fas fa-sign-out-alt"></i><span> Logout</span></button>
+    </div>
+  </div>
+  <button class="mobile-menu-toggle" id="mobileMenuToggle"><i class="fas fa-bars"></i></button>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3><i class="fas fa-graduation-cap"></i> <span>Exam App</span></h3>
+      <button class="toggle-sidebar-btn" id="toggleSidebarBtn"><i class="fas fa-bars"></i></button>
+    </div>
+    <div class="nav-buttons">
+      <button id="homeSidebarBtn"><i class="fas fa-home"></i> <span>Home</span></button>
+      <button id="addSidebarBtn"><i class="fas fa-plus-circle"></i> <span>Add Question</span></button>
+      <button id="listSidebarBtn"><i class="fas fa-list-ul"></i> <span>My Questions</span></button>
+      <button id="logoutSidebarBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+    </div>
+    <div class="dropdown-container">
+      <button class="three-dot-btn" id="threeDotBtn"><i class="fas fa-ellipsis-h"></i> <span>More</span></button>
+      <div class="dropdown-menu" id="dropdownMenu">
+        <button id="themeDropdownBtn"><i class="fas fa-moon"></i> Dark mode</button>
+        <button id="helpBtn"><i class="fas fa-question-circle"></i> Help</button>
+        <button id="profileBtn"><i class="fas fa-user-cog"></i> Profile</button>
+      </div>
+    </div>
+  </div>
+  <div class="content" id="content">
+    <div id="home">
+      <h2>📚 Welcome to Exam Portal</h2>
+      <p>Manage your question bank, add new questions, and view saved ones.</p>
+    </div>
+    <div id="addQuestionSection" style="display:none;">
+      <h2><i class="fas fa-plus-circle"></i> Add / Edit Question</h2>
+      <div id="singleQuestionForm">
+        <input type="text" id="class" placeholder="Class">
+        <input type="text" id="subject" placeholder="Subject">
+        <input type="text" id="chapter" placeholder="Chapter">
+        <select id="type">
+          <option value="MCQ">MCQ</option>
+          <option value="SHORT">Short Answer</option>
+          <option value="LONG">Long Answer</option>
+          <option value="TRUE_FALSE">True / False</option>
+          <option value="MATCH">Match the Column</option>
+        </select>
+        <textarea id="questionText" placeholder="Enter your question here... (supports LaTeX: $E=mc^2$ or $$\\int_0^1 x^2 dx$$)"></textarea>
+        <div id="mcqBox">
+          <input type="text" id="optA" placeholder="Option A">
+          <input type="text" id="optB" placeholder="Option B">
+          <input type="text" id="optC" placeholder="Option C">
+          <input type="text" id="optD" placeholder="Option D">
+        </div>
+        <div id="matchBox" style="display:none;">
+          <h4>Column A</h4>
+          <input type="text" id="colA1" placeholder="A1">
+          <input type="text" id="colA2" placeholder="A2">
+          <input type="text" id="colA3" placeholder="A3">
+          <h4>Column B</h4>
+          <input type="text" id="colB1" placeholder="B1">
+          <input type="text" id="colB2" placeholder="B2">
+          <input type="text" id="colB3" placeholder="B3">
+        </div>
+        <input type="text" id="correctAnswer" placeholder="Correct Answer">
+        <input type="number" id="marks" placeholder="Marks">
+        <input type="file" id="imageInput" accept="image/*">
+        <button id="scanImageBtn"><i class="fas fa-camera"></i> Scan Image</button>
+        <div class="flex-buttons">
+          <button id="saveQuestionBtn">Save Question</button>
+          <button id="clearFormBtn">Clear</button>
+        </div>
+      </div>
+      <div class="bulk-section">
+        <label class="bulk-toggle"><input type="checkbox" id="bulkModeCheckbox"> <i class="fas fa-layer-group"></i> Bulk Import (paste multiple questions)</label>
+        <div id="bulkArea" style="display: none;">
+          <textarea id="bulkQuestions" class="bulk-textarea" placeholder="Enter questions separated by new lines OR by slashes ( / )"></textarea>
+          <div class="bulk-actions">
+            <button id="bulkAddBtn"><i class="fas fa-plus-circle"></i> Add Bulk Questions</button>
+            <button id="clearBulkBtn">Clear</button>
+          </div>
+          <div id="bulkStatus" class="error-msg" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+    <div id="myQuestionsSection" style="display:none;">
+      <h2><i class="fas fa-database"></i> My Questions</h2>
+      <div id="questionList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Move Question Modal -->
+<div id="moveModal" class="modal">
+  <div class="modal-content">
+    <h3>Move Question</h3>
+    <label>Class</label>
+    <select id="moveClassSelect"></select>
+    <label>Chapter</label>
+    <select id="moveChapterSelect"></select>
+    <div class="modal-buttons">
+      <button id="moveConfirmBtn">Move</button>
+      <button id="moveCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------- CONFIG ----------
+  const BASE_URL = "https://exam-backend-cu62.onrender.com";
+  let editId = null;
+
+  // Store empty folders (created by user, no questions yet)
+  let emptyFolders = {
+    classes: [],      // list of class names without any questions
+    chapters: {}      // { className: [chapterName] }
+  };
+
+  // ---------- AUTH HELPERS ----------
+  function getToken() { return localStorage.getItem("token"); }
+  function setToken(token) { token ? localStorage.setItem("token", token) : localStorage.removeItem("token"); }
+  function showError(container, message) {
+    container.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+    container.style.display = "block";
+  }
+  function hideError(container) {
+    container.style.display = "none";
+    container.innerHTML = "";
+  }
+
+  // ---------- AUTH FUNCTIONS ----------
+  async function register(school, email, password, confirm) {
+    if (!school || !email || !password) return { ok: false, message: "All fields required" };
+    if (password !== confirm) return { ok: false, message: "Passwords do not match" };
+    if (password.length < 6) return { ok: false, message: "Password min 6 chars" };
+    try {
+      const res = await fetch(`${BASE_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ schoolName: school, email, password })
+      });
+      const data = await res.json();
+      if (res.ok) return { ok: true, message: data.message };
+      else return { ok: false, message: data.message || "Registration failed" };
+    } catch { return { ok: false, message: "Network error" }; }
+  }
+  async function login(email, password) {
+    if (!email || !password) return { ok: false, message: "Email and password required" };
+    try {
+      const res = await fetch(`${BASE_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (data.token) { setToken(data.token); return { ok: true, token: data.token }; }
+      else return { ok: false, message: data.message || "Invalid credentials" };
+    } catch { return { ok: false, message: "Server error" }; }
+  }
+  function logout() {
+    setToken(null);
+    document.getElementById("login").style.display = "flex";
+    document.getElementById("dashboard").style.display = "none";
+    setActiveTab("signin");
+    document.getElementById("questionList").innerHTML = "";
+    document.getElementById("signinEmail").value = "";
+    document.getElementById("signinPassword").value = "";
+    emptyFolders = { classes: [], chapters: {} };
+  }
+
+  // ---------- UI HELPERS ----------
+  function setActiveTab(tab) {
+    const signinTab = document.getElementById("signinTabBtn");
+    const signupTab = document.getElementById("signupTabBtn");
+    const signinContainer = document.getElementById("signinFormContainer");
+    const signupContainer = document.getElementById("signupFormContainer");
+    const msgDiv = document.getElementById("msg");
+    const signupMsgDiv = document.getElementById("signupMsg");
+    if (tab === "signin") {
+      signinTab.classList.add("active");
+      signupTab.classList.remove("active");
+      signinContainer.classList.remove("form-hidden");
+      signupContainer.classList.add("form-hidden");
+      hideError(msgDiv);
+      hideError(signupMsgDiv);
+    } else {
+      signupTab.classList.add("active");
+      signinTab.classList.remove("active");
+      signupContainer.classList.remove("form-hidden");
+      signinContainer.classList.add("form-hidden");
+      hideError(msgDiv);
+      hideError(signupMsgDiv);
+    }
+  }
+  function showPage(page) {
+    const homeDiv = document.getElementById("home");
+    const addSection = document.getElementById("addQuestionSection");
+    const listSection = document.getElementById("myQuestionsSection");
+    homeDiv.style.display = page === "home" ? "block" : "none";
+    addSection.style.display = page === "add" ? "block" : "none";
+    listSection.style.display = page === "list" ? "block" : "none";
+    if (page === "list") loadQuestions();
+    if (page === "add") clearForm();
+  }
+
+  // ---------- QUESTION FORM ----------
+  function clearForm() {
+    editId = null;
+    document.getElementById("class").value = "";
+    document.getElementById("subject").value = "";
+    document.getElementById("chapter").value = "";
+    document.getElementById("questionText").value = "";
+    document.getElementById("marks").value = "";
+    document.getElementById("correctAnswer").value = "";
+    document.getElementById("optA").value = "";
+    document.getElementById("optB").value = "";
+    document.getElementById("optC").value = "";
+    document.getElementById("optD").value = "";
+    document.getElementById("colA1").value = "";
+    document.getElementById("colA2").value = "";
+    document.getElementById("colA3").value = "";
+    document.getElementById("colB1").value = "";
+    document.getElementById("colB2").value = "";
+    document.getElementById("colB3").value = "";
+    document.getElementById("type").value = "MCQ";
+    document.getElementById("type").dispatchEvent(new Event("change"));
+  }
+  function getQuestionFromForm() {
+    const type = document.getElementById("type").value;
+    let options = {};
+    if (type === "MCQ") options = { A: document.getElementById("optA").value, B: document.getElementById("optB").value, C: document.getElementById("optC").value, D: document.getElementById("optD").value };
+    else if (type === "MATCH") options = { colA: [document.getElementById("colA1").value, document.getElementById("colA2").value, document.getElementById("colA3").value], colB: [document.getElementById("colB1").value, document.getElementById("colB2").value, document.getElementById("colB3").value] };
+    return {
+      cls: document.getElementById("class").value,
+      subject: document.getElementById("subject").value,
+      chapter: document.getElementById("chapter").value,
+      text: document.getElementById("questionText").value,
+      marks: document.getElementById("marks").value,
+      type: type,
+      options,
+      correctAnswer: document.getElementById("correctAnswer").value
+    };
+  }
+  async function saveQuestion() {
+    const token = getToken();
+    if (!token) { logout(); return; }
+    const questionData = getQuestionFromForm();
+    const url = editId ? `${BASE_URL}/update-question/${editId}` : `${BASE_URL}/add-question`;
+    const method = editId ? "PUT" : "POST";
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(questionData)
+      });
+      if (res.ok) {
+        alert(editId ? "Question updated!" : "Question saved!");
+        editId = null;
+        clearForm();
+        await loadQuestions();
+        showPage("list");
+      } else { if (res.status === 401) logout(); else alert("Failed to save question"); }
+    } catch { alert("Error connecting to server"); }
+  }
+
+  // ---------- BULK IMPORT ----------
+  async function addBulkQuestions() {
+    const token = getToken();
+    if (!token) return;
+    const rawText = document.getElementById("bulkQuestions").value;
+    if (!rawText.trim()) { showError(document.getElementById("bulkStatus"), "Please paste at least one question."); return; }
+    let lines = rawText.split(/\r?\n/);
+    let questions = [];
+    if (lines.length === 1 && lines[0].includes("/")) questions = lines[0].split("/").map(q => q.trim()).filter(q => q.length > 0);
+    else questions = lines.filter(line => line.trim().length > 0);
+    if (questions.length === 0) { showError(document.getElementById("bulkStatus"), "No valid questions found."); return; }
+    const commonClass = document.getElementById("class").value;
+    const commonSubject = document.getElementById("subject").value;
+    const commonChapter = document.getElementById("chapter").value;
+    const commonType = document.getElementById("type").value;
+    const commonMarks = document.getElementById("marks").value;
+    const commonCorrectAnswer = document.getElementById("correctAnswer").value;
+    let commonOptions = {};
+    if (commonType === "MCQ") commonOptions = { A: document.getElementById("optA").value, B: document.getElementById("optB").value, C: document.getElementById("optC").value, D: document.getElementById("optD").value };
+    else if (commonType === "MATCH") commonOptions = { colA: [document.getElementById("colA1").value, document.getElementById("colA2").value, document.getElementById("colA3").value], colB: [document.getElementById("colB1").value, document.getElementById("colB2").value, document.getElementById("colB3").value] };
+    let success = 0, fail = 0;
+    for (const text of questions) {
+      const qData = { cls: commonClass, subject: commonSubject, chapter: commonChapter, text: text, marks: commonMarks, type: commonType, options: commonOptions, correctAnswer: commonCorrectAnswer };
+      try {
+        const res = await fetch(`${BASE_URL}/add-question`, {
+          method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify(qData)
+        });
+        if (res.ok) success++; else fail++;
+      } catch { fail++; }
+    }
+    const statusDiv = document.getElementById("bulkStatus");
+    if (success > 0) {
+      statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> Added ${success} questions successfully.${fail > 0 ? ` ${fail} failed.` : ""}`;
+      statusDiv.style.backgroundColor = "#d1fae5";
+      statusDiv.style.color = "#065f46";
+      statusDiv.style.display = "block";
+      await loadQuestions();
+      document.getElementById("bulkQuestions").value = "";
+      showPage("list");
+    } else showError(statusDiv, `Failed to add any questions. ${fail} errors.`);
+    setTimeout(() => statusDiv.style.display = "none", 5000);
+  }
+  function clearBulkArea() {
+    document.getElementById("bulkQuestions").value = "";
+    hideError(document.getElementById("bulkStatus"));
+  }
+
+  // ---------- FOLDER & QUESTION MANAGEMENT ----------
+  let allQuestions = [];
+  async function loadQuestions() {
+    const token = getToken();
+    if (!token) return;
+    try {
+      const res = await fetch(`${BASE_URL}/questions`, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.status === 401) { logout(); return; }
+      allQuestions = await res.json();
+      renderFolderView(allQuestions);
+      if (window.MathJax) window.MathJax.typesetPromise();
+    } catch (err) { console.error(err); }
+  }
+
+  function renderFolderView(questions) {
+    const container = document.getElementById("questionList");
+    container.innerHTML = "";
+
+    // Add toolbar for creating new class and chapter
+    const toolbar = document.createElement("div");
+    toolbar.className = "create-folder-bar";
+    toolbar.innerHTML = `
+      <button id="createClassBtn"><i class="fas fa-folder-plus"></i> New Class</button>
+    `;
+    container.appendChild(toolbar);
+
+    // Bulk delete toolbar
+    const bulkToolbar = document.createElement("div");
+    bulkToolbar.className = "bulk-delete-toolbar";
+    bulkToolbar.innerHTML = `
+      <label style="display: flex; align-items: center; gap: 0.5rem;">
+        <input type="checkbox" id="selectAllCheckbox" class="select-all-checkbox"> Select All
+      </label>
+      <button id="deleteSelectedBtn" class="delete-selected-btn" style="background:#ef4444;">Delete Selected</button>
+    `;
+    container.appendChild(bulkToolbar);
+
+    // Get all class names from questions and empty classes
+    let classNamesSet = new Set();
+    questions.forEach(q => {
+      const cn = q.cls && q.cls.trim() !== "" ? q.cls : "Uncategorized";
+      classNamesSet.add(cn);
+    });
+    emptyFolders.classes.forEach(c => classNamesSet.add(c));
+
+    // For each class, build its chapters
+    const classNames = Array.from(classNamesSet).sort();
+    for (const className of classNames) {
+      const classQuestions = questions.filter(q => (q.cls || "Uncategorized") === className);
+      // Chapter names from questions in this class
+      let chapterNamesSet = new Set();
+      classQuestions.forEach(q => {
+        const ch = q.chapter && q.chapter.trim() !== "" ? q.chapter : "General";
+        chapterNamesSet.add(ch);
+      });
+      // Add empty chapters for this class
+      if (emptyFolders.chapters[className]) {
+        emptyFolders.chapters[className].forEach(ch => chapterNamesSet.add(ch));
+      }
+
+      const chapterNames = Array.from(chapterNamesSet).sort();
+      const classDiv = document.createElement("div");
+      classDiv.className = "folder";
+      const classHeader = document.createElement("div");
+      classHeader.className = "folder-header";
+      classHeader.innerHTML = `<i class="fas fa-folder"></i> <span>${className}</span>`;
+      const actions = document.createElement("div");
+      actions.className = "folder-actions";
+      const addChapterBtn = document.createElement("button");
+      addChapterBtn.innerHTML = '<i class="fas fa-plus"></i>';
+      addChapterBtn.title = "Add new chapter";
+      addChapterBtn.onclick = (e) => { e.stopPropagation(); createEmptyChapter(className); };
+      const renameClassBtn = document.createElement("button");
+      renameClassBtn.innerHTML = '<i class="fas fa-edit"></i>';
+      renameClassBtn.title = "Rename class";
+      renameClassBtn.onclick = (e) => { e.stopPropagation(); renameClass(className); };
+      const deleteClassBtn = document.createElement("button");
+      deleteClassBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+      deleteClassBtn.title = "Delete class (moves all questions to Uncategorized)";
+      deleteClassBtn.onclick = (e) => { e.stopPropagation(); deleteClass(className); };
+      actions.appendChild(addChapterBtn);
+      actions.appendChild(renameClassBtn);
+      actions.appendChild(deleteClassBtn);
+      classHeader.appendChild(actions);
+      classDiv.appendChild(classHeader);
+      const classChildren = document.createElement("div");
+      classChildren.className = "folder-children";
+      classDiv.appendChild(classChildren);
+
+      for (const chapterName of chapterNames) {
+        const chapterQuestions = classQuestions.filter(q => (q.chapter || "General") === chapterName);
+        const isEmpty = chapterQuestions.length === 0 && (emptyFolders.chapters[className]?.includes(chapterName));
+        const chapterDiv = document.createElement("div");
+        chapterDiv.className = "chapter-folder";
+        if (isEmpty) chapterDiv.classList.add("empty-folder");
+        const chapterHeader = document.createElement("div");
+        chapterHeader.className = "chapter-header";
+        chapterHeader.innerHTML = `<i class="fas fa-folder-open"></i> <span>${chapterName}</span>`;
+        const chapActions = document.createElement("div");
+        chapActions.className = "chapter-actions";
+        const renameChapBtn = document.createElement("button");
+        renameChapBtn.innerHTML = '<i class="fas fa-edit"></i>';
+        renameChapBtn.title = "Rename chapter";
+        renameChapBtn.onclick = (e) => { e.stopPropagation(); renameChapter(className, chapterName); };
+        const deleteChapBtn = document.createElement("button");
+        deleteChapBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        deleteChapBtn.title = "Delete chapter (moves all questions to General)";
+        deleteChapBtn.onclick = (e) => { e.stopPropagation(); deleteChapter(className, chapterName); };
+        chapActions.appendChild(renameChapBtn);
+        chapActions.appendChild(deleteChapBtn);
+        chapterHeader.appendChild(chapActions);
+        chapterDiv.appendChild(chapterHeader);
+        const chapterChildren = document.createElement("div");
+        chapterChildren.className = "chapter-children";
+        chapterDiv.appendChild(chapterChildren);
+        if (!isEmpty) {
+          chapterQuestions.forEach(q => {
+            const card = createQuestionCard(q);
+            chapterChildren.appendChild(card);
+          });
+        } else {
+          const emptyMsg = document.createElement("div");
+          emptyMsg.style.padding = "0.5rem";
+          emptyMsg.style.fontStyle = "italic";
+          emptyMsg.style.color = "#94a3b8";
+          emptyMsg.textContent = "No questions yet";
+          chapterChildren.appendChild(emptyMsg);
+        }
+        classChildren.appendChild(chapterDiv);
+        chapterHeader.addEventListener("click", (e) => {
+          if (e.target.closest('.chapter-actions')) return;
+          const icon = chapterHeader.querySelector("i:first-child");
+          chapterChildren.classList.toggle("open");
+          icon.classList.toggle("fa-folder-open");
+          icon.classList.toggle("fa-folder");
+        });
+        chapterChildren.classList.remove("open");
+      }
+      container.appendChild(classDiv);
+      classHeader.addEventListener("click", (e) => {
+        if (e.target.closest('.folder-actions')) return;
+        const icon = classHeader.querySelector("i:first-child");
+        classChildren.classList.toggle("open");
+        icon.classList.toggle("fa-folder-open");
+        icon.classList.toggle("fa-folder");
+      });
+      classChildren.classList.remove("open");
+    }
+
+    // Attach select all and delete selected handlers
+    const selectAll = document.getElementById("selectAllCheckbox");
+    const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
+    if (selectAll) {
+      selectAll.addEventListener("change", (e) => {
+        const checkboxes = document.querySelectorAll(".question-checkbox");
+        checkboxes.forEach(cb => cb.checked = e.target.checked);
+      });
+    }
+    if (deleteSelectedBtn) {
+      deleteSelectedBtn.addEventListener("click", async () => {
+        const selected = Array.from(document.querySelectorAll(".question-checkbox:checked")).map(cb => cb.value);
+        if (selected.length === 0) return alert("No questions selected.");
+        if (!confirm(`Delete ${selected.length} selected question(s)?`)) return;
+        const token = getToken();
+        let deleted = 0, failed = 0;
+        for (const id of selected) {
+          const res = await fetch(`${BASE_URL}/delete-question/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) deleted++; else failed++;
+        }
+        alert(`Deleted ${deleted} questions. ${failed} failed.`);
+        await loadQuestions();
+      });
+    }
+
+    // Create class button
+    document.getElementById("createClassBtn").addEventListener("click", createEmptyClass);
+  }
+
+  function createQuestionCard(q) {
+    const card = document.createElement("div");
+    card.className = "question-card";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "question-checkbox";
+    checkbox.value = q._id;
+    const contentDiv = document.createElement("div");
+    contentDiv.className = "question-content";
+    let optionsHtml = "";
+    if (q.type === "MCQ" && q.options) optionsHtml = `<br>A. ${q.options.A || ""}<br>B. ${q.options.B || ""}<br>C. ${q.options.C || ""}<br>D. ${q.options.D || ""}<br>`;
+    else if (q.type === "MATCH" && q.options) optionsHtml = `<br>Column A: ${(q.options.colA || []).join(", ")}<br>Column B: ${(q.options.colB || []).join(", ")}<br>`;
+    contentDiv.innerHTML = `
+      <b>${q.subject || "No subject"} | ${q.type}</b><br>
+      <div class="question-text">${q.text}</div>
+      ${optionsHtml}
+      ✅ Correct: ${q.correctAnswer || "—"}<br>
+      ⭐ Marks: ${q.marks || 0}<br>
+    `;
+    const actions = document.createElement("div");
+    actions.className = "question-actions";
+    const moveBtn = document.createElement("button");
+    moveBtn.innerHTML = '<i class="fas fa-arrow-right"></i>';
+    moveBtn.title = "Move";
+    moveBtn.onclick = (e) => { e.stopPropagation(); openMoveModal(q._id, q.cls, q.chapter); };
+    const editBtn = document.createElement("button");
+    editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+    editBtn.onclick = (e) => { e.stopPropagation(); editQuestion(q._id); };
+    const deleteBtn = document.createElement("button");
+    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    deleteBtn.onclick = (e) => { e.stopPropagation(); deleteQuestion(q._id); };
+    actions.appendChild(moveBtn);
+    actions.appendChild(editBtn);
+    actions.appendChild(deleteBtn);
+    card.appendChild(checkbox);
+    card.appendChild(contentDiv);
+    card.appendChild(actions);
+    return card;
+  }
+
+  async function deleteQuestion(id) {
+    if (!confirm("Delete this question?")) return;
+    const token = getToken();
+    const res = await fetch(`${BASE_URL}/delete-question/${id}`, {
+      method: "DELETE", headers: { Authorization: `Bearer ${token}` }
+    });
+    if (res.status === 401) logout();
+    else await loadQuestions();
+  }
+  async function editQuestion(id) {
+    const token = getToken();
+    if (!token) return;
+    const question = allQuestions.find(q => q._id === id);
+    if (!question) return;
+    editId = id;
+    document.getElementById("class").value = question.cls || "";
+    document.getElementById("subject").value = question.subject || "";
+    document.getElementById("chapter").value = question.chapter || "";
+    document.getElementById("questionText").value = question.text || "";
+    document.getElementById("marks").value = question.marks || "";
+    document.getElementById("correctAnswer").value = question.correctAnswer || "";
+    document.getElementById("type").value = question.type || "MCQ";
+    document.getElementById("type").dispatchEvent(new Event("change"));
+    if (question.type === "MCQ" && question.options) {
+      document.getElementById("optA").value = question.options.A || "";
+      document.getElementById("optB").value = question.options.B || "";
+      document.getElementById("optC").value = question.options.C || "";
+      document.getElementById("optD").value = question.options.D || "";
+    } else if (question.type === "MATCH" && question.options) {
+      const colA = question.options.colA || [];
+      const colB = question.options.colB || [];
+      document.getElementById("colA1").value = colA[0] || "";
+      document.getElementById("colA2").value = colA[1] || "";
+      document.getElementById("colA3").value = colA[2] || "";
+      document.getElementById("colB1").value = colB[0] || "";
+      document.getElementById("colB2").value = colB[1] || "";
+      document.getElementById("colB3").value = colB[2] || "";
+    }
+    showPage("add");
+  }
+
+  // Folder creation and deletion (empty folders)
+  function createEmptyClass() {
+    const name = prompt("Enter new class name:");
+    if (!name) return;
+    if (emptyFolders.classes.includes(name)) {
+      alert("Class already exists.");
+      return;
+    }
+    emptyFolders.classes.push(name);
+    renderFolderView(allQuestions);
+  }
+  function createEmptyChapter(className) {
+    const name = prompt(`Enter new chapter name for class "${className}":`);
+    if (!name) return;
+    if (!emptyFolders.chapters[className]) emptyFolders.chapters[className] = [];
+    if (emptyFolders.chapters[className].includes(name)) {
+      alert("Chapter already exists.");
+      return;
+    }
+    emptyFolders.chapters[className].push(name);
+    renderFolderView(allQuestions);
+  }
+
+  // Rename/delete classes and chapters (with questions)
+  async function renameClass(oldName) {
+    const newName = prompt("Enter new class name:", oldName);
+    if (!newName || newName === oldName) return;
+    const token = getToken();
+    const questionsToUpdate = allQuestions.filter(q => (q.cls || "Uncategorized") === oldName);
+    let success = 0, fail = 0;
+    for (const q of questionsToUpdate) {
+      const updated = { ...q, cls: newName };
+      const res = await fetch(`${BASE_URL}/update-question/${q._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(updated)
+      });
+      if (res.ok) success++; else fail++;
+    }
+    // Also rename empty folders
+    if (emptyFolders.classes.includes(oldName)) {
+      emptyFolders.classes = emptyFolders.classes.filter(c => c !== oldName);
+      emptyFolders.classes.push(newName);
+    }
+    if (emptyFolders.chapters[oldName]) {
+      emptyFolders.chapters[newName] = emptyFolders.chapters[oldName];
+      delete emptyFolders.chapters[oldName];
+    }
+    alert(`Renamed ${success} questions. ${fail} failed.`);
+    await loadQuestions();
+  }
+  async function deleteClass(className) {
+    if (!confirm(`Delete class "${className}"? All questions will be moved to "Uncategorized".`)) return;
+    const token = getToken();
+    const questionsToUpdate = allQuestions.filter(q => (q.cls || "Uncategorized") === className);
+    let success = 0, fail = 0;
+    for (const q of questionsToUpdate) {
+      const updated = { ...q, cls: "" };
+      const res = await fetch(`${BASE_URL}/update-question/${q._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(updated)
+      });
+      if (res.ok) success++; else fail++;
+    }
+    // Remove empty folders
+    emptyFolders.classes = emptyFolders.classes.filter(c => c !== className);
+    delete emptyFolders.chapters[className];
+    alert(`Moved ${success} questions to Uncategorized. ${fail} failed.`);
+    await loadQuestions();
+  }
+  async function renameChapter(className, oldChapter) {
+    const newChapter = prompt("Enter new chapter name:", oldChapter);
+    if (!newChapter || newChapter === oldChapter) return;
+    const token = getToken();
+    const questionsToUpdate = allQuestions.filter(q => (q.cls || "Uncategorized") === className && (q.chapter || "General") === oldChapter);
+    let success = 0, fail = 0;
+    for (const q of questionsToUpdate) {
+      const updated = { ...q, chapter: newChapter };
+      const res = await fetch(`${BASE_URL}/update-question/${q._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(updated)
+      });
+      if (res.ok) success++; else fail++;
+    }
+    // Update empty chapters
+    if (emptyFolders.chapters[className] && emptyFolders.chapters[className].includes(oldChapter)) {
+      emptyFolders.chapters[className] = emptyFolders.chapters[className].filter(ch => ch !== oldChapter);
+      emptyFolders.chapters[className].push(newChapter);
+    }
+    alert(`Renamed ${success} chapters. ${fail} failed.`);
+    await loadQuestions();
+  }
+  async function deleteChapter(className, chapterName) {
+    if (!confirm(`Delete chapter "${chapterName}"? All questions will be moved to "General".`)) return;
+    const token = getToken();
+    const questionsToUpdate = allQuestions.filter(q => (q.cls || "Uncategorized") === className && (q.chapter || "General") === chapterName);
+    let success = 0, fail = 0;
+    for (const q of questionsToUpdate) {
+      const updated = { ...q, chapter: "" };
+      const res = await fetch(`${BASE_URL}/update-question/${q._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(updated)
+      });
+      if (res.ok) success++; else fail++;
+    }
+    // Remove empty chapter
+    if (emptyFolders.chapters[className]) {
+      emptyFolders.chapters[className] = emptyFolders.chapters[className].filter(ch => ch !== chapterName);
+      if (emptyFolders.chapters[className].length === 0) delete emptyFolders.chapters[className];
+    }
+    alert(`Moved ${success} questions to General. ${fail} failed.`);
+    await loadQuestions();
+  }
+
+  // Move question modal
+  let moveQuestionId = null;
+  function openMoveModal(id, currentClass, currentChapter) {
+    moveQuestionId = id;
+    const classSelect = document.getElementById("moveClassSelect");
+    const chapterSelect = document.getElementById("moveChapterSelect");
+    // Collect all classes (from questions + empty classes)
+    const allClasses = [...new Set([...allQuestions.map(q => q.cls && q.cls.trim() !== "" ? q.cls : "Uncategorized"), ...emptyFolders.classes])];
+    classSelect.innerHTML = '<option value="">Select class</option>' + allClasses.map(c => `<option value="${c}" ${c === currentClass ? "selected" : ""}>${c}</option>`).join('');
+    classSelect.onchange = () => updateChapterSelect(classSelect.value, currentChapter);
+    updateChapterSelect(currentClass, currentChapter);
+    document.getElementById("moveModal").style.display = "flex";
+  }
+  function updateChapterSelect(className, currentChapter) {
+    const chapterSelect = document.getElementById("moveChapterSelect");
+    const allChapters = [];
+    // Chapters from questions
+    const questionChapters = [...new Set(allQuestions.filter(q => (q.cls || "Uncategorized") === className).map(q => q.chapter && q.chapter.trim() !== "" ? q.chapter : "General"))];
+    allChapters.push(...questionChapters);
+    // Empty chapters
+    if (emptyFolders.chapters[className]) allChapters.push(...emptyFolders.chapters[className]);
+    const uniqueChapters = [...new Set(allChapters)].sort();
+    chapterSelect.innerHTML = '<option value="">Select chapter</option>' + uniqueChapters.map(ch => `<option value="${ch}" ${ch === currentChapter ? "selected" : ""}>${ch}</option>`).join('');
+  }
+  async function moveQuestion() {
+    const newClass = document.getElementById("moveClassSelect").value;
+    const newChapter = document.getElementById("moveChapterSelect").value;
+    if (!newClass) { alert("Please select a class."); return; }
+    const token = getToken();
+    const question = allQuestions.find(q => q._id === moveQuestionId);
+    if (!question) return;
+    const updated = { ...question, cls: newClass, chapter: newChapter };
+    const res = await fetch(`${BASE_URL}/update-question/${moveQuestionId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify(updated)
+    });
+    if (res.ok) {
+      // If the target class/chapter was an empty folder, we should remove it from emptyFolders
+      if (emptyFolders.classes.includes(newClass)) {
+        emptyFolders.classes = emptyFolders.classes.filter(c => c !== newClass);
+      }
+      if (emptyFolders.chapters[newClass] && emptyFolders.chapters[newClass].includes(newChapter)) {
+        emptyFolders.chapters[newClass] = emptyFolders.chapters[newClass].filter(ch => ch !== newChapter);
+        if (emptyFolders.chapters[newClass].length === 0) delete emptyFolders.chapters[newClass];
+      }
+      await loadQuestions();
+      document.getElementById("moveModal").style.display = "none";
+    } else { alert("Move failed."); }
+  }
+
+  // ---------- OCR ----------
+  async function uploadImage() {
+    const token = getToken();
+    const file = document.getElementById("imageInput").files[0];
+    if (!file) return alert("Select an image");
+    const fd = new FormData(); fd.append("image", file);
+    try {
+      const res = await fetch(`${BASE_URL}/ocr`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd });
+      if (res.status === 401) logout();
+      const data = await res.json();
+      document.getElementById("questionText").value = data.text || "OCR failed";
+    } catch { alert("OCR error"); }
+  }
+
+  // ---------- UI INIT ----------
+  function initTypeSwitch() {
+    const typeSelect = document.getElementById("type");
+    const mcqBox = document.getElementById("mcqBox");
+    const matchBox = document.getElementById("matchBox");
+    typeSelect.addEventListener("change", () => {
+      mcqBox.style.display = typeSelect.value === "MCQ" ? "block" : "none";
+      matchBox.style.display = typeSelect.value === "MATCH" ? "block" : "none";
+    });
+    typeSelect.dispatchEvent(new Event("change"));
+  }
+  function initBulkMode() {
+    const bulkCheckbox = document.getElementById("bulkModeCheckbox");
+    const bulkArea = document.getElementById("bulkArea");
+    const singleForm = document.getElementById("singleQuestionForm");
+    bulkCheckbox.addEventListener("change", () => {
+      bulkArea.style.display = bulkCheckbox.checked ? "block" : "none";
+      singleForm.style.opacity = bulkCheckbox.checked ? "0.5" : "1";
+    });
+  }
+  function initSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const toggleSidebarBtn = document.getElementById("toggleSidebarBtn");
+    const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+    const topThreeDotBtn = document.getElementById("topThreeDotBtn");
+    const content = document.getElementById("content");
+    function isMobile() { return window.innerWidth < 768; }
+    function toggleSidebar() {
+      if (isMobile()) sidebar.classList.toggle("show-mobile");
+      else { sidebar.classList.toggle("collapsed"); content.style.marginLeft = sidebar.classList.contains("collapsed") ? "80px" : "260px"; }
+    }
+    toggleSidebarBtn.addEventListener("click", toggleSidebar);
+    if (mobileMenuToggle) mobileMenuToggle.addEventListener("click", toggleSidebar);
+    if (topThreeDotBtn) topThreeDotBtn.addEventListener("click", toggleSidebar);
+    content.addEventListener("click", (e) => { if (isMobile() && sidebar.classList.contains("show-mobile") && !sidebar.contains(e.target)) sidebar.classList.remove("show-mobile"); });
+    window.addEventListener("resize", () => {
+      if (isMobile()) { content.style.marginLeft = "0"; sidebar.classList.remove("collapsed"); }
+      else { sidebar.classList.remove("show-mobile"); content.style.marginLeft = sidebar.classList.contains("collapsed") ? "80px" : "260px"; }
+    });
+  }
+  function initTheme() {
+    const themeButtons = ["themeTopBtn", "themeDropdownBtn"];
+    const threeDotBtn = document.getElementById("threeDotBtn");
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+      if (threeDotBtn) {
+        const icon = threeDotBtn.querySelector("i");
+        if (document.body.classList.contains("dark")) {
+          icon.classList.remove("fa-ellipsis-h");
+          icon.classList.add("fa-sun");
+        } else {
+          icon.classList.remove("fa-sun");
+          icon.classList.add("fa-ellipsis-h");
+        }
+      }
+    }
+    themeButtons.forEach(id => { const btn = document.getElementById(id); if (btn) btn.addEventListener("click", toggleTheme); });
+  }
+  function initDropdown() {
+    const threeDotBtn = document.getElementById("threeDotBtn");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+    threeDotBtn.addEventListener("click", (e) => { e.stopPropagation(); dropdownMenu.classList.toggle("show"); });
+    document.addEventListener("click", (e) => { if (!threeDotBtn.contains(e.target) && !dropdownMenu.contains(e.target)) dropdownMenu.classList.remove("show"); });
+  }
+  function initPasswordToggle() {
+    document.querySelectorAll(".toggle-password").forEach(icon => {
+      icon.addEventListener("click", function() {
+        const target = document.getElementById(this.getAttribute("data-target"));
+        if (target) { const type = target.type === "password" ? "text" : "password"; target.type = type; this.classList.toggle("fa-eye-slash"); this.classList.toggle("fa-eye"); }
+      });
+    });
+  }
+  function bindNavigation() {
+    const homeLinks = ["homeLink", "homeSidebarBtn"];
+    const addLinks = ["addLink", "addSidebarBtn"];
+    const listLinks = ["listLink", "listSidebarBtn"];
+    homeLinks.forEach(id => { const btn = document.getElementById(id); if (btn) btn.addEventListener("click", () => showPage("home")); });
+    addLinks.forEach(id => { const btn = document.getElementById(id); if (btn) btn.addEventListener("click", () => showPage("add")); });
+    listLinks.forEach(id => { const btn = document.getElementById(id); if (btn) btn.addEventListener("click", () => showPage("list")); });
+  }
+  function bindLogout() {
+    const logoutBtns = ["logoutTopBtn", "logoutSidebarBtn"];
+    logoutBtns.forEach(id => { const btn = document.getElementById(id); if (btn) btn.addEventListener("click", logout); });
+  }
+  function bindButtons() {
+    document.getElementById("saveQuestionBtn").addEventListener("click", saveQuestion);
+    document.getElementById("clearFormBtn").addEventListener("click", clearForm);
+    document.getElementById("scanImageBtn").addEventListener("click", uploadImage);
+    document.getElementById("bulkAddBtn").addEventListener("click", addBulkQuestions);
+    document.getElementById("clearBulkBtn").addEventListener("click", clearBulkArea);
+    document.getElementById("moveConfirmBtn").addEventListener("click", moveQuestion);
+    document.getElementById("moveCancelBtn").addEventListener("click", () => document.getElementById("moveModal").style.display = "none");
+  }
+
+  // ---------- AUTH EVENT LISTENERS ----------
+  document.getElementById("signinForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("signinEmail").value.trim();
+    const password = document.getElementById("signinPassword").value;
+    const result = await login(email, password);
+    if (result.ok) {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      showPage("home");
+      loadQuestions();
+      clearForm();
+      if (window.innerWidth < 768) document.getElementById("sidebar").classList.remove("show-mobile");
+    } else showError(document.getElementById("msg"), result.message);
+  });
+  document.getElementById("signupForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const school = document.getElementById("signupSchool").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value;
+    const confirm = document.getElementById("signupConfirmPassword").value;
+    const result = await register(school, email, password, confirm);
+    if (result.ok) {
+      alert("Account created! Please sign in.");
+      setActiveTab("signin");
+      document.getElementById("signupSchool").value = "";
+      document.getElementById("signupEmail").value = "";
+      document.getElementById("signupPassword").value = "";
+      document.getElementById("signupConfirmPassword").value = "";
+    } else showError(document.getElementById("signupMsg"), result.message);
+  });
+  document.getElementById("signinTabBtn").addEventListener("click", () => setActiveTab("signin"));
+  document.getElementById("signupTabBtn").addEventListener("click", () => setActiveTab("signup"));
+
+  // ---------- INIT ----------
+  window.onload = async () => {
+    initSidebar();
+    initTheme();
+    initDropdown();
+    initPasswordToggle();
+    initTypeSwitch();
+    initBulkMode();
+    bindNavigation();
+    bindLogout();
+    bindButtons();
+    const token = getToken();
+    if (token) {
+      try {
+        const res = await fetch(`${BASE_URL}/questions`, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.status === 401) { setToken(null); document.getElementById("login").style.display = "flex"; document.getElementById("dashboard").style.display = "none"; setActiveTab("signin"); }
+        else { document.getElementById("login").style.display = "none"; document.getElementById("dashboard").style.display = "block"; showPage("home"); loadQuestions(); if (window.innerWidth < 768) document.getElementById("sidebar").classList.remove("show-mobile"); else { document.getElementById("sidebar").classList.remove("collapsed"); document.getElementById("content").style.marginLeft = "260px"; } }
+      } catch { setToken(null); document.getElementById("login").style.display = "flex"; document.getElementById("dashboard").style.display = "none"; setActiveTab("signin"); }
+    } else { document.getElementById("login").style.display = "flex"; document.getElementById("dashboard").style.display = "none"; setActiveTab("signin"); }
+  };
+</script>
+</body>
+</html>
